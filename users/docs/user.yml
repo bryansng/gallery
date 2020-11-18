@@ -32,7 +32,7 @@ paths:
         schema:
           $ref: "#/definitions/User"
       responses:
-        "200":
+        "201":
           description: "Successful operation"
           schema:
             $ref: "#/definitions/User"
@@ -58,10 +58,6 @@ paths:
           description: "Successful operation"
           schema:
             $ref: "#/definitions/User"
-        "400":
-          description: "Invalid username supplied"
-        "403":
-          description: "No permissions"
         "404":
           description: "User not found"
     put:
@@ -89,10 +85,6 @@ paths:
           description: "Successful operation"
           schema:
             $ref: "#/definitions/User"
-        "400":
-          description: "Invalid username supplied"
-        "403":
-          description: "No permissions"
         "404":
           description: "User not found"
     delete:
@@ -112,20 +104,16 @@ paths:
       responses:
         "204":
           description: "Successful operation"
-        "400":
-          description: "Invalid username supplied"
-        "403":
-          description: "No permissions"
         "404":
           description: "User not found"
 securityDefinitions:
-  gallery_auth:
+  petstore_auth:
     type: "oauth2"
-    authorizationUrl: "http://gallery.com/oauth/dialog"
+    authorizationUrl: "http://petstore.swagger.io/oauth/dialog"
     flow: "implicit"
     scopes:
-      write:user: "modify user in your account"
-      read:user: "read your user"
+      write:pets: "modify pets in your account"
+      read:pets: "read your pets"
   api_key:
     type: "apiKey"
     name: "api_key"
@@ -139,3 +127,6 @@ definitions:
         format: "int64"
       username:
         type: "string"
+externalDocs:
+  description: "Find out more about Swagger"
+  url: "http://swagger.io"
