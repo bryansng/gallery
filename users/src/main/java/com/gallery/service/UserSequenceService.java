@@ -20,8 +20,8 @@ public class UserSequenceService {
 
     @PostConstruct
     private void init() {
-        long lastNum = getNext() - 1;
-        userSequenceRepository.save(new UserSequence(lastNum));
+        long id = getNext() - 1;
+        userSequenceRepository.save(new UserSequence(id));
     }
 
     public long getNext() {
