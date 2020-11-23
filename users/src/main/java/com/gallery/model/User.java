@@ -1,5 +1,6 @@
 package com.gallery.model;
 
+import com.gallery.constants.Constants;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.IndexDirection;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -12,7 +13,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 /**
  * User object
  */
-@Document(collection = "user")
+@Document(collection = Constants.USER_COLLECTION)
 public class User {
     @Id
     private Long id;
