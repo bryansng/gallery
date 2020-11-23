@@ -27,8 +27,5 @@
 # mvn package
 
 
-if [ "$1" == "api" ]; then
-  mvn exec:java -Dexec.mainClass=com.gallery.api.gateway.Application -pl api.gateway
-elif [ "$1" == "user" ]; then
-  mvn exec:java -Dexec.mainClass=com.gallery.UserApplication -pl users
-fi
+# mvn exec:java -Dexec.mainClass=com.gallery.UserApplication
+mvn spring-boot:run

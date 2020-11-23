@@ -7,5 +7,6 @@
 
     <modules>
         <module>api.gateway</module>
+        <module>users</module>
     </modules>
 </project>
