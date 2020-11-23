@@ -1,9 +1,13 @@
 package com.gallery.controller;
 
+import java.util.Map;
+
 import com.gallery.core.response.UserResponse;
 import com.gallery.service.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.json.JsonParser;
+import org.springframework.boot.json.JsonParserFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,12 +22,17 @@ public class UserController {
     @Autowired
     UserService userService;
 
+    JsonParser jsonParser = JsonParserFactory.getJsonParser();
+
     public UserController() {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<UserResponse> createUser(@RequestBody String username) {
-        return userService.createUser(username);
+    public ResponseEntity<UserResponse> createUser(@RequestBody String jsonBody) {
+        Map<String, Object> body = jsonParser.parseMap(jsonBody);
+
+        System.out.println((String) body.get("username"));
+        return userService.createUser((String) body.get("username"));
     }
 
     @RequestMapping(value = "/{username}", method = RequestMethod.GET)
