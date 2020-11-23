@@ -35,7 +35,7 @@ paths:
         "201":
           description: "Successful operation"
           schema:
-            $ref: "#/definitions/User"
+            $ref: "#/definitions/UserResponse"
         "400":
           description: "Username already exists"
   /user/{username}:
@@ -57,7 +57,7 @@ paths:
         "200":
           description: "Successful operation"
           schema:
-            $ref: "#/definitions/User"
+            $ref: "#/definitions/UserResponse"
         "404":
           description: "User not found"
     put:
@@ -84,7 +84,7 @@ paths:
         "200":
           description: "Successful operation"
           schema:
-            $ref: "#/definitions/User"
+            $ref: "#/definitions/UserResponse"
         "404":
           description: "User not found"
     delete:
@@ -119,6 +119,13 @@ securityDefinitions:
     name: "api_key"
     in: "header"
 definitions:
+  UserResponse:
+    type: "object"
+    properties:
+      msg:
+        type: "string"
+      user: 
+        $ref: "#/definitions/User"
   User:
     type: "object"
     properties:
