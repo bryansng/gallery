@@ -1,7 +1,6 @@
 package com.gallery.controller;
 
-import java.util.Map;
-
+import com.gallery.core.UserRequest;
 import com.gallery.core.response.UserResponse;
 import com.gallery.service.UserService;
 
@@ -28,16 +27,12 @@ public class UserController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<UserResponse> createUser(@RequestBody String jsonBody) {
-        Map<String, Object> body = jsonParser.parseMap(jsonBody);
-
-        System.out.println((String) body.get("username"));
-        return userService.createUser((String) body.get("username"));
+    public ResponseEntity<UserResponse> createUser(@RequestBody UserRequest userRequest) {
+        return userService.createUser(userRequest.getUsername());
     }
 
     @RequestMapping(value = "/{username}", method = RequestMethod.GET)
     public ResponseEntity<UserResponse> getUser(@PathVariable("username") String username) {
-        System.out.println(username);
         return userService.getUser(username);
     }
 
