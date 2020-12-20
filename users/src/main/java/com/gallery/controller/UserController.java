@@ -5,6 +5,8 @@ import com.gallery.core.response.UserResponse;
 import com.gallery.service.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.json.JsonParser;
+import org.springframework.boot.json.JsonParserFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,6 +20,8 @@ public class UserController {
 
     @Autowired
     UserService userService;
+
+    JsonParser jsonParser = JsonParserFactory.getJsonParser();
 
     public UserController() {
     }
