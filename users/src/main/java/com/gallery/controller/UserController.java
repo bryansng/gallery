@@ -21,8 +21,6 @@ public class UserController {
     @Autowired
     UserService userService;
 
-    JsonParser jsonParser = JsonParserFactory.getJsonParser();
-
     public UserController() {
     }
 
