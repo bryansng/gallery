@@ -1,4 +1,4 @@
-package com.gallery.core;
+package com.gallery.core.request;
 
 import com.gallery.model.RectangleCoordinates;
 
@@ -7,7 +7,6 @@ public class AnnotationRequest {
   private String imageId;
   private String content;
   private RectangleCoordinates coordinates;
-  private Integer vote;
 
   public AnnotationRequest() {
 
@@ -43,13 +42,5 @@ public class AnnotationRequest {
 
   public void setCoordinates(RectangleCoordinates coordinates) {
     this.coordinates = coordinates;
-  }
-
-  public Integer getVote() {
-    return this.vote;
-  }
-
-  public void setVote(Integer vote) {
-    this.vote = vote;
   }
 }

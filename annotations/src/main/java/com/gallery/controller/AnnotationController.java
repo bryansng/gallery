@@ -1,6 +1,7 @@
 package com.gallery.controller;
 
-import com.gallery.core.AnnotationRequest;
+import com.gallery.core.request.AnnotationRequest;
+import com.gallery.core.request.AnnotationVoteRequest;
 import com.gallery.core.response.AnnotationResponse;
 import com.gallery.core.response.AnnotationsResponse;
 import com.gallery.service.AnnotationService;
@@ -29,17 +30,18 @@ public class AnnotationController {
         annotationRequest.getCoordinates(), annotationRequest.getContent());
   }
 
-  @RequestMapping(value = "/{annotationId}", method = RequestMethod.PUT)
+  @RequestMapping(value = "/{annotationId}", method = RequestMethod.POST)
   public ResponseEntity<AnnotationResponse> updateAnnotation(@RequestBody AnnotationRequest annotationRequest,
       @PathVariable("annotationId") String annotationId) throws Exception {
     return annotationService.updateAnnotation(annotationId, annotationRequest.getUserId(),
         annotationRequest.getCoordinates(), annotationRequest.getContent());
   }
 
-  @RequestMapping(value = "/{annotationId}/vote", method = RequestMethod.PUT)
-  public ResponseEntity<AnnotationResponse> voteAnnotation(@RequestBody AnnotationRequest annotationRequest,
-      @PathVariable("annotationId") String annotationId) throws Exception {
-    return annotationService.voteAnnotation(annotationId, annotationRequest.getUserId(), annotationRequest.getVote());
+  @RequestMapping(value = "/vote", method = RequestMethod.POST)
+  public ResponseEntity<AnnotationResponse> voteAnnotation(@RequestBody AnnotationVoteRequest annotationVoteRequest)
+      throws Exception {
+    return annotationService.voteAnnotation(annotationVoteRequest.getAnnotationId(), annotationVoteRequest.getUserId(),
+        annotationVoteRequest.getVote());
   }
 
   @RequestMapping(value = "/{annotationId}", method = RequestMethod.GET)
@@ -47,7 +49,7 @@ public class AnnotationController {
     return annotationService.getAnnotation(annotationId);
   }
 
-  @RequestMapping(value = "/", method = RequestMethod.GET)
+  @RequestMapping(method = RequestMethod.GET)
   public ResponseEntity<AnnotationsResponse> getAnnotations() {
     return annotationService.getAllAnnotations();
   }
