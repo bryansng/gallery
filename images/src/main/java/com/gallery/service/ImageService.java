@@ -132,7 +132,7 @@ public class ImageService {
         } catch (IllegalStateException e) {
             e.printStackTrace();
         }
-        return null;
+        return new ResponseEntity<>("Error retrieving image from gridFsOperations.", HttpStatus.BAD_REQUEST);
     }
 
     // gets only data of image.
