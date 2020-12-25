@@ -3,7 +3,6 @@ package com.gallery.core;
 import com.gallery.model.RectangleCoordinates;
 
 public class AnnotationRequest {
-  private String annotationId;
   private String userId;
   private String imageId;
   private String content;
@@ -12,14 +11,6 @@ public class AnnotationRequest {
 
   public AnnotationRequest() {
 
-  }
-
-  public String getAnnotationId() {
-    return this.annotationId;
-  }
-
-  public void setAnnotationId(String annotationId) {
-    this.annotationId = annotationId;
   }
 
   public String getUserId() {

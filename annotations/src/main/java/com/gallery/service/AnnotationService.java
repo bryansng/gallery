@@ -34,16 +34,10 @@ public class AnnotationService {
     mongoTemplate = mongoConfig.mongoTemplate();
   }
 
-  public ResponseEntity<AnnotationResponse> createAnnotation(String annotationId, String userId, String imageId,
+  public ResponseEntity<AnnotationResponse> createAnnotation(String userId, String imageId,
       RectangleCoordinates coordinates, String content) {
-    boolean annotationExists = mongoTemplate.exists(Query.query(Criteria.where("annotationId").is(annotationId)),
-        Annotation.class, Constants.ANNOTATION_COLLECTION);
 
-    if (annotationExists) {
-      return new ResponseEntity<>(new AnnotationResponse("Annotation already exists", null), HttpStatus.BAD_REQUEST);
-    }
-
-    Annotation annotation = new Annotation(annotationId, userId, imageId, coordinates, content);
+    Annotation annotation = new Annotation(userId, imageId, coordinates, content);
 
     mongoTemplate.insert(annotation, Constants.ANNOTATION_COLLECTION);
 
@@ -72,6 +66,17 @@ public class AnnotationService {
     return new ResponseEntity<>(new AnnotationsResponse("Retrieved annotation", annotations), HttpStatus.OK);
   }
 
+  public ResponseEntity<AnnotationsResponse> getAllAnnotationsByUserId(String userId) {
+    List<Annotation> annotations = mongoTemplate.find(Query.query(Criteria.where("userId").is(userId)),
+        Annotation.class, Constants.ANNOTATION_COLLECTION);
+
+    if (annotations == null) {
+      return new ResponseEntity<>(new AnnotationsResponse("Annotations does not exist", null), HttpStatus.NOT_FOUND);
+    }
+
+    return new ResponseEntity<>(new AnnotationsResponse("Retrieved annotation", annotations), HttpStatus.OK);
+  }
+
   public ResponseEntity<AnnotationsResponse> getAllAnnotations() {
     List<Annotation> annotations = mongoTemplate.findAll(Annotation.class, Constants.ANNOTATION_COLLECTION);
 
@@ -82,7 +87,8 @@ public class AnnotationService {
     return new ResponseEntity<>(new AnnotationsResponse("Retrieved annotations", annotations), HttpStatus.OK);
   }
 
-  public ResponseEntity<AnnotationResponse> updateAnnotationContent(String annotationId, String newContent) {
+  public ResponseEntity<AnnotationResponse> updateAnnotation(String annotationId, String userId,
+      RectangleCoordinates coordinates, String content) throws Exception {
     Annotation annotation = mongoTemplate.findOne(Query.query(Criteria.where("annotationId").is(annotationId)),
         Annotation.class, Constants.ANNOTATION_COLLECTION);
 
@@ -90,14 +96,25 @@ public class AnnotationService {
       return new ResponseEntity<>(new AnnotationResponse("Annotation does not exist", null), HttpStatus.NOT_FOUND);
     }
 
-    String currentContent = annotation.getContent();
-
-    annotation.setContent(newContent);
+    annotation.updateAnnotation(userId, coordinates, content);
     mongoTemplate.save(annotation, Constants.ANNOTATION_COLLECTION);
 
-    return new ResponseEntity<>(
-        new AnnotationResponse("Annotation content updated from " + currentContent + " to " + newContent, annotation),
-        HttpStatus.OK);
+    return new ResponseEntity<>(new AnnotationResponse("Annotation updated", annotation), HttpStatus.OK);
+  }
+
+  public ResponseEntity<AnnotationResponse> voteAnnotation(String annotationId, String userId, Integer vote)
+      throws Exception {
+    Annotation annotation = mongoTemplate.findOne(Query.query(Criteria.where("annotationId").is(annotationId)),
+        Annotation.class, Constants.ANNOTATION_COLLECTION);
+
+    if (annotation == null) {
+      return new ResponseEntity<>(new AnnotationResponse("Annotation does not exist", null), HttpStatus.NOT_FOUND);
+    }
+
+    annotation.updateVote(userId, vote);
+    mongoTemplate.save(annotation, Constants.ANNOTATION_COLLECTION);
+
+    return new ResponseEntity<>(new AnnotationResponse("Annotation vote updated", annotation), HttpStatus.OK);
   }
 
   public ResponseEntity<AnnotationResponse> deleteAnnotation(String annotationId) {
@@ -111,47 +128,5 @@ public class AnnotationService {
     mongoTemplate.remove(annotation, Constants.ANNOTATION_COLLECTION);
 
     return new ResponseEntity<>(new AnnotationResponse("Annotation deleted", annotation), HttpStatus.OK);
-  }
-
-  public ResponseEntity<AnnotationResponse> voteAnnotation(String annotationId, String userId, Integer vote) {
-    Annotation annotation = mongoTemplate.findOne(Query.query(Criteria.where("annotationId").is(annotationId)),
-        Annotation.class, Constants.ANNOTATION_COLLECTION);
-    if (annotation == null) {
-      return new ResponseEntity<>(new AnnotationResponse("Annotation does not exist", null), HttpStatus.NOT_FOUND);
-    }
-
-    annotation.addVote(userId, vote);
-    mongoTemplate.save(annotation, Constants.ANNOTATION_COLLECTION);
-    return new ResponseEntity<>(new AnnotationResponse("Added vote to annotation", annotation), HttpStatus.OK);
-  }
-
-  public ResponseEntity<AnnotationResponse> removeVoteAnnotation(String annotationId, String userId, Integer vote) {
-    Annotation annotation = mongoTemplate.findOne(Query.query(Criteria.where("annotationId").is(annotationId)),
-        Annotation.class, Constants.ANNOTATION_COLLECTION);
-    if (annotation == null) {
-      return new ResponseEntity<>(new AnnotationResponse("Annotation does not exist", null), HttpStatus.NOT_FOUND);
-    }
-
-    annotation.removeVote(userId, vote);
-    mongoTemplate.save(annotation, Constants.ANNOTATION_COLLECTION);
-    return new ResponseEntity<>(new AnnotationResponse("Removed vote from annotation", annotation), HttpStatus.OK);
-  }
-
-  public ResponseEntity<AnnotationResponse> updateCoordinates(String annotationId, RectangleCoordinates newCoords) {
-    Annotation annotation = mongoTemplate.findOne(Query.query(Criteria.where("annotationId").is(annotationId)),
-        Annotation.class, Constants.ANNOTATION_COLLECTION);
-
-    if (annotation == null) {
-      return new ResponseEntity<>(new AnnotationResponse("Annotation does not exist", null), HttpStatus.NOT_FOUND);
-    }
-
-    RectangleCoordinates currCoords = annotation.getRectangleCoordinates();
-
-    annotation.setCoordinates(newCoords);
-    mongoTemplate.save(annotation, Constants.ANNOTATION_COLLECTION);
-
-    return new ResponseEntity<>(
-        new AnnotationResponse("Annotation coordinates updated from " + currCoords + " to " + newCoords, annotation),
-        HttpStatus.OK);
   }
 }
