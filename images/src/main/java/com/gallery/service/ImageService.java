@@ -1,12 +1,14 @@
 package com.gallery.service;
 
 import java.io.IOException;
+import java.util.List;
 
 import com.gallery.config.MongoConfig;
 import com.gallery.constants.Constants;
 import com.gallery.core.CreateImageRequest;
 import com.gallery.core.UpdateImageDataRequest;
 import com.gallery.core.response.GetImageDataResponse;
+import com.gallery.core.response.GetImagesDataResponse;
 import com.gallery.core.response.UpdateImageDataResponse;
 import com.gallery.core.response.UploadImageResponse;
 import com.gallery.model.Image;
@@ -147,6 +149,18 @@ public class ImageService {
     }
 
     return new ResponseEntity<>(new GetImageDataResponse("Image metadata received.", image), HttpStatus.CREATED);
+  }
+
+  // gets only data of image.
+  public ResponseEntity<?> getImageDataByUserId(String userId) {
+    // check if imageId exists.
+    List<Image> image = mongoTemplate.find(Query.query(Criteria.where("userId").is(userId)), Image.class,
+        Constants.IMAGE_COLLECTION);
+    if (image == null) {
+      return new ResponseEntity<>("Image id does not exist.", HttpStatus.BAD_REQUEST);
+    }
+
+    return new ResponseEntity<>(new GetImagesDataResponse("Image metadata received.", image), HttpStatus.CREATED);
   }
 
   // public ResponseEntity<ImageResponse> createImage(ImageRequest imageReq) {
