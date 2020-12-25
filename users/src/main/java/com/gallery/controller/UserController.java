@@ -1,12 +1,10 @@
 package com.gallery.controller;
 
-import com.gallery.core.UserRequest;
+import com.gallery.core.request.UserRequest;
 import com.gallery.core.response.UserResponse;
 import com.gallery.service.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.json.JsonParser;
-import org.springframework.boot.json.JsonParserFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -36,8 +34,8 @@ public class UserController {
 
     @RequestMapping(value = "/{username}", method = RequestMethod.PUT)
     public ResponseEntity<UserResponse> updateUsername(@PathVariable("username") String currUsername,
-            @RequestBody String newUsername) {
-        return userService.updateUsername(currUsername, newUsername);
+            @RequestBody UserRequest userRequest) {
+        return userService.updateUsername(currUsername, userRequest);
     }
 
     @RequestMapping(value = "/{username}", method = RequestMethod.DELETE)
