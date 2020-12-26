@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -35,23 +34,29 @@ public class ImageController {
     return imageService.createImage(createRequest);
   }
 
-  @RequestMapping(method = RequestMethod.POST)
-  public ResponseEntity<?> updateImageMetadata(@RequestBody UpdateImageDataRequest updateRequest) {
-    return imageService.updateImageData(updateRequest);
+  @RequestMapping(value = "/{imageId}", method = RequestMethod.POST)
+  public ResponseEntity<?> updateImageMetadata(@RequestBody UpdateImageDataRequest updateRequest,
+      @PathVariable("imageId") String imageId) {
+    return imageService.updateImageData(imageId, updateRequest);
   }
 
-  @RequestMapping(value = "/download", method = RequestMethod.GET)
-  public ResponseEntity<?> downloadImage(@RequestParam("imageId") String imageId) {
+  @RequestMapping(value = "/download/{imageId}", method = RequestMethod.GET)
+  public ResponseEntity<?> downloadImage(@PathVariable("imageId") String imageId) {
     return imageService.retrieveImage(imageId);
   }
 
-  @RequestMapping(method = RequestMethod.GET)
-  public ResponseEntity<?> getImageData(@RequestParam("imageId") String imageId) {
+  @RequestMapping(value = "/{imageId}", method = RequestMethod.GET)
+  public ResponseEntity<?> getImageData(@PathVariable("imageId") String imageId) {
     return imageService.getImageData(imageId);
   }
 
   @RequestMapping(value = "/user/{userId}", method = RequestMethod.GET)
   public ResponseEntity<?> getImagesDataByUserId(@PathVariable("userId") String userId) {
-    return imageService.getImageDataByUserId(userId);
+    return imageService.getImagesDataByUserId(userId);
+  }
+
+  @RequestMapping(value = "/{imageId}", method = RequestMethod.DELETE)
+  public ResponseEntity<?> deleteImage(@PathVariable("imageId") String imageId) {
+    return imageService.deleteImage(imageId);
   }
 }

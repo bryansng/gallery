@@ -88,9 +88,7 @@ public class ImageService {
   }
 
   // updates only data of image.
-  public ResponseEntity<?> updateImageData(UpdateImageDataRequest updateReq) {
-    String imageId = updateReq.getImageId();
-
+  public ResponseEntity<?> updateImageData(String imageId, UpdateImageDataRequest updateReq) {
     // check if imageId exists.
     Image image = mongoTemplate.findOne(Query.query(Criteria.where("_id").is(imageId)), Image.class,
         Constants.IMAGE_COLLECTION);
@@ -99,15 +97,11 @@ public class ImageService {
     }
 
     // update the data of the image.
-    if (!image.getUserId().equals(updateReq.getUserId()))
-      return new ResponseEntity<>("Invalid user attempting to update image data.", HttpStatus.BAD_REQUEST);
-    else {
-      image.setTitle(updateReq.getTitle());
-      image.setDescription(updateReq.getDescription());
-      image = mongoTemplate.save(image, Constants.IMAGE_COLLECTION);
+    image.setTitle(updateReq.getTitle());
+    image.setDescription(updateReq.getDescription());
+    image = mongoTemplate.save(image, Constants.IMAGE_COLLECTION);
 
-      return new ResponseEntity<>(new UpdateImageDataResponse("Image metadata updated.", image), HttpStatus.CREATED);
-    }
+    return new ResponseEntity<>(new UpdateImageDataResponse("Image metadata updated.", image), HttpStatus.CREATED);
   }
 
   // downloads only the image from gridfs.
@@ -152,7 +146,7 @@ public class ImageService {
   }
 
   // gets only data of image.
-  public ResponseEntity<?> getImageDataByUserId(String userId) {
+  public ResponseEntity<?> getImagesDataByUserId(String userId) {
     // check if imageId exists.
     List<Image> image = mongoTemplate.find(Query.query(Criteria.where("userId").is(userId)), Image.class,
         Constants.IMAGE_COLLECTION);
@@ -163,68 +157,17 @@ public class ImageService {
     return new ResponseEntity<>(new GetImagesDataResponse("Image metadata received.", image), HttpStatus.CREATED);
   }
 
-  // public ResponseEntity<ImageResponse> createImage(ImageRequest imageReq) {
-  //     // create metadata.
-  //     DBObject metaData = new BasicDBObject();
-  //     metaData.put("title", imageReq.getTitle());
+  public ResponseEntity<?> deleteImage(String imageId) {
+    // check if imageId exists.
+    Image image = mongoTemplate.findOne(Query.query(Criteria.where("_id").is(imageId)), Image.class,
+        Constants.IMAGE_COLLECTION);
+    if (image == null) {
+      return new ResponseEntity<>("Image id does not exist.", HttpStatus.BAD_REQUEST);
+    }
 
-  // store image and metadata.
-  // ? how to get image from request?
+    gridFsOperations.delete(Query.query(Criteria.where("_id").is(image.getGridFsImageId())));
+    mongoTemplate.remove(image, Constants.IMAGE_COLLECTION);
 
-  // boolean imageExists = gridFsTemplate.exists(Query.query(Criteria.where("imagename").is(imagename)), Image.class,
-  //         Constants.IMAGE_COLLECTION);
-
-  // if (imageExists) {
-  //     return new ResponseEntity<>(new ImageResponse("Imagename exists", null), HttpStatus.BAD_REQUEST);
-  // }
-
-  // Long id = imageSequenceService.getNext();
-  // Image image = new Image(id, imagename);
-
-  // gridFsTemplate.insert(image, Constants.IMAGE_COLLECTION);
-  // gridFsTemplate.insert(new ImageSequence(id), Constants.IMAGE_SEQUENCE_COLLECTION);
-
-  // return new ResponseEntity<>(new ImageResponse("Image created", image), HttpStatus.CREATED);
-  //     return null;
-  // }
-
-  // public ResponseEntity<ImageResponse> getImage(String imagename) {
-  //     Image image = gridFsTemplate.findOne(Query.query(Criteria.where("imagename").is(imagename)), Image.class,
-  //             Constants.IMAGE_COLLECTION);
-
-  //     if (image == null) {
-  //         return new ResponseEntity<>(new ImageResponse("Imagename does not exist", null), HttpStatus.NOT_FOUND);
-  //     }
-
-  //     return new ResponseEntity<>(new ImageResponse("Retrieved image", image), HttpStatus.OK);
-  // }
-
-  // public ResponseEntity<ImageResponse> updateImagename(String currImagename, String newImagename) {
-  //     Image image = gridFsTemplate.findOne(Query.query(Criteria.where("imagename").is(currImagename)), Image.class,
-  //             Constants.IMAGE_COLLECTION);
-
-  //     if (image == null) {
-  //         return new ResponseEntity<>(new ImageResponse("Imagename does not exist", null), HttpStatus.NOT_FOUND);
-  //     }
-
-  //     image.setImagename(newImagename);
-  //     gridFsTemplate.save(image, Constants.IMAGE_COLLECTION);
-
-  //     return new ResponseEntity<>(
-  //             new ImageResponse("Imagename updated from " + currImagename + " to " + newImagename, image),
-  //             HttpStatus.OK);
-  // }
-
-  // public ResponseEntity<ImageResponse> deleteImage(String imagename) {
-  //     Image image = gridFsTemplate.findOne(Query.query(Criteria.where("imagename").is(imagename)), Image.class,
-  //             Constants.IMAGE_COLLECTION);
-
-  //     if (image == null) {
-  //         return new ResponseEntity<>(new ImageResponse("Imagename does not exist", null), HttpStatus.NOT_FOUND);
-  //     }
-
-  //     gridFsTemplate.remove(image, Constants.IMAGE_COLLECTION);
-
-  //     return new ResponseEntity<>(new ImageResponse("Image deleted", image), HttpStatus.OK);
-  // }
+    return new ResponseEntity<>(new GetImageDataResponse("Image deleted successfully.", image), HttpStatus.CREATED);
+  }
 }
