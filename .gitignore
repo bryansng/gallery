@@ -73,6 +73,7 @@ desktop.ini
 ### All files that start with . ###
 .*
 !.gitignore
+!.env
 !.gitattributes
 
 
