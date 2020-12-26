@@ -30,14 +30,14 @@ public class AnnotationController {
         annotationRequest.getCoordinates(), annotationRequest.getContent());
   }
 
-  @RequestMapping(value = "/{annotationId}", method = RequestMethod.POST)
+  @RequestMapping(value = "/{annotationId}", method = RequestMethod.PUT)
   public ResponseEntity<AnnotationResponse> updateAnnotation(@RequestBody AnnotationRequest annotationRequest,
       @PathVariable("annotationId") String annotationId) throws Exception {
     return annotationService.updateAnnotation(annotationId, annotationRequest.getUserId(),
         annotationRequest.getCoordinates(), annotationRequest.getContent());
   }
 
-  @RequestMapping(value = "/vote", method = RequestMethod.POST)
+  @RequestMapping(value = "/vote", method = RequestMethod.PUT)
   public ResponseEntity<AnnotationResponse> voteAnnotation(@RequestBody AnnotationVoteRequest annotationVoteRequest)
       throws Exception {
     return annotationService.voteAnnotation(annotationVoteRequest.getAnnotationId(), annotationVoteRequest.getUserId(),
