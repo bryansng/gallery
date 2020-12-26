@@ -1,21 +1,23 @@
 package com.gallery.core.response;
 
+import com.gallery.core.common.Message;
+
 public class ObjectResponse {
 
-    private String msg;
+    private Message message;
     private Object obj;
 
     public ObjectResponse(String msg, Object obj) {
-        this.msg = msg;
+        this.message = new Message(msg);
         this.obj = obj;
     }
 
-    public String getMsg() {
-        return this.msg;
+    public Message getMsg() {
+        return this.message;
     }
 
-    public void setMsg(String msg) {
-        this.msg = msg;
+    public void setMsg(Message msg) {
+        this.message = msg;
     }
 
     public Object getUser() {

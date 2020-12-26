@@ -1,13 +1,15 @@
 package com.gallery.core.response;
 
+import com.gallery.core.common.Message;
+
 public class SearchResponse {
 
-    private String msg;
+    private Message message;
     private UserSearchResponse userResponse;
     private ImageSearchResponse imageResponse;
 
     public SearchResponse(String msg, UserSearchResponse userResponse, ImageSearchResponse imageResponse) {
-        this.msg = msg;
+        this.message = new Message(msg);
         this.setUserResponse(userResponse);
         this.setImageResponse(imageResponse);
     }
@@ -28,11 +30,11 @@ public class SearchResponse {
         this.userResponse = userResponse;
     }
 
-    public String getMsg() {
-        return this.msg;
+    public Message getMsg() {
+        return this.message;
     }
 
-    public void setMsg(String msg) {
-        this.msg = msg;
+    public void setMsg(Message msg) {
+        this.message = msg;
     }
 }
