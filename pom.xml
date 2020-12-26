@@ -9,6 +9,7 @@
         <module>api.gateway</module>
         <module>service.discovery</module>
         <module>users</module>
+        <module>images</module>
         <module>annotations</module>
         <module>search</module>
     </modules>
