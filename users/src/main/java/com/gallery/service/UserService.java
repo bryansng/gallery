@@ -60,7 +60,7 @@ public class UserService {
 
         RestTemplate restTemplate = new RestTemplate();
         HttpEntity<User> request = new HttpEntity<>(user);
-        restTemplate.postForObject(dotenv.get("SERVICE_SERVICE_POST"), request, Object.class);
+        restTemplate.postForObject(dotenv.get("SEARCH_SERVICE_USER_POST"), request, Object.class);
 
         return new ResponseEntity<>(new UserResponse("User created", user), HttpStatus.CREATED);
     }
@@ -103,7 +103,7 @@ public class UserService {
 
         RestTemplate restTemplate = new RestTemplate();
         HttpEntity<User> request = new HttpEntity<>(user);
-        restTemplate.exchange(dotenv.get("SEARCH_SERVICE_UPDATE") + user.getId(), HttpMethod.PUT, request,
+        restTemplate.exchange(dotenv.get("SEARCH_SERVICE_USER_UPDATE") + user.getId(), HttpMethod.PUT, request,
                 Object.class);
 
         return new ResponseEntity<>(
@@ -128,7 +128,7 @@ public class UserService {
 
         RestTemplate restTemplate = new RestTemplate();
         HttpEntity<String> request = new HttpEntity<>(user.getId());
-        restTemplate.delete(dotenv.get("SEARCH_SERVICE_DELETE") + user.getId(), request);
+        restTemplate.delete(dotenv.get("SEARCH_SERVICE_USER_DELETE") + user.getId(), request);
 
         return new ResponseEntity<>(new UserResponse("User deleted", user), HttpStatus.OK);
     }

@@ -3,10 +3,12 @@ package com.gallery.service;
 import java.io.IOException;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
+
 import com.gallery.config.MongoConfig;
 import com.gallery.constants.Constants;
-import com.gallery.core.CreateImageRequest;
-import com.gallery.core.UpdateImageDataRequest;
+import com.gallery.core.request.CreateImageRequest;
+import com.gallery.core.request.UpdateImageDataRequest;
 import com.gallery.core.response.GetImageDataResponse;
 import com.gallery.core.response.GetImagesDataResponse;
 import com.gallery.core.response.UpdateImageDataResponse;
@@ -15,6 +17,7 @@ import com.gallery.model.Image;
 import com.google.common.net.HttpHeaders;
 import com.mongodb.client.gridfs.GridFSBucket;
 import com.mongodb.client.gridfs.model.GridFSFile;
+import com.netflix.discovery.converters.Auto;
 
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,11 +27,16 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.gridfs.GridFsOperations;
 import org.springframework.data.mongodb.gridfs.GridFsResource;
 import org.springframework.data.mongodb.gridfs.GridFsTemplate;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
+
+import io.github.cdimascio.dotenv.Dotenv;
 
 @Service
 public class ImageService {
@@ -46,6 +54,17 @@ public class ImageService {
 
   @Autowired
   private MongoConfig mongoConfig;
+
+  private Dotenv dotenv;
+
+  public ImageService() {
+
+  }
+
+  @PostConstruct
+  private void init() throws Exception {
+    dotenv = Dotenv.configure().directory("../.env").ignoreIfMalformed().ignoreIfMissing().load();
+  }
 
   // creates gridfs image and fill image document.
   public ResponseEntity<UploadImageResponse> createImage(CreateImageRequest createReq) {
@@ -65,7 +84,9 @@ public class ImageService {
         createReq.getDescription(), 0);
     image = mongoTemplate.insert(image, Constants.IMAGE_COLLECTION);
 
-    // TODO: HI BRADDY - update search with title and desc from createReq.
+    RestTemplate restTemplate = new RestTemplate();
+    HttpEntity<Image> request = new HttpEntity<>(image);
+    restTemplate.postForObject(dotenv.get("SEARCH_SERVICE_IMAGE_POST"), request, Object.class);
 
     // return the image document.
     return new ResponseEntity<>(new UploadImageResponse("Image uploaded successfully", image), HttpStatus.CREATED);
@@ -104,7 +125,10 @@ public class ImageService {
     image.setDescription(updateReq.getDescription());
     image = mongoTemplate.save(image, Constants.IMAGE_COLLECTION);
 
-    // TODO: HI BRADDY - update search with title and desc from createReq.
+    RestTemplate restTemplate = new RestTemplate();
+    HttpEntity<Image> request = new HttpEntity<>(image);
+    restTemplate.exchange(dotenv.get("SEARCH_SERVICE_IMAGE_UPDATE") + image.getId(), HttpMethod.PUT, request,
+        Object.class);
 
     return new ResponseEntity<>(new UpdateImageDataResponse("Image data updated successfully.", image),
         HttpStatus.CREATED);
@@ -191,6 +215,10 @@ public class ImageService {
 
     gridFsOperations.delete(Query.query(Criteria.where("_id").is(image.getGridFsImageId())));
     mongoTemplate.remove(image, Constants.IMAGE_COLLECTION);
+
+    RestTemplate restTemplate = new RestTemplate();
+    HttpEntity<String> request = new HttpEntity<>(image.getId());
+    restTemplate.delete(dotenv.get("SEARCH_SERVICE_IMAGE_DELETE") + image.getId(), request);
 
     return new ResponseEntity<>(new GetImageDataResponse("Image deleted successfully.", image), HttpStatus.CREATED);
   }
