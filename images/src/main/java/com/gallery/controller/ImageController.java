@@ -1,7 +1,7 @@
 package com.gallery.controller;
 
-import com.gallery.core.CreateImageRequest;
-import com.gallery.core.UpdateImageDataRequest;
+import com.gallery.core.request.CreateImageRequest;
+import com.gallery.core.request.UpdateImageDataRequest;
 import com.gallery.core.response.UploadImageResponse;
 import com.gallery.service.ImageService;
 

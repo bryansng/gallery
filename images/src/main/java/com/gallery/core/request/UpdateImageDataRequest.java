@@ -1,4 +1,4 @@
-package com.gallery.core;
+package com.gallery.core.request;
 
 public class UpdateImageDataRequest {
   private String title;

@@ -30,152 +30,154 @@ import org.springframework.stereotype.Service;
 @Service
 public class SearchService {
 
-    @Autowired
-    SearchImageRepository searchImageRepository;
+        @Autowired
+        SearchImageRepository searchImageRepository;
 
-    @Autowired
-    SearchUserRepository searchUserRepository;
+        @Autowired
+        SearchUserRepository searchUserRepository;
 
-    @Autowired
-    Config config;
+        @Autowired
+        Config config;
 
-    private ElasticsearchOperations elasticSearchTemplate;
+        private ElasticsearchOperations elasticSearchTemplate;
 
-    public SearchService() {
+        public SearchService() {
 
-    }
+        }
 
-    @PostConstruct
-    private void init() throws Exception {
-        elasticSearchTemplate = config.elasticsearchTemplate();
-    }
+        @PostConstruct
+        private void init() throws Exception {
+                elasticSearchTemplate = config.elasticsearchTemplate();
+        }
 
-    /**
-     * Search in Elasticsearch
-     * 
-     * @param keyword
-     * @return
-     */
-    public ResponseEntity<SearchResponse> findByKeyword(String keyword) {
+        /**
+         * Search in Elasticsearch
+         * 
+         * @param keyword
+         * @return
+         */
+        public ResponseEntity<SearchResponse> findByKeyword(String keyword) {
 
-        Query searchQuery = new NativeSearchQueryBuilder().withFilter(regexpQuery("username", ".*" + keyword + ".*"))
-                .build();
-        SearchHits<User> usersByUsername = elasticSearchTemplate.search(searchQuery, User.class,
-                IndexCoordinates.of(Constants.USER_INDEX_NAME));
+                Query searchQuery = new NativeSearchQueryBuilder()
+                                .withFilter(regexpQuery("username", ".*" + keyword + ".*")).build();
+                SearchHits<User> usersByUsername = elasticSearchTemplate.search(searchQuery, User.class,
+                                IndexCoordinates.of(Constants.USER_INDEX_NAME));
 
-        searchQuery = new NativeSearchQueryBuilder().withFilter(regexpQuery("title", ".*" + keyword + ".*")).build();
-        SearchHits<Image> imagesByTitle = elasticSearchTemplate.search(searchQuery, Image.class,
-                IndexCoordinates.of(Constants.IMAGE_INDEX_NAME));
+                searchQuery = new NativeSearchQueryBuilder().withFilter(regexpQuery("title", ".*" + keyword + ".*"))
+                                .build();
+                SearchHits<Image> imagesByTitle = elasticSearchTemplate.search(searchQuery, Image.class,
+                                IndexCoordinates.of(Constants.IMAGE_INDEX_NAME));
 
-        searchQuery = new NativeSearchQueryBuilder().withFilter(regexpQuery("description", ".*" + keyword + ".*"))
-                .build();
-        SearchHits<Image> imagesByDescription = elasticSearchTemplate.search(searchQuery, Image.class,
-                IndexCoordinates.of(Constants.IMAGE_INDEX_NAME));
+                searchQuery = new NativeSearchQueryBuilder()
+                                .withFilter(regexpQuery("description", ".*" + keyword + ".*")).build();
+                SearchHits<Image> imagesByDescription = elasticSearchTemplate.search(searchQuery, Image.class,
+                                IndexCoordinates.of(Constants.IMAGE_INDEX_NAME));
 
-        return new ResponseEntity<>(new SearchResponse("Search completed", new UserSearchResponse(usersByUsername),
-                new ImageSearchResponse(imagesByTitle, imagesByDescription)), HttpStatus.OK);
-    }
+                return new ResponseEntity<>(
+                                new SearchResponse("Search completed", new UserSearchResponse(usersByUsername),
+                                                new ImageSearchResponse(imagesByTitle, imagesByDescription)),
+                                HttpStatus.OK);
+        }
 
-    /**
-     * Create user
-     * 
-     * @param userRequest
-     * @return
-     */
-    public ResponseEntity<ObjectResponse> createUser(User user) {
-        elasticSearchTemplate.save(user);
-        return new ResponseEntity<>(new ObjectResponse("User created", user), HttpStatus.CREATED);
-    }
+        /**
+         * Create user
+         * 
+         * @param userRequest
+         * @return
+         */
+        public ResponseEntity<ObjectResponse> createUser(User user) {
+                elasticSearchTemplate.save(user);
+                return new ResponseEntity<>(new ObjectResponse("User created", user), HttpStatus.CREATED);
+        }
 
-    /**
-     * Update user
-     * 
-     * @param userRequest
-     * @return
-     */
-    public ResponseEntity<ObjectResponse> updateUsername(User user) {
-        Query searchQuery = new NativeSearchQueryBuilder()
-                .withQuery(matchQuery("id", user.getId()).minimumShouldMatch("100%")).build();
+        /**
+         * Update user
+         * 
+         * @param userRequest
+         * @return
+         */
+        public ResponseEntity<ObjectResponse> updateUsername(User user) {
+                Query searchQuery = new NativeSearchQueryBuilder()
+                                .withQuery(matchQuery("id", user.getId()).minimumShouldMatch("100%")).build();
 
-        SearchHits<User> users = elasticSearchTemplate.search(searchQuery, User.class,
-                IndexCoordinates.of(Constants.USER_INDEX_NAME));
-        User updatedUser = users.getSearchHit(0).getContent();
+                SearchHits<User> users = elasticSearchTemplate.search(searchQuery, User.class,
+                                IndexCoordinates.of(Constants.USER_INDEX_NAME));
+                User updatedUser = users.getSearchHit(0).getContent();
 
-        updatedUser.setUsername(user.getUsername());
-        elasticSearchTemplate.save(updatedUser);
+                updatedUser.setUsername(user.getUsername());
+                elasticSearchTemplate.save(updatedUser);
 
-        return new ResponseEntity<>(new ObjectResponse("User updated", updatedUser), HttpStatus.OK);
-    }
+                return new ResponseEntity<>(new ObjectResponse("User updated", updatedUser), HttpStatus.OK);
+        }
 
-    /**
-     * Delete user
-     * 
-     * @param id
-     * @return
-     */
-    public ResponseEntity<ObjectResponse> deleteUser(String id) {
-        Query searchQuery = new NativeSearchQueryBuilder().withQuery(matchQuery("id", id).minimumShouldMatch("100%"))
-                .build();
+        /**
+         * Delete user
+         * 
+         * @param id
+         * @return
+         */
+        public ResponseEntity<ObjectResponse> deleteUser(String id) {
+                Query searchQuery = new NativeSearchQueryBuilder()
+                                .withQuery(matchQuery("id", id).minimumShouldMatch("100%")).build();
 
-        SearchHits<User> users = elasticSearchTemplate.search(searchQuery, User.class,
-                IndexCoordinates.of(Constants.USER_INDEX_NAME));
-        User user = users.getSearchHit(0).getContent();
+                SearchHits<User> users = elasticSearchTemplate.search(searchQuery, User.class,
+                                IndexCoordinates.of(Constants.USER_INDEX_NAME));
+                User user = users.getSearchHit(0).getContent();
 
-        elasticSearchTemplate.delete(id, User.class);
+                elasticSearchTemplate.delete(id, User.class);
 
-        return new ResponseEntity<>(new ObjectResponse("User deleted", user), HttpStatus.OK);
-    }
+                return new ResponseEntity<>(new ObjectResponse("User deleted", user), HttpStatus.OK);
+        }
 
-    /**
-     * Create image
-     * 
-     * @param imageRequest
-     * @return
-     */
-    public ResponseEntity<ObjectResponse> createImage(ImageRequest imageRequest) {
-        Image image = new Image(imageRequest.getId(), imageRequest.getTitle(), imageRequest.getDescription());
-        elasticSearchTemplate.save(image);
+        /**
+         * Create image
+         * 
+         * @param imageRequest
+         * @return
+         */
+        public ResponseEntity<ObjectResponse> createImage(Image image) {
+                elasticSearchTemplate.save(image);
 
-        return new ResponseEntity<>(new ObjectResponse("Image created", image), HttpStatus.CREATED);
-    }
+                return new ResponseEntity<>(new ObjectResponse("Image created", image), HttpStatus.CREATED);
+        }
 
-    /**
-     * Update image
-     * 
-     * @param imageRequest
-     * @return
-     */
-    public ResponseEntity<ObjectResponse> updateImage(ImageRequest imageRequest) {
-        Query searchQuery = new NativeSearchQueryBuilder()
-                .withQuery(matchQuery("id", imageRequest.getId()).minimumShouldMatch("100%")).build();
+        /**
+         * Update image
+         * 
+         * @param imageRequest
+         * @return
+         */
+        public ResponseEntity<ObjectResponse> updateImage(ImageRequest imageRequest) {
+                Query searchQuery = new NativeSearchQueryBuilder()
+                                .withQuery(matchQuery("id", imageRequest.getId()).minimumShouldMatch("100%")).build();
 
-        SearchHits<Image> images = elasticSearchTemplate.search(searchQuery, Image.class,
-                IndexCoordinates.of(Constants.IMAGE_INDEX_NAME));
-        Image image = images.getSearchHit(0).getContent();
+                SearchHits<Image> images = elasticSearchTemplate.search(searchQuery, Image.class,
+                                IndexCoordinates.of(Constants.IMAGE_INDEX_NAME));
+                Image image = images.getSearchHit(0).getContent();
 
-        image.setTitle(imageRequest.getTitle());
-        image.setDescription(imageRequest.getDescription());
-        elasticSearchTemplate.save(image);
+                image.setTitle(imageRequest.getTitle());
+                image.setDescription(imageRequest.getDescription());
+                elasticSearchTemplate.save(image);
 
-        return new ResponseEntity<>(new ObjectResponse("Image updated", image), HttpStatus.OK);
-    }
+                return new ResponseEntity<>(new ObjectResponse("Image updated", image), HttpStatus.OK);
+        }
 
-    /**
-     * Delete image
-     * 
-     * @param id
-     * @return
-     */
-    public ResponseEntity<ObjectResponse> deleteImage(String id) {
-        Query searchQuery = new NativeSearchQueryBuilder().withQuery(matchQuery("id", id).minimumShouldMatch("100%"))
-                .build();
+        /**
+         * Delete image
+         * 
+         * @param id
+         * @return
+         */
+        public ResponseEntity<ObjectResponse> deleteImage(String id) {
+                Query searchQuery = new NativeSearchQueryBuilder()
+                                .withQuery(matchQuery("id", id).minimumShouldMatch("100%")).build();
 
-        SearchHits<Image> images = elasticSearchTemplate.search(searchQuery, Image.class,
-                IndexCoordinates.of(Constants.IMAGE_INDEX_NAME));
-        Image image = images.getSearchHit(0).getContent();
+                SearchHits<Image> images = elasticSearchTemplate.search(searchQuery, Image.class,
+                                IndexCoordinates.of(Constants.IMAGE_INDEX_NAME));
+                Image image = images.getSearchHit(0).getContent();
 
-        elasticSearchTemplate.delete(id, Image.class);
+                elasticSearchTemplate.delete(id, Image.class);
 
-        return new ResponseEntity<>(new ObjectResponse("Image deleted", image), HttpStatus.OK);
-    }
+                return new ResponseEntity<>(new ObjectResponse("Image deleted", image), HttpStatus.OK);
+        }
 }

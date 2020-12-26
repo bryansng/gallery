@@ -1,4 +1,4 @@
-package com.gallery.core;
+package com.gallery.core.request;
 
 import org.springframework.web.multipart.MultipartFile;
 
