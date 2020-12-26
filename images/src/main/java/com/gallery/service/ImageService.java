@@ -62,14 +62,17 @@ public class ImageService {
     // create new object in image repo.
     // store the gridfs id.
     Image image = new Image(gridFsImageId.toString(), createReq.getUserId(), createReq.getTitle(),
-        createReq.getDescription());
+        createReq.getDescription(), 0);
     image = mongoTemplate.insert(image, Constants.IMAGE_COLLECTION);
 
+    // TODO: HI BRADDY - update search with title and desc from createReq.
+
     // return the image document.
-    return new ResponseEntity<>(new UploadImageResponse("Image uploaded", image), HttpStatus.CREATED);
+    return new ResponseEntity<>(new UploadImageResponse("Image uploaded successfully", image), HttpStatus.CREATED);
   }
 
   // creates gridfs image but empty image document.
+  // in case we upload image first without any image's data.
   public ResponseEntity<UploadImageResponse> createImage(MultipartFile file) {
     ObjectId gridFsImageId = null;
     try {
@@ -80,11 +83,11 @@ public class ImageService {
 
     // create new object in image repo.
     // store this gridfs id.
-    Image image = new Image(gridFsImageId.toString(), null, null, null);
+    Image image = new Image(gridFsImageId.toString(), null, null, null, 0);
     image = mongoTemplate.insert(image, Constants.IMAGE_COLLECTION);
 
     // return the id of object in image repo.
-    return new ResponseEntity<>(new UploadImageResponse("Image uploaded", image), HttpStatus.CREATED);
+    return new ResponseEntity<>(new UploadImageResponse("Image created successfully", image), HttpStatus.CREATED);
   }
 
   // updates only data of image.
@@ -101,7 +104,26 @@ public class ImageService {
     image.setDescription(updateReq.getDescription());
     image = mongoTemplate.save(image, Constants.IMAGE_COLLECTION);
 
-    return new ResponseEntity<>(new UpdateImageDataResponse("Image metadata updated.", image), HttpStatus.CREATED);
+    // TODO: HI BRADDY - update search with title and desc from createReq.
+
+    return new ResponseEntity<>(new UpdateImageDataResponse("Image data updated successfully.", image),
+        HttpStatus.CREATED);
+  }
+
+  public ResponseEntity<?> incrementImageTotalViews(String imageId) {
+    // check if imageId exists.
+    Image image = mongoTemplate.findOne(Query.query(Criteria.where("_id").is(imageId)), Image.class,
+        Constants.IMAGE_COLLECTION);
+    if (image == null) {
+      return new ResponseEntity<>("Image id does not exist.", HttpStatus.BAD_REQUEST);
+    }
+
+    // update the data of the image.
+    image.incrementViewsBy(1);
+    image = mongoTemplate.save(image, Constants.IMAGE_COLLECTION);
+
+    return new ResponseEntity<>(new UpdateImageDataResponse("Incremented image total views successfully.", image),
+        HttpStatus.CREATED);
   }
 
   // downloads only the image from gridfs.
@@ -142,7 +164,8 @@ public class ImageService {
       return new ResponseEntity<>("Image id does not exist.", HttpStatus.BAD_REQUEST);
     }
 
-    return new ResponseEntity<>(new GetImageDataResponse("Image metadata received.", image), HttpStatus.CREATED);
+    return new ResponseEntity<>(new GetImageDataResponse("Image data received successfully.", image),
+        HttpStatus.CREATED);
   }
 
   // gets only data of image.
@@ -154,7 +177,8 @@ public class ImageService {
       return new ResponseEntity<>("Image id does not exist.", HttpStatus.BAD_REQUEST);
     }
 
-    return new ResponseEntity<>(new GetImagesDataResponse("Image metadata received.", image), HttpStatus.CREATED);
+    return new ResponseEntity<>(new GetImagesDataResponse("Images data received successfully.", image),
+        HttpStatus.CREATED);
   }
 
   public ResponseEntity<?> deleteImage(String imageId) {

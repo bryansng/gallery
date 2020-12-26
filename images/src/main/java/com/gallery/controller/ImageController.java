@@ -34,10 +34,15 @@ public class ImageController {
     return imageService.createImage(createRequest);
   }
 
-  @RequestMapping(value = "/{imageId}", method = RequestMethod.POST)
-  public ResponseEntity<?> updateImageMetadata(@RequestBody UpdateImageDataRequest updateRequest,
+  @RequestMapping(value = "/{imageId}", method = RequestMethod.PUT)
+  public ResponseEntity<?> updateImageData(@RequestBody UpdateImageDataRequest updateRequest,
       @PathVariable("imageId") String imageId) {
     return imageService.updateImageData(imageId, updateRequest);
+  }
+
+  @RequestMapping(value = "/increment/{imageId}", method = RequestMethod.PUT)
+  public ResponseEntity<?> incrementImageTotalViews(@PathVariable("imageId") String imageId) {
+    return imageService.incrementImageTotalViews(imageId);
   }
 
   @RequestMapping(value = "/download/{imageId}", method = RequestMethod.GET)
