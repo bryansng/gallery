@@ -1,15 +1,17 @@
 <project>
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>com.gallery</groupId>
-    <artifactId>gallery</artifactId>
-    <version>0.0.1</version>
-    <packaging>pom</packaging>
+        <modelVersion>4.0.0</modelVersion>
+        <groupId>com.gallery</groupId>
+        <artifactId>gallery</artifactId>
+        <version>0.0.1</version>
+        <packaging>pom</packaging>
 
-    <modules>
-        <module>api.gateway</module>
-        <module>service.discovery</module>
-        <module>users</module>
-        <module>images</module>
-        <module>authorization-server</module>
-    </modules>
+        <modules>
+                <module>api.gateway</module>
+                <module>service.discovery</module>
+                <module>users</module>
+                <module>images</module>
+                <module>authorization-server</module>
+                <module>annotations</module>
+                <module>search</module>
+        </modules>
 </project>

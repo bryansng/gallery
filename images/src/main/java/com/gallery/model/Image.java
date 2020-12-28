@@ -13,12 +13,14 @@ public class Image {
     private String userId;
     private String title;
     private String description;
+    private Integer totalViews;
 
-    public Image(String gridFsImageId, String userId, String title, String description) {
+    public Image(String gridFsImageId, String userId, String title, String description, Integer totalViews) {
         this.gridFsImageId = gridFsImageId;
         this.userId = userId;
         this.title = title;
         this.description = description;
+        this.totalViews = totalViews;
     }
 
     public String getId() {
@@ -59,5 +61,17 @@ public class Image {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Integer getTotalViews() {
+        return this.totalViews;
+    }
+
+    public void setTotalViews(Integer totalViews) {
+        this.totalViews = totalViews;
+    }
+
+    public void incrementViewsBy(Integer totalNewViews) {
+        this.totalViews += totalNewViews;
     }
 }

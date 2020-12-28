@@ -1,24 +1,26 @@
-package com.gallery.core;
+package com.gallery.core.request;
 
-public class UpdateImageDataRequest {
-  private String imageId;
+import org.springframework.web.multipart.MultipartFile;
+
+public class CreateImageRequest {
+  private MultipartFile imageFile;
   private String userId;
   private String title;
   private String description;
 
-  public UpdateImageDataRequest(String imageId, String userId, String title, String description) {
-    this.imageId = imageId;
+  public CreateImageRequest(MultipartFile imageFile, String userId, String title, String description) {
+    this.imageFile = imageFile;
     this.userId = userId;
     this.title = title;
     this.description = description;
   }
 
-  public String getImageId() {
-    return this.imageId;
+  public MultipartFile getImageFile() {
+    return this.imageFile;
   }
 
-  public void setImageId(String imageId) {
-    this.imageId = imageId;
+  public void setImageFile(MultipartFile imageFile) {
+    this.imageFile = imageFile;
   }
 
   public String getUserId() {

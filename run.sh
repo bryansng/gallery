@@ -38,4 +38,7 @@ elif [ "$1" == "eureka" ]; then
   mvn spring-boot:run -pl service.discovery
 elif [ "$1" == "user" ]; then
   mvn spring-boot:run -pl users
+  mvn spring-boot:run -pl service.discovery
+elif [ "$1" == "annotation" ]; then
+  mvn spring-boot:run -pl annotations
 fi
