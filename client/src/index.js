@@ -6,7 +6,6 @@ import reportWebVitals from "./reportWebVitals";
 // eslint-disable-next-line no-unused-vars
 import tachyons from "tachyons";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "mdbreact/dist/css/mdb.css";
 
 ReactDOM.render(
   <React.StrictMode>
