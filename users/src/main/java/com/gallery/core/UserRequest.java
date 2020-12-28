@@ -1,10 +1,19 @@
 package com.gallery.core;
 
 public class UserRequest {
+    private String email;
     private String username;
 
     public UserRequest() {
 
+    }
+
+    public String getEmail() {
+        return this.email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getUsername() {

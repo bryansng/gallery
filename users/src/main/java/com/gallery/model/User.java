@@ -16,18 +16,27 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = Constants.USER_COLLECTION)
 public class User {
     @Id
-    private Long id;
+    private String id;
 
     @Indexed(direction = IndexDirection.ASCENDING)
     private String username;
+    private String email;
 
     public User() {
 
     }
 
-    public User(Long id, String username) {
-        this.id = id;
+    public User(String username, String email) {
         this.username = username;
+        this.email = email;
+    }
+
+    public String getEmail() {
+        return this.email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getUsername() {
@@ -38,11 +47,11 @@ public class User {
         this.username = username;
     }
 
-    public Long getId() {
+    public String getId() {
         return this.id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 }

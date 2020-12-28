@@ -10,6 +10,6 @@
         <module>service.discovery</module>
         <module>users</module>
         <module>images</module>
-        <module>auth</module>
+        <module>authorization-server</module>
     </modules>
 </project>

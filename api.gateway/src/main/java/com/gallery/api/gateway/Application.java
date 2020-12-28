@@ -1,6 +1,6 @@
 package com.gallery.api.gateway;
 
-import com.gallery.api.gateway.filter.AuthFilter;
+import com.gallery.api.gateway.filter.CustomAuthPreFilter;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -16,8 +16,8 @@ public class Application {
 		SpringApplication.run(Application.class, args);
 	}
 
-	@Bean
-	public AuthFilter authFilter() {
-		return new AuthFilter();
-	}
+	// @Bean
+	// public CustomAuthPreFilter authFilter() {
+	// 	return new CustomAuthPreFilter();
+	// }
 }

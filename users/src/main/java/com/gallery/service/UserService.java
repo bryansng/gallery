@@ -4,9 +4,10 @@ import javax.annotation.PostConstruct;
 
 import com.gallery.config.MongoConfig;
 import com.gallery.constants.Constants;
+import com.gallery.core.response.RegisterResponse;
+import com.gallery.core.response.SignInResponse;
 import com.gallery.core.response.UserResponse;
 import com.gallery.model.User;
-import com.gallery.model.UserSequence;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -21,8 +22,6 @@ public class UserService {
     private MongoTemplate mongoTemplate;
 
     @Autowired
-    private UserSequenceService userSequenceService;
-    @Autowired
     private MongoConfig mongoConfig;
 
     public UserService() {
@@ -34,7 +33,23 @@ public class UserService {
         mongoTemplate = mongoConfig.mongoTemplate();
     }
 
-    public ResponseEntity<UserResponse> createUser(String username) {
+    public ResponseEntity<RegisterResponse> registerUser(String email, String username, String token) {
+        boolean userExists = mongoTemplate.exists(Query.query(Criteria.where("username").is(username)), User.class,
+                Constants.USER_COLLECTION);
+
+        if (userExists) {
+            return new ResponseEntity<>(new RegisterResponse("Username exists", null, null), HttpStatus.BAD_REQUEST);
+        }
+
+        User user = new User(username, email);
+
+        user = mongoTemplate.insert(user, Constants.USER_COLLECTION);
+
+        return new ResponseEntity<>(new RegisterResponse("User registered successfully.", user, token),
+                HttpStatus.CREATED);
+    }
+
+    public ResponseEntity<UserResponse> createUser(String email, String username) {
         boolean userExists = mongoTemplate.exists(Query.query(Criteria.where("username").is(username)), User.class,
                 Constants.USER_COLLECTION);
 
@@ -42,13 +57,23 @@ public class UserService {
             return new ResponseEntity<>(new UserResponse("Username exists", null), HttpStatus.BAD_REQUEST);
         }
 
-        Long id = userSequenceService.getNext();
-        User user = new User(id, username);
+        User user = new User(username, email);
 
-        mongoTemplate.insert(user, Constants.USER_COLLECTION);
-        mongoTemplate.insert(new UserSequence(id), Constants.USER_SEQUENCE_COLLECTION);
+        user = mongoTemplate.insert(user, Constants.USER_COLLECTION);
 
         return new ResponseEntity<>(new UserResponse("User created", user), HttpStatus.CREATED);
+    }
+
+    // signin
+    public ResponseEntity<SignInResponse> getUserByEmail(String email, String token) {
+        User user = mongoTemplate.findOne(Query.query(Criteria.where("email").is(email)), User.class,
+                Constants.USER_COLLECTION);
+
+        if (user == null) {
+            return new ResponseEntity<>(new SignInResponse("Email does not exist", null, null), HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(new SignInResponse("Logged in successfully.", user, token), HttpStatus.OK);
     }
 
     public ResponseEntity<UserResponse> getUser(String username) {
