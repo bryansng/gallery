@@ -28,4 +28,11 @@
 
 
 # mvn exec:java -Dexec.mainClass=com.gallery.UserApplication
-mvn spring-boot:run
+
+# specify port to override server.port in application.properties.
+if [ ! -z "$1" ]; then
+  # https://www.appsdeveloperblog.com/start-spring-boot-app-on-a-different-port-number/
+  mvn spring-boot:run -Dspring-boot.run.arguments=--server.port=$1
+else
+  mvn spring-boot:run
+fi

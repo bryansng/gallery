@@ -1,88 +1,188 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import Image from "react-bootstrap/Image";
-import Jumbotron from "react-bootstrap/Jumbotron";
-import ListGroup from "react-bootstrap/ListGroup";
+import Card from "react-bootstrap/Card";
+import useFetch from "react-fetch-hook";
+import { ImageOverlay } from "react-image-overlay-effect";
 
 import Dexter from "../../assets/images/dexter.png";
-
-const Title = styled.p.attrs((props) => ({
-  className: `f1 avenir tc`,
-}))``;
 
 /**
  * Custom img using styled components and tachyons
  */
-const Img = styled.img.attrs((props) => ({
-  className: `w-100 w-100-m outline`,
-  src: (props) => props.src,
+const Username = styled.p.attrs(() => ({
+  className: `avenir f1 grow tc`,
 }))`
   margin: 0;
   padding: 0;
 `;
 
-const UsernameHeading = styled.p.attrs((props) => ({
-  className: `avenir f2 tc`,
+const UserDetailsHeading = styled.p.attrs(() => ({
+  className: `avenir f4 tc`,
 }))`
   margin: 0;
   padding: 0;
 `;
 
-const Username = styled.p.attrs((props) => ({
-  className: `avenir f3 tc`,
-}))`
-  margin: 0;
-  padding: 0;
-`;
+const UserDetails = styled.p.attrs(() => ({
+  className: `avenir f5 fw3 tc`,
+}))``;
+
+const UserObjectHeading = styled.a.attrs(() => ({
+  className: `avenir gray pointer link dim f2 fw3 `,
+}))``;
+
+const Img = styled.img.attrs(() => ({
+  className: `pa3 ba b--light-silver grow pointer img-fluid`,
+}))``;
+
+const Hover = styled.div.attrs(() => ({
+  className: `d-flex flex-column justify-content-center align-items-center my-auto`,
+}))``;
+
+const HoverContent = styled.div.attrs(() => ({
+  className: `text-white my-auto`,
+}))``;
 
 function Profile() {
+  const { isLoading, data } = useFetch(
+    "http://localhost:8080/api/users/user/cait"
+  );
+
+  console.log(data);
+
   return (
     <Container fluid>
-      <Row>
-        <Col>
-          <Jumbotron className="outline tc" fluid>
-            <Container>
-              <h1>Fluid jumbotron</h1>
-              <p>
-                This is a modified react-boostrap jumbotron that uses tachyons
-                to manipulate its CSS
-              </p>
-            </Container>
-          </Jumbotron>
-        </Col>
-      </Row>
-      <Row>
-        <Col>
-          <Title>Profile</Title>
-        </Col>
-      </Row>
-      <Row>
-        <Col>
-          <Image className="w-25" src={Dexter} fluid rounded />
-        </Col>
-      </Row>
-      <Row>
-        <Col>
-          <Img src={Dexter} />
-        </Col>
-      </Row>
-      <Row>
-        <Col>
-          <ListGroup>
-            <ListGroup.Item>
-              <UsernameHeading>Username</UsernameHeading>
-            </ListGroup.Item>
-            <ListGroup.Item>
-              <Username>Braddy</Username>
-            </ListGroup.Item>
-          </ListGroup>
-        </Col>
-      </Row>
+      <Row className="justify-content-md-center mb3">
+        <Col className="top-2 mt4  d-flex justify-content-center">
+          <Card className="shadow-5 tc w-30">
+            <Card.Body>
+              <Row className="justify-content-md-center mb3">
+                <Col>
+                  <Username>{isLoading ? "" : data.user.username}</Username>
+                </Col>
+              </Row>
+              <Row className="mb3">
+                <Col lg={4} className="grow">
+                  <UserDetailsHeading>Photos</UserDetailsHeading>
+                  <UserDetails>25</UserDetails>
+                </Col>
+                <Col lg={4} className=" grow">
+                  <UserDetailsHeading>Date Joined</UserDetailsHeading>
+                  <UserDetails>01/01/1990</UserDetails>
+                </Col>
 
-      <Img src={Dexter} />
+                <Col lg={4} className="grow">
+                  <UserDetailsHeading>Annotations</UserDetailsHeading>
+                  <UserDetails>50</UserDetails>
+                </Col>
+              </Row>
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
+      <Row className="justify-content-md-center pt5">
+        <Col className="tc" lg={6}>
+          <Row className="">
+            <Col className="d-flex justify-content-center tc">
+              <UserObjectHeading>Photos</UserObjectHeading>
+            </Col>
+          </Row>
+          <Row className="mt3">
+            <Col>
+              <ImageOverlay
+                className="mw5"
+                src={Dexter}
+                description={
+                  <Hover>
+                    <HoverContent>Title</HoverContent>
+                    <HoverContent>Description</HoverContent>
+                    <HoverContent>User</HoverContent>
+                  </Hover>
+                }
+              />
+            </Col>
+            <Col>
+              <ImageOverlay
+                className="mw5"
+                src={Dexter}
+                description={
+                  <Hover>
+                    <HoverContent>Title</HoverContent>
+                    <HoverContent>Description</HoverContent>
+                    <HoverContent>User</HoverContent>
+                  </Hover>
+                }
+              />
+            </Col>
+            <Col>
+              <ImageOverlay
+                className="mw5"
+                src={Dexter}
+                description={
+                  <Hover>
+                    <HoverContent>Title</HoverContent>
+                    <HoverContent>Description</HoverContent>
+                    <HoverContent>User</HoverContent>
+                  </Hover>
+                }
+              />
+            </Col>
+          </Row>
+        </Col>
+      </Row>
+      <Row className="justify-content-md-center pt5">
+        <Col className="tc" lg={6}>
+          <Row className="">
+            <Col className="d-flex justify-content-center tc">
+              <UserObjectHeading>Annotations</UserObjectHeading>
+            </Col>
+          </Row>
+          <Row className="mt3">
+            <Col>
+              <ImageOverlay
+                className="mw5"
+                src={Dexter}
+                description={
+                  <Hover>
+                    <HoverContent>Title</HoverContent>
+                    <HoverContent>Description</HoverContent>
+                    <HoverContent>User</HoverContent>
+                  </Hover>
+                }
+              />
+            </Col>
+            <Col>
+              <ImageOverlay
+                className="mw5"
+                src={Dexter}
+                description={
+                  <Hover>
+                    <HoverContent>Title</HoverContent>
+                    <HoverContent>Description</HoverContent>
+                    <HoverContent>User</HoverContent>
+                  </Hover>
+                }
+              />
+            </Col>
+            <Col>
+              <ImageOverlay
+                className="mw5"
+                src={Dexter}
+                description={
+                  <Hover>
+                    <HoverContent>Title</HoverContent>
+                    <HoverContent>Description</HoverContent>
+                    <HoverContent>User</HoverContent>
+                  </Hover>
+                }
+              />
+            </Col>
+          </Row>
+        </Col>
+      </Row>
     </Container>
   );
 }

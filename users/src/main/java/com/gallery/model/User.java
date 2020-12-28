@@ -1,5 +1,7 @@
 package com.gallery.model;
 
+import java.time.LocalDateTime;
+
 import com.gallery.constants.Constants;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.IndexDirection;
@@ -15,33 +17,52 @@ import org.springframework.data.mongodb.core.mapping.Document;
  */
 @Document(collection = Constants.USER_COLLECTION)
 public class User {
-    @Id
-    private String id;
+  @Id
+  private String id;
 
-    @Indexed(direction = IndexDirection.ASCENDING)
-    private String username;
+  @Indexed(direction = IndexDirection.ASCENDING)
+  private String username;
+  private String email;
+  private LocalDateTime creationDate;
 
-    public User() {
+  public User() {
+  }
 
-    }
+  public User(String username, String email, LocalDateTime createDateTime) {
+    this.username = username;
+    this.email = email;
+    this.creationDate = createDateTime;
+  }
 
-    public User(String username) {
-        this.username = username;
-    }
+  public LocalDateTime getCreationDate() {
+    return creationDate;
+  }
 
-    public String getUsername() {
-        return this.username;
-    }
+  public void setCreationDate(LocalDateTime creationDate) {
+    this.creationDate = creationDate;
+  }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
+  public String getEmail() {
+    return this.email;
+  }
 
-    public String getId() {
-        return this.id;
-    }
+  public void setEmail(String email) {
+    this.email = email;
+  }
 
-    public void setId(String id) {
-        this.id = id;
-    }
+  public String getUsername() {
+    return this.username;
+  }
+
+  public void setUsername(String username) {
+    this.username = username;
+  }
+
+  public String getId() {
+    return this.id;
+  }
+
+  public void setId(String id) {
+    this.id = id;
+  }
 }

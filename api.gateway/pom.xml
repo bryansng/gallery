@@ -14,13 +14,23 @@
 	<description>Gallery API Gateway</description>
 
 	<properties>
-		<main.class>com.gallery.api.gateway.Application</main.class>
-		<start-class>com.gallery.api.gateway.Application</start-class>
 		<java.version>11</java.version>
 		<spring-cloud.version>Hoxton.SR9</spring-cloud.version>
+		<!-- <commons-io.version>2.</commons-io.version> -->
 	</properties>
 
 	<dependencies>
+		<!-- <dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+			<version>2.2.6.RELEASE</version>
+		</dependency> -->
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-netflix-zuul</artifactId>
@@ -28,6 +38,13 @@
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<!-- <version>${commons-io.version}</version> -->
+			<version>2.8.0</version>
 		</dependency>
 
 		<dependency>

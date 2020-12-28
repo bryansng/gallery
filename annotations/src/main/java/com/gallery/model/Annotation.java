@@ -1,5 +1,6 @@
 package com.gallery.model;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,16 +25,28 @@ public class Annotation {
 
   private Map<String, Integer> UserVoteMap;
 
+  private LocalDateTime creationDate;
+
   public Annotation() {
   }
 
-  public Annotation(String userId, String imageId, RectangleCoordinates coordinates, String content) {
+  public LocalDateTime getCreationDate() {
+    return creationDate;
+  }
+
+  public void setCreationDate(LocalDateTime creationDate) {
+    this.creationDate = creationDate;
+  }
+
+  public Annotation(String userId, String imageId, RectangleCoordinates coordinates, String content,
+      LocalDateTime creationDateTime) {
     this.userId = userId;
     this.imageId = imageId;
     this.coordinates = coordinates;
     this.content = content;
     this.totalVotes = 0;
     this.UserVoteMap = new HashMap<String, Integer>();
+    this.creationDate = creationDateTime;
   }
 
   public String getAnnotationId() {
