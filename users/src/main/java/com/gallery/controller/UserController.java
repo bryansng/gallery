@@ -24,7 +24,7 @@ public class UserController {
 
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<UserResponse> createUser(@RequestBody UserRequest userRequest) {
-        return userService.createUser(userRequest.getUsername());
+        return userService.createUser(userRequest.getEmail(), userRequest.getUsername());
     }
 
     @RequestMapping(value = "/{username}", method = RequestMethod.GET)
