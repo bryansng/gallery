@@ -1,5 +1,6 @@
 package com.gallery.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -37,7 +38,7 @@ public class AnnotationService {
   public ResponseEntity<AnnotationResponse> createAnnotation(String userId, String imageId,
       RectangleCoordinates coordinates, String content) {
 
-    Annotation annotation = new Annotation(userId, imageId, coordinates, content);
+    Annotation annotation = new Annotation(userId, imageId, coordinates, content, LocalDateTime.now());
 
     mongoTemplate.insert(annotation, Constants.ANNOTATION_COLLECTION);
 

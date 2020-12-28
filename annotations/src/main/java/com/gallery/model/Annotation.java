@@ -38,14 +38,15 @@ public class Annotation {
     this.creationDate = creationDate;
   }
 
-  public Annotation(String userId, String imageId, RectangleCoordinates coordinates, String content) {
+  public Annotation(String userId, String imageId, RectangleCoordinates coordinates, String content,
+      LocalDateTime creationDateTime) {
     this.userId = userId;
     this.imageId = imageId;
     this.coordinates = coordinates;
     this.content = content;
     this.totalVotes = 0;
     this.UserVoteMap = new HashMap<String, Integer>();
-    this.setCreationDate(LocalDateTime.now());
+    this.creationDate = creationDateTime;
   }
 
   public String getAnnotationId() {

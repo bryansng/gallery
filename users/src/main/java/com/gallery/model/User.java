@@ -17,43 +17,43 @@ import org.springframework.data.mongodb.core.mapping.Document;
  */
 @Document(collection = Constants.USER_COLLECTION)
 public class User {
-    @Id
-    private String id;
+  @Id
+  private String id;
 
-    @Indexed(direction = IndexDirection.ASCENDING)
-    private String username;
+  @Indexed(direction = IndexDirection.ASCENDING)
+  private String username;
 
-    private LocalDateTime creationDate;
+  private LocalDateTime creationDate;
 
-    public User() {
-        this.creationDate = LocalDateTime.now();
-    }
+  public User() {
+  }
 
-    public LocalDateTime getCreationDate() {
-        return creationDate;
-    }
+  public User(String username, LocalDateTime createDateTime) {
+    this.username = username;
+    this.creationDate = createDateTime;
+  }
 
-    public void setCreationDate(LocalDateTime creationDate) {
-        this.creationDate = creationDate;
-    }
+  public LocalDateTime getCreationDate() {
+    return creationDate;
+  }
 
-    public User(String username) {
-        this.username = username;
-    }
+  public void setCreationDate(LocalDateTime creationDate) {
+    this.creationDate = creationDate;
+  }
 
-    public String getUsername() {
-        return this.username;
-    }
+  public String getUsername() {
+    return this.username;
+  }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
+  public void setUsername(String username) {
+    this.username = username;
+  }
 
-    public String getId() {
-        return this.id;
-    }
+  public String getId() {
+    return this.id;
+  }
 
-    public void setId(String id) {
-        this.id = id;
-    }
+  public void setId(String id) {
+    this.id = id;
+  }
 }

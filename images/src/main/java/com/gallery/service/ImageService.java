@@ -1,6 +1,7 @@
 package com.gallery.service;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -81,7 +82,7 @@ public class ImageService {
     // create new object in image repo.
     // store the gridfs id.
     Image image = new Image(gridFsImageId.toString(), createReq.getUserId(), createReq.getTitle(),
-        createReq.getDescription(), 0);
+        createReq.getDescription(), 0, LocalDateTime.now());
     image = mongoTemplate.insert(image, Constants.IMAGE_COLLECTION);
 
     RestTemplate restTemplate = new RestTemplate();
@@ -104,7 +105,7 @@ public class ImageService {
 
     // create new object in image repo.
     // store this gridfs id.
-    Image image = new Image(gridFsImageId.toString(), null, null, null, 0);
+    Image image = new Image(gridFsImageId.toString(), null, null, null, 0, LocalDateTime.now());
     image = mongoTemplate.insert(image, Constants.IMAGE_COLLECTION);
 
     // return the id of object in image repo.

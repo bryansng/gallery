@@ -9,41 +9,31 @@ import org.springframework.data.elasticsearch.annotations.Document;
 
 @Document(indexName = Constants.USER_INDEX_NAME, type = Constants.USER_INDEX_NAME)
 public class User {
-    @Id
-    private String id;
-    private String username;
-    private LocalDateTime creationDate;
+  @Id
+  private String id;
+  private String username;
 
-    public User() {
-        creationDate = LocalDateTime.now();
-    }
+  public User() {
+  }
 
-    public LocalDateTime getCreationDate() {
-        return creationDate;
-    }
+  public User(String id, String username) {
+    this.id = id;
+    this.username = username;
+  }
 
-    public void setCreationDate(LocalDateTime creationDate) {
-        this.creationDate = creationDate;
-    }
+  public String getId() {
+    return this.id;
+  }
 
-    public User(String id, String username) {
-        this.id = id;
-        this.username = username;
-    }
+  public void setId(String id) {
+    this.id = id;
+  }
 
-    public String getId() {
-        return this.id;
-    }
+  public String getUsername() {
+    return this.username;
+  }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getUsername() {
-        return this.username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
+  public void setUsername(String username) {
+    this.username = username;
+  }
 }
