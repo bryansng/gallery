@@ -71,7 +71,7 @@ function Profile() {
                 </Col>
                 <Col lg={4} className=" grow">
                   <UserDetailsHeading>Date Joined</UserDetailsHeading>
-                  <UserDetails>01/01/1990</UserDetails>
+                  <UserDetails>{isLoading ? "" : data.msg.date}</UserDetails>
                 </Col>
 
                 <Col lg={4} className="grow">
