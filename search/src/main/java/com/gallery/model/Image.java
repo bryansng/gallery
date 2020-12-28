@@ -1,5 +1,7 @@
 package com.gallery.model;
 
+import java.time.LocalDateTime;
+
 import com.gallery.constants.Constants;
 
 import org.springframework.data.annotation.Id;
@@ -11,15 +13,17 @@ public class Image {
     private String id;
     private String title;
     private String description;
+    private LocalDateTime creationDate;
 
     public Image() {
-
+        creationDate = LocalDateTime.now();
     }
 
     public Image(String id, String title, String description) {
         this.id = id;
         this.title = title;
         this.description = description;
+        creationDate = LocalDateTime.now();
     }
 
     public String getId() {
@@ -44,5 +48,13 @@ public class Image {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public LocalDateTime getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(LocalDateTime creationDate) {
+        this.creationDate = creationDate;
     }
 }

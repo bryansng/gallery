@@ -1,5 +1,7 @@
 package com.gallery.model;
 
+import java.time.LocalDateTime;
+
 import com.gallery.constants.Constants;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -14,6 +16,7 @@ public class Image {
     private String title;
     private String description;
     private Integer totalViews;
+    private LocalDateTime creationDate;
 
     public Image(String gridFsImageId, String userId, String title, String description, Integer totalViews) {
         this.gridFsImageId = gridFsImageId;
@@ -21,6 +24,15 @@ public class Image {
         this.title = title;
         this.description = description;
         this.totalViews = totalViews;
+        this.creationDate = LocalDateTime.now();
+    }
+
+    public LocalDateTime getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(LocalDateTime creationDate) {
+        this.creationDate = creationDate;
     }
 
     public String getId() {

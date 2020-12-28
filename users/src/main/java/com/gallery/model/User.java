@@ -1,5 +1,7 @@
 package com.gallery.model;
 
+import java.time.LocalDateTime;
+
 import com.gallery.constants.Constants;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.IndexDirection;
@@ -21,8 +23,18 @@ public class User {
     @Indexed(direction = IndexDirection.ASCENDING)
     private String username;
 
-    public User() {
+    private LocalDateTime creationDate;
 
+    public User() {
+        this.creationDate = LocalDateTime.now();
+    }
+
+    public LocalDateTime getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(LocalDateTime creationDate) {
+        this.creationDate = creationDate;
     }
 
     public User(String username) {
