@@ -29,15 +29,14 @@ const HoverContent = styled.div.attrs(() => ({
   className: `text-white my-auto`,
 }))``;
 
-function Search() {
-  // data.imageResponse.imagesByDescription.searchHits
-  // data.imageResponse.imagesByTitle.searchHits
-  // data.userResponse.users.searchHits
-  const { isLoading, data } = useFetch("http://localhost:8080/api/search/cait");
-  const [count, setCount] = useState([0, 1, 2]);
+function Search({ searchEndpoint }) {
+  const { isLoading, data } = useFetch(
+    "http://localhost:8080/api/search/" + searchEndpoint
+  );
+
   console.log(data);
   return (
-    <Container>
+    <Container className="mt3">
       <Row>
         <Col className="tc">
           <Headers>Images</Headers>
@@ -46,30 +45,32 @@ function Search() {
       <Row className="mt3">
         {isLoading
           ? ""
-          : count.map((item, key) => {
-              return (
-                <Col className="tc pointer">
-                  <ImageOverlay
-                    className="mw5"
-                    src={Dexter}
-                    description={
-                      <Hover>
-                        <HoverContent>Title</HoverContent>
-                        <HoverContent>Description</HoverContent>
-                        <HoverContent>User</HoverContent>
-                      </Hover>
-                    }
-                  />
-                </Col>
-              );
-            })}
+          : data.imageResponse.imagesByDescription.searchHits.map(
+              (item, key) => {
+                return (
+                  <Col className="tc pointer" key={key}>
+                    <ImageOverlay
+                      className="mw5"
+                      src={Dexter}
+                      description={
+                        <Hover>
+                          <HoverContent>Title</HoverContent>
+                          <HoverContent>Description</HoverContent>
+                          <HoverContent>User</HoverContent>
+                        </Hover>
+                      }
+                    />
+                  </Col>
+                );
+              }
+            )}
       </Row>
       <Row className="mt3">
         {isLoading
           ? ""
-          : count.map((item, key) => {
+          : data.imageResponse.imagesByTitle.searchHits.map((item, key) => {
               return (
-                <Col className="tc pointer">
+                <Col className="tc pointer" key={key}>
                   <ImageOverlay
                     className="mw5"
                     src={Dexter}
@@ -93,9 +94,9 @@ function Search() {
       <Row className="">
         {isLoading
           ? ""
-          : count.map((item, key) => {
+          : data.userResponse.users.searchHits.map((item, key) => {
               return (
-                <Col className="tc">
+                <Col className="tc" key={key}>
                   <UserContainer>
                     <FaUser size={100}></FaUser>
                     <Username>Dexter</Username>
