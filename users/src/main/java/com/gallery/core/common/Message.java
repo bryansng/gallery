@@ -1,33 +1,22 @@
 package com.gallery.core.common;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 
 public class Message {
     private String msg;
-    private LocalDate date;
-    private LocalTime time;
+    private LocalDateTime localDateTime;
 
     public Message(String msg) {
         this.msg = msg;
-        this.date = LocalDate.now();
-        this.time = LocalTime.now();
+        this.setLocalDateTime(LocalDateTime.now());
     }
 
-    public LocalTime getTime() {
-        return this.time;
+    public LocalDateTime getLocalDateTime() {
+        return localDateTime;
     }
 
-    public void setTime(LocalTime time) {
-        this.time = time;
-    }
-
-    public LocalDate getDate() {
-        return this.date;
-    }
-
-    public void setDate(LocalDate date) {
-        this.date = date;
+    public void setLocalDateTime(LocalDateTime localDateTime) {
+        this.localDateTime = localDateTime;
     }
 
     public String getMsg() {
