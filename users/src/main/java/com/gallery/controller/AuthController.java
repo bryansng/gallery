@@ -2,11 +2,13 @@ package com.gallery.controller;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.ws.rs.core.Response;
 
-import com.gallery.core.SignInRequest;
+import com.gallery.core.request.SignInRequest;
+import com.gallery.core.request.RegisterRequest;
 import com.gallery.core.response.RegisterResponse;
 import com.gallery.core.response.SignInResponse;
 import com.gallery.core.response.UserResponse;
@@ -82,7 +84,18 @@ public class AuthController {
   //
   // UserRepresentation expected email, username, enabled and credentials filled.
   @RequestMapping(value = "/register", method = RequestMethod.POST)
-  public ResponseEntity<RegisterResponse> register(@RequestBody UserRepresentation user) {
+  public ResponseEntity<RegisterResponse> register(@RequestBody RegisterRequest registerRequest) {
+    // Setup UserRepresentation
+    UserRepresentation user = new UserRepresentation();
+    user.setEmail(registerRequest.getEmail());
+    user.setUsername(registerRequest.getEmail());
+    user.setEnabled(true);
+    CredentialRepresentation passwordCred = new CredentialRepresentation();
+    passwordCred.setTemporary(false);
+    passwordCred.setType(CredentialRepresentation.PASSWORD);
+    passwordCred.setValue(registerRequest.getPassword());
+    user.setCredentials(Arrays.asList(passwordCred));
+
     // Get realm
     RealmResource realmResource = keycloakServiceAccount.realm(REALM);
     UsersResource userResource = realmResource.users();
@@ -100,6 +113,6 @@ public class AuthController {
         user.getCredentials().get(0).getValue(), CLIENT_ID, CLIENT_SECRET);
     AccessTokenResponse tokenResponse = instance.tokenManager().getAccessToken();
 
-    return userService.registerUser(user.getEmail(), user.getUsername(), tokenResponse.getToken());
+    return userService.registerUser(user.getEmail(), registerRequest.getUsername(), tokenResponse.getToken());
   }
 }

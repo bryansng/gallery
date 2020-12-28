@@ -1,12 +1,14 @@
-package com.gallery.core;
+package com.gallery.core.request;
 
-public class SignInRequest {
+public class RegisterRequest {
   private String email;
   private String password;
+  private String username;
 
-  public SignInRequest(String email, String password) {
+  public RegisterRequest(String email, String password, String username) {
     this.email = email;
     this.password = password;
+    this.username = username;
   }
 
   public String getEmail() {
@@ -23,5 +25,13 @@ public class SignInRequest {
 
   public void setPassword(String password) {
     this.password = password;
+  }
+
+  public String getUsername() {
+    return this.username;
+  }
+
+  public void setUsername(String username) {
+    this.username = username;
   }
 }
