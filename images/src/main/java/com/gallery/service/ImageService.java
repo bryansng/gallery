@@ -59,7 +59,6 @@ public class ImageService {
   private Dotenv dotenv;
 
   public ImageService() {
-
   }
 
   @PostConstruct
