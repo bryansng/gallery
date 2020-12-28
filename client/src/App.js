@@ -1,11 +1,11 @@
 import React from "react";
+import Search from "./components/Search/Search.js";
 import Profile from "./components/Profile/Profile.js";
 
 export default function App() {
   return (
     <div>
-      {/* Hello, this is the root level */}
-      <Profile />
+      <Search />
     </div>
   );
 }
