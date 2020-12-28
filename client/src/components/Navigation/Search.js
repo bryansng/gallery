@@ -7,6 +7,7 @@ const SearchForm = styled(Form).attrs({
   className: `w-50 mw-10 ma0`,
 })`
   position: relative;
+  min-width: 400px;
 `
 
 const SearchFormGroup = styled(Form.Group).attrs({
