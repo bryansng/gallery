@@ -1,77 +1,93 @@
 package com.gallery.model;
 
+import java.time.LocalDateTime;
+
 import com.gallery.constants.Constants;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = Constants.IMAGE_COLLECTION)
 public class Image {
-    @Id
-    private String id;
+  @Id
+  private String id;
 
-    private String gridFsImageId;
-    private String userId;
-    private String title;
-    private String description;
-    private Integer totalViews;
+  private String gridFsImageId;
+  private String userId;
+  private String title;
+  private String description;
+  private Integer totalViews;
+  private LocalDateTime creationDate;
 
-    public Image(String gridFsImageId, String userId, String title, String description, Integer totalViews) {
-        this.gridFsImageId = gridFsImageId;
-        this.userId = userId;
-        this.title = title;
-        this.description = description;
-        this.totalViews = totalViews;
-    }
+  public Image() {
+  }
 
-    public String getId() {
-        return this.id;
-    }
+  public Image(String gridFsImageId, String userId, String title, String description, Integer totalViews,
+      LocalDateTime creationDateTime) {
+    this.gridFsImageId = gridFsImageId;
+    this.userId = userId;
+    this.title = title;
+    this.description = description;
+    this.totalViews = totalViews;
+    this.creationDate = creationDateTime;
+  }
 
-    public void setId(String id) {
-        this.id = id;
-    }
+  public LocalDateTime getCreationDate() {
+    return creationDate;
+  }
 
-    public String getGridFsImageId() {
-        return this.gridFsImageId;
-    }
+  public void setCreationDate(LocalDateTime creationDate) {
+    this.creationDate = creationDate;
+  }
 
-    public void setGridFsImageId(String gridFsImageId) {
-        this.gridFsImageId = gridFsImageId;
-    }
+  public String getId() {
+    return this.id;
+  }
 
-    public String getUserId() {
-        return this.userId;
-    }
+  public void setId(String id) {
+    this.id = id;
+  }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
+  public String getGridFsImageId() {
+    return this.gridFsImageId;
+  }
 
-    public String getTitle() {
-        return this.title;
-    }
+  public void setGridFsImageId(String gridFsImageId) {
+    this.gridFsImageId = gridFsImageId;
+  }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
+  public String getUserId() {
+    return this.userId;
+  }
 
-    public String getDescription() {
-        return this.description;
-    }
+  public void setUserId(String userId) {
+    this.userId = userId;
+  }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+  public String getTitle() {
+    return this.title;
+  }
 
-    public Integer getTotalViews() {
-        return this.totalViews;
-    }
+  public void setTitle(String title) {
+    this.title = title;
+  }
 
-    public void setTotalViews(Integer totalViews) {
-        this.totalViews = totalViews;
-    }
+  public String getDescription() {
+    return this.description;
+  }
 
-    public void incrementViewsBy(Integer totalNewViews) {
-        this.totalViews += totalNewViews;
-    }
+  public void setDescription(String description) {
+    this.description = description;
+  }
+
+  public Integer getTotalViews() {
+    return this.totalViews;
+  }
+
+  public void setTotalViews(Integer totalViews) {
+    this.totalViews = totalViews;
+  }
+
+  public void incrementViewsBy(Integer totalNewViews) {
+    this.totalViews += totalNewViews;
+  }
 }
