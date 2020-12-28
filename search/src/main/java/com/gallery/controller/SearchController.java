@@ -26,18 +26,19 @@ public class SearchController {
 
     /**
      * Search user and images by keyword
-     * 
+     *
      * @param keyword
      * @return
      */
     @RequestMapping(value = "/{keyword}", method = RequestMethod.GET)
     public ResponseEntity<SearchResponse> findByKeyword(@PathVariable("keyword") String keyword) {
+        System.out.println("Searching for: " + keyword);
         return searchService.findByKeyword(keyword);
     }
 
     /**
      * Post a new user
-     * 
+     *
      * @param user
      * @return
      */
@@ -48,7 +49,7 @@ public class SearchController {
 
     /**
      * Update a user
-     * 
+     *
      * @param id
      * @param user
      * @return
@@ -60,7 +61,7 @@ public class SearchController {
 
     /**
      * Delete a user
-     * 
+     *
      * @param id
      * @return
      */
@@ -71,7 +72,7 @@ public class SearchController {
 
     /**
      * Post a new image
-     * 
+     *
      * @param imageRequest
      * @return
      */
@@ -82,7 +83,7 @@ public class SearchController {
 
     /**
      * Update an image
-     * 
+     *
      * @param id
      * @param imageRequest
      * @return
@@ -95,7 +96,7 @@ public class SearchController {
 
     /**
      * Delete an image
-     * 
+     *
      * @param id
      * @return
      */
