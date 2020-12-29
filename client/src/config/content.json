@@ -1,9 +1,9 @@
 {
   "service_endpoints": {
-    "proxyurl": "https://cors-anywhere.herokuapp.com/",
     "user": {
       "register": "http://localhost:8080/api/users/auth/register",
       "signin": "http://localhost:8080/api/users/auth/signin",
+      "get_by_token": "http://localhost:8080/api/users/auth/user",
       "edit": "",
       "username": "http://localhost:8080/api/users/user/id"
     },
