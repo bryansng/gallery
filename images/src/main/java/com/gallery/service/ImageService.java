@@ -22,6 +22,7 @@ import com.netflix.discovery.converters.Auto;
 
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -189,6 +190,19 @@ public class ImageService {
     }
 
     return new ResponseEntity<>(new GetImageDataResponse("Image data received successfully.", image),
+        HttpStatus.CREATED);
+  }
+
+  public ResponseEntity<?> getRecentImageData(int numOfImages) {
+    Query query = new Query();
+    query.limit(numOfImages);
+    query.with(Sort.by(Sort.Direction.DESC, "creationDate"));
+    List<Image> image = mongoTemplate.find(query, Image.class, Constants.IMAGE_COLLECTION);
+    if (image == null) {
+      return new ResponseEntity<>("Image id does not exist.", HttpStatus.BAD_REQUEST);
+    }
+
+    return new ResponseEntity<>(new GetImagesDataResponse("Image data received successfully.", image),
         HttpStatus.CREATED);
   }
 

@@ -57,6 +57,11 @@ public class ImageController {
     return imageService.getImageData(imageId);
   }
 
+  @RequestMapping(value = "/recent/{numOfImages}", method = RequestMethod.GET)
+  public ResponseEntity<?> getRecentImageData(@PathVariable("numOfImages") int numOfImages) {
+    return imageService.getRecentImageData(numOfImages);
+  }
+
   @RequestMapping(value = "/user/{userId}", method = RequestMethod.GET)
   public ResponseEntity<?> getImagesDataByUserId(@PathVariable("userId") String userId) {
     return imageService.getImagesDataByUserId(userId);

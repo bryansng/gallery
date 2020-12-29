@@ -22,7 +22,6 @@ public class JWTSecurityConfig extends WebSecurityConfigurerAdapter {
 
     http.csrf().disable();
     // http.headers().frameOptions().disable();
-
     // http.csrf().disable().authorizeRequests().antMatchers("/").permitAll().anyRequest().permitAll().and()
     //     .oauth2ResourceServer(oauth2 -> oauth2.jwt());
 
