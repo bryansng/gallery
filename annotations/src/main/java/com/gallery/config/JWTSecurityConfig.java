@@ -15,11 +15,12 @@ public class JWTSecurityConfig extends WebSecurityConfigurerAdapter {
     //     .antMatchers(HttpMethod.POST, "/**").hasAuthority("SCOPE_write").anyRequest().authenticated().and()
     //     .oauth2ResourceServer().jwt();
 
-    http.csrf().disable().authorizeRequests().antMatchers(HttpMethod.GET, "/annotation/**").permitAll()
+    http.cors().and().authorizeRequests().antMatchers(HttpMethod.GET, "/annotation/**").permitAll()
         .antMatchers(HttpMethod.POST, "/annotation/**").authenticated().antMatchers(HttpMethod.PUT, "/annotation/**")
         .authenticated().antMatchers(HttpMethod.DELETE, "/annotation/**").authenticated().and()
         .oauth2ResourceServer(oauth2 -> oauth2.jwt());
 
+    http.csrf().disable();
     // http.csrf().disable().authorizeRequests().antMatchers("/").permitAll().anyRequest().permitAll().and()
     //     .oauth2ResourceServer(oauth2 -> oauth2.jwt());
 
