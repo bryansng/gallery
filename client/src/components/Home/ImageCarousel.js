@@ -122,18 +122,18 @@ function GetUsername(props) {
   return name;
 }
 
-// function GetAnnotationNum(props) {
-//   const { imageId } = props;
-//   const [number, setNumber] = useState(0);
-//   useEffect(() => {
-//     fetch(`${content.service_endpoints.annotation.get_by_image}/${imageId}`)
-//       .then((resp) => resp.json())
-//       .then((res) => {
-//         setNumber(res.user.username);
-//       });
-//   });
-//   return number;
-// }
+function GetAnnotationNum(props) {
+  const { imageId } = props;
+  const [number, setNumber] = useState(0);
+  useEffect(() => {
+    fetch(`${content.service_endpoints.annotation.get_by_image}/${imageId}`)
+      .then((resp) => resp.json())
+      .then((res) => {
+        setNumber(res.annotations.length);
+      });
+  });
+  return number;
+}
 
 function ImageCarousel(props) {
   const [imagesData, setImagesData] = useState([]);
@@ -184,7 +184,7 @@ function ImageCarousel(props) {
                   description={image.description}
                   username={<GetUsername userId={image.userId} />}
                   totalViews={image.totalViews}
-                  annotationNum={`${get_by_image}/${image.id}`}
+                  annotationNum={<GetAnnotationNum imageId={image.id} />}
                 ></ImageHover>
                 {/* </div> */}
               </Image>
