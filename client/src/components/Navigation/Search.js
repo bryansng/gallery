@@ -22,7 +22,7 @@ const SearchButton = styled.button.attrs({
 })`
   position: absolute;
   top: 48%;
-  right: -0.5%;
+  right: -6.5%;
   transform: translate(-50%, -50%);
   fill: gray;
 `;
@@ -48,11 +48,19 @@ function Search({ keyword, setKeyword, setIsSearch, setSearchEndpoint }) {
     setIsSearch(true);
   };
 
+  const handleChange = (event) => {
+    var str = event.target.value;
+    if (str.length === 0) {
+      setIsSearch(false);
+    }
+    setSearch(str);
+  };
+
   return (
     <SearchForm onSubmit={handleSubmit}>
       <SearchFormGroup controlId="Search">
         <SearchInput
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={handleChange}
           label="Search"
           aria-label="search"
           type="search"
