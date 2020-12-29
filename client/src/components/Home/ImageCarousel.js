@@ -12,6 +12,8 @@ import {
   Image,
 } from "pure-react-carousel";
 
+import routes from "../../config/routes";
+
 const Container = styled.div.attrs({
   className: `center mt5 mb5`,
 })``;
@@ -27,10 +29,8 @@ const CustomSlide = styled(Slide).attrs({ className: `` })`
 `;
 
 const ImageHoverCover = styled.div.attrs({
-  className: `child center bg-black-40 white v-mid flex flex-column items-center justify-center w-100 h-100`,
+  className: `child center bg-black-40 white v-mid flex flex-column items-center justify-center w-100 h-100 pointer`,
 })`
-  /* width: 30vw;
-  height: 30vh; */
   position: absolute;
   top: 50%;
   left: 50%;
@@ -98,16 +98,6 @@ const BackIcon = styled(Next).attrs({
   object-fit: contain;
   transform: rotate(180deg);
 `;
-/**
- * Images as an array
- * array index is required
- * for each image: source, title, desc, user, viewNum, annotationNum is required
- * @param {*} props
- */
-
-const { recent, get_image } = content.service_endpoints.image;
-// const { username } = content.service_endpoints.user;
-const { get_by_image } = content.service_endpoints.annotation;
 
 function GetUsername(props) {
   const { userId } = props;
@@ -135,13 +125,20 @@ function GetAnnotationNum(props) {
   return number;
 }
 
+/**
+ * Images as an array
+ * array index is required
+ * for each image: source, title, desc, user, viewNum, annotationNum is required
+ * @param {*} props
+ */
+const { recent, get_image } = content.service_endpoints.image;
 function ImageCarousel(props) {
+  const { setRoute, setRouteData } = props;
   const [imagesData, setImagesData] = useState([]);
 
   useEffect(() => {
     console.log(`${recent}/5`);
     if (imagesData.length === 0) {
-      // get images
       fetch(`${recent}/5`)
         .then((resp) => resp.json())
         .then((res) => {
@@ -176,9 +173,15 @@ function ImageCarousel(props) {
                 alt={image.title}
                 className="hide-child relative contain bg-center"
                 style={{ width: "30vw", minHeight: "30vh" }}
+                onClick={(e) => {
+                  e.preventDefault();
+                  setRoute(routes.view_image);
+                  setRouteData({
+                    imageId: image.id,
+                  });
+                  console.log("CLICKED IMAGE");
+                }}
               >
-                {/* <div className=""> */}
-                {console.log("IMAGE ID" + image.userId)}
                 <ImageHover
                   title={image.title}
                   description={image.description}
@@ -186,7 +189,6 @@ function ImageCarousel(props) {
                   totalViews={image.totalViews}
                   annotationNum={<GetAnnotationNum imageId={image.id} />}
                 ></ImageHover>
-                {/* </div> */}
               </Image>
             </CustomSlide>
           ))}
@@ -201,88 +203,6 @@ function ImageCarousel(props) {
       </CarouselProvider>
     </Container>
   );
-  // return (
-  //   <Container>
-  //     <CarouselProvider
-  //       totalSlides={5}
-  //       currentSlide={2}
-  //       hasMasterSpinner
-  //       lockOnWindowScroll
-  //       isIntrinsicHeight
-  //       className="center overflow-x-hidden"
-  //     >
-  //       <CenteredSlider>
-  //         <CustomSlide
-  //           index={0}
-  //           classNameHidden="o-50 center flex items-center mw5 ml0 mr0"
-  //           classNameVisible="o-100 grow ma0"
-  //         >
-  //           <Image
-  //             src={Dexter}
-  //             alt="dexter"
-  //             type="img"
-  //             className="hide-child"
-  //           ></Image>
-  //         </CustomSlide>
-  //         <CustomSlide
-  //           index={1}
-  //           classNameHidden="o-50 center flex items-center mw5 ml0 mr0"
-  //           classNameVisible="o-100 grow ma0"
-  //         >
-  //           <Image
-  //             src={Dexter}
-  //             alt="dexter"
-  //             type="img"
-  //             className="hide-child"
-  //           ></Image>
-  //         </CustomSlide>
-  //         <CustomSlide
-  //           index={2}
-  //           classNameHidden="o-50 center flex items-center mw5 ml0 mr0"
-  //           classNameVisible="o-100 grow ma0"
-  //         >
-  //           <Image
-  //             src={Dexter}
-  //             alt="dexter"
-  //             type="img"
-  //             className="hide-child"
-  //           ></Image>
-  //         </CustomSlide>
-  //         <CustomSlide
-  //           index={3}
-  //           classNameHidden="o-50 center flex items-center mw5 ml0 mr0"
-  //           classNameVisible="o-100 grow ma0"
-  //         >
-  //           <Image
-  //             src={Dexter}
-  //             alt="dexter"
-  //             type="img"
-  //             className="hide-child"
-  //           ></Image>
-  //         </CustomSlide>
-  //         <CustomSlide
-  //           index={4}
-  //           classNameHidden="o-50 center flex items-center mw5 ml0 mr0"
-  //           classNameVisible="o-100 grow ma0"
-  //         >
-  //           <Image
-  //             src={Dexter}
-  //             alt="dexter"
-  //             type="img"
-  //             className="hide-child"
-  //           ></Image>
-  //         </CustomSlide>
-  //       </CenteredSlider>
-  //       <CenteredButtonBack>
-  //         <BackIcon />
-  //       </CenteredButtonBack>
-  //       <CenteredButtonNext>
-  //         <NextIcon />
-  //       </CenteredButtonNext>
-  //       <RoundDotGroup />
-  //     </CarouselProvider>
-  //   </Container>
-  // );
 }
 
 export default ImageCarousel;

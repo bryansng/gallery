@@ -9,10 +9,10 @@ const Container = styled.div.attrs({
   className: `center w-75-l w-80 `,
 })``;
 
-function Home() {
+function Home(props) {
   return (
     <Container>
-      <ImageCarousel />
+      <ImageCarousel {...props} />
     </Container>
   );
 }
