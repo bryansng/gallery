@@ -47,11 +47,16 @@ const HoverContent = styled.div.attrs(() => ({
 }))``;
 
 function Profile() {
-  const { isLoading, data } = useFetch(
-    "http://localhost:8080/api/users/user/cait"
+  const userData = useFetch("http://localhost:8080/api/users/user/cait");
+  const imageData = useFetch(
+    "http://localhost:8080/api/images/image/user/cait"
+  );
+  const annotationData = useFetch(
+    "http://localhost:8080/api/image/annotations/annotation/user/cait"
   );
 
-  console.log(data);
+  console.log(userData.data);
+  console.log(imageData.data);
 
   return (
     <Container fluid>
@@ -61,22 +66,33 @@ function Profile() {
             <Card.Body>
               <Row className="justify-content-md-center mb3">
                 <Col>
-                  <Username>{isLoading ? "" : data.user.username}</Username>
+                  <Username>
+                    {userData.isLoading ? "" : userData.data.user.username}
+                  </Username>
                 </Col>
               </Row>
               <Row className="mb3">
                 <Col lg={4} className="grow">
                   <UserDetailsHeading>Photos</UserDetailsHeading>
-                  <UserDetails>25</UserDetails>
+                  <UserDetails>
+                    {imageData.isLoading ? "" : imageData.data.msg.date}
+                  </UserDetails>
                 </Col>
                 <Col lg={4} className=" grow">
                   <UserDetailsHeading>Date Joined</UserDetailsHeading>
-                  <UserDetails>{isLoading ? "" : data.msg.date}</UserDetails>
+                  <UserDetails>
+                    {userData.isLoading ? "" : userData.data.msg.date}
+                  </UserDetails>
                 </Col>
 
                 <Col lg={4} className="grow">
                   <UserDetailsHeading>Annotations</UserDetailsHeading>
-                  <UserDetails>50</UserDetails>
+                  <UserDetails>
+                    {" "}
+                    {annotationData.isLoading
+                      ? ""
+                      : annotationData.data.msg.date}
+                  </UserDetails>
                 </Col>
               </Row>
             </Card.Body>

@@ -7,6 +7,7 @@ import com.gallery.service.ImageService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -55,11 +56,13 @@ public class ImageController {
     return imageService.getImageData(imageId);
   }
 
+  @CrossOrigin(origins = "*")
   @RequestMapping(value = "/user/{userId}", method = RequestMethod.GET)
   public ResponseEntity<?> getImagesDataByUserId(@PathVariable("userId") String userId) {
     return imageService.getImagesDataByUserId(userId);
   }
 
+  @CrossOrigin(origins = "*")
   @RequestMapping(value = "/{imageId}", method = RequestMethod.DELETE)
   public ResponseEntity<?> deleteImage(@PathVariable("imageId") String imageId) {
     return imageService.deleteImage(imageId);
