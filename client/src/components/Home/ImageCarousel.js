@@ -13,11 +13,11 @@ import {
 } from "pure-react-carousel";
 
 const Container = styled.div.attrs({
-  className: `center v-mid mt5 mb5`,
+  className: `center mt5 mb5`,
 })``;
 
 const CenteredSlider = styled(Slider).attrs({
-  className: `mw6 center`,
+  className: `center`,
 })`
   transition: 0.15s ease-in-out;
 `;
@@ -27,8 +27,15 @@ const CustomSlide = styled(Slide).attrs({ className: `` })`
 `;
 
 const ImageHoverCover = styled.div.attrs({
-  className: `child bg-black-40 white v-mid w-100 h-100 `,
-})``;
+  className: `child center bg-black-40 white v-mid flex flex-column items-center justify-center w-100 h-100`,
+})`
+  /* width: 30vw;
+  height: 30vh; */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+`;
 
 const ImageHoverTitle = styled.h4.attrs({ className: `` })``;
 const ImageHoverDesc = styled.p.attrs({ className: `` })``;
@@ -37,15 +44,18 @@ const ImageHoverNumberOfViews = styled.p.attrs({ className: `` })``;
 const ImageHoverNumberOfAnnotations = styled.p.attrs({ className: `` })``;
 
 function ImageHover(props) {
-  <ImageHoverCover>
-    <ImageHoverTitle>{props.title}</ImageHoverTitle>
-    <ImageHoverDesc>{props.desc}</ImageHoverDesc>
-    <ImageHoverUser>{props.user}</ImageHoverUser>
-    <ImageHoverNumberOfViews>{props.viewNum}</ImageHoverNumberOfViews>
-    <ImageHoverNumberOfAnnotations>
-      {props.annotationNum}
-    </ImageHoverNumberOfAnnotations>
-  </ImageHoverCover>;
+  const { title, description, username, totalViews, annotationNum } = props;
+  return (
+    <ImageHoverCover>
+      <ImageHoverTitle>{title}</ImageHoverTitle>
+      <ImageHoverDesc>{description}</ImageHoverDesc>
+      <ImageHoverUser>by {username}</ImageHoverUser>
+      <ImageHoverNumberOfViews>{totalViews} views</ImageHoverNumberOfViews>
+      <ImageHoverNumberOfAnnotations>
+        {annotationNum} annotations
+      </ImageHoverNumberOfAnnotations>
+    </ImageHoverCover>
+  );
 }
 
 const RoundDotGroup = styled(DotGroup).attrs({
@@ -96,6 +106,34 @@ const BackIcon = styled(Next).attrs({
  */
 
 const { recent, get_image } = content.service_endpoints.image;
+// const { username } = content.service_endpoints.user;
+const { get_by_image } = content.service_endpoints.annotation;
+
+function GetUsername(props) {
+  const { userId } = props;
+  const [name, setUsername] = useState("");
+  useEffect(() => {
+    fetch(`${content.service_endpoints.user.username}/${userId}`)
+      .then((resp) => resp.json())
+      .then((res) => {
+        setUsername(res.user.username);
+      });
+  });
+  return name;
+}
+
+// function GetAnnotationNum(props) {
+//   const { imageId } = props;
+//   const [number, setNumber] = useState(0);
+//   useEffect(() => {
+//     fetch(`${content.service_endpoints.annotation.get_by_image}/${imageId}`)
+//       .then((resp) => resp.json())
+//       .then((res) => {
+//         setNumber(res.user.username);
+//       });
+//   });
+//   return number;
+// }
 
 function ImageCarousel(props) {
   const [imagesData, setImagesData] = useState([]);
@@ -103,6 +141,7 @@ function ImageCarousel(props) {
   useEffect(() => {
     console.log(`${recent}/5`);
     if (imagesData.length === 0) {
+      // get images
       fetch(`${recent}/5`)
         .then((resp) => resp.json())
         .then((res) => {
@@ -117,28 +156,37 @@ function ImageCarousel(props) {
       <CarouselProvider
         totalSlides={5}
         currentSlide={2}
+        isIntrinsicHeight
         hasMasterSpinner
         lockOnWindowScroll
-        isIntrinsicHeight
-        className="center overflow-x-hidden"
+        className="overflow-x-hidden"
       >
         <CenteredSlider>
           {imagesData.map((image, index) => (
             <CustomSlide
               index={index}
               classNameHidden="o-50"
-              classNameVisible="o-100 grow ma0"
-              className="center flex items-center mw6"
-              innerClassName="center"
+              classNameVisible="o-100 grow ma0 "
+              className="center flex flex-row items-center "
+              innerClassName="center v-mid "
             >
-              <Image src={`${get_image}/${image.id}`} type="img">
-                {/* <ImageHover
+              <Image
+                src={`${get_image}/${image.id}`}
+                tag="div"
+                alt={image.title}
+                className="hide-child relative contain bg-center"
+                style={{ width: "30vw", minHeight: "30vh" }}
+              >
+                {/* <div className=""> */}
+                {console.log("IMAGE ID" + image.userId)}
+                <ImageHover
                   title={image.title}
-                  desc={image.description}
-                  user={image.user}
-                  // viewNum={image.viewNum}
-                  // annotationNum={image.annotaionNum}
-                ></ImageHover> */}
+                  description={image.description}
+                  username={<GetUsername userId={image.userId} />}
+                  totalViews={image.totalViews}
+                  annotationNum={`${get_by_image}/${image.id}`}
+                ></ImageHover>
+                {/* </div> */}
               </Image>
             </CustomSlide>
           ))}

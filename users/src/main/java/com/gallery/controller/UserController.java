@@ -15,36 +15,43 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(value = "/user")
+@CrossOrigin
 public class UserController {
 
-    @Autowired
-    UserService userService;
+  @Autowired
+  UserService userService;
 
-    public UserController() {
-    }
+  public UserController() {
+  }
 
-    @CrossOrigin(origins = "*")
-    @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<UserResponse> createUser(@RequestBody UserRequest userRequest) {
-        return userService.createUser(userRequest.getEmail(), userRequest.getUsername());
-    }
+  @CrossOrigin(origins = "*")
+  @RequestMapping(method = RequestMethod.POST)
+  public ResponseEntity<UserResponse> createUser(@RequestBody UserRequest userRequest) {
+    return userService.createUser(userRequest.getEmail(), userRequest.getUsername());
+  }
 
-    @CrossOrigin(origins = "*")
-    @RequestMapping(value = "/{username}", method = RequestMethod.GET)
-    public ResponseEntity<UserResponse> getUser(@PathVariable("username") String username) {
-        return userService.getUser(username);
-    }
+  @CrossOrigin(origins = "*")
+  @RequestMapping(value = "/{username}", method = RequestMethod.GET)
+  public ResponseEntity<UserResponse> getUser(@PathVariable("username") String username) {
+    return userService.getUser(username);
+  }
 
-    @CrossOrigin(origins = "*")
-    @RequestMapping(value = "/{username}", method = RequestMethod.PUT)
-    public ResponseEntity<UserResponse> updateUsername(@PathVariable("username") String currUsername,
-            @RequestBody UserRequest userRequest) {
-        return userService.updateUsername(currUsername, userRequest);
-    }
+  @CrossOrigin(origins = "*")
+  @RequestMapping(value = "/id/{userId}", method = RequestMethod.GET)
+  public ResponseEntity<UserResponse> getUserById(@PathVariable("userId") String userId) {
+    return userService.getUserById(userId);
+  }
 
-    @CrossOrigin(origins = "*")
-    @RequestMapping(value = "/{username}", method = RequestMethod.DELETE)
-    public ResponseEntity<UserResponse> deleteUser(@PathVariable("username") String username) {
-        return userService.deleteUser(username);
-    }
+  @CrossOrigin(origins = "*")
+  @RequestMapping(value = "/{username}", method = RequestMethod.PUT)
+  public ResponseEntity<UserResponse> updateUsername(@PathVariable("username") String currUsername,
+      @RequestBody UserRequest userRequest) {
+    return userService.updateUsername(currUsername, userRequest);
+  }
+
+  @CrossOrigin(origins = "*")
+  @RequestMapping(value = "/{username}", method = RequestMethod.DELETE)
+  public ResponseEntity<UserResponse> deleteUser(@PathVariable("username") String username) {
+    return userService.deleteUser(username);
+  }
 }
