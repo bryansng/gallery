@@ -12,6 +12,7 @@ const Container = styled.div.attrs({
 function Home(props) {
   return (
     <Container>
+      <h2>Recent images</h2>
       <ImageCarousel {...props} />
     </Container>
   );
