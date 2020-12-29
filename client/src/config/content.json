@@ -1,0 +1,30 @@
+{
+  "service_endpoints": {
+    "user": {
+      "register": "http://localhost:8080/api/users/auth/register",
+      "signin": "http://localhost:8080/api/users/auth/signin",
+      "get_by_token": "http://localhost:8080/api/users/auth/user",
+      "edit": ""
+    },
+    "image": {
+      "create": "http://localhost:8080/api/images/image/upload",
+      "get_image": "http://localhost:8080/api/images/image/download",
+      "get_data": "http://localhost:8080/api/images/image/upload",
+      "edit": "http://localhost:8080/api/images/image",
+      "delete": "http://localhost:8080/api/images/image/delete",
+      "increment": "http://localhost:8080/api/images/image/increment"
+    },
+    "annotation": {
+      "create": "http://localhost:8080/api/annotations/annotation",
+      "get": "http://localhost:8080/api/annotations/annotation",
+      "get_by_user": "http://localhost:8080/api/annotations/annotation/user",
+      "get_by_image": "http://localhost:8080/api/annotations/annotation/image",
+      "edit": "http://localhost:8080/api/annotations/annotation",
+      "delete": "http://localhost:8080/api/annotations/annotation",
+      "vote": "http://localhost:8080/api/annotations/annotation/vote"
+    },
+    "search": {
+      "search": "http://localhost:8080/api/search"
+    }
+  }
+}
