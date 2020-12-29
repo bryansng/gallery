@@ -2,6 +2,7 @@ package com.gallery.service;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -201,8 +202,27 @@ public class ImageService {
       return new ResponseEntity<>("Image id does not exist.", HttpStatus.BAD_REQUEST);
     }
 
-    return new ResponseEntity<>(new GetImagesDataResponse("Images data received successfully.", image),
-        HttpStatus.CREATED);
+    return new ResponseEntity<>(new GetImagesDataResponse("Images data received successfully.", image), HttpStatus.OK);
+  }
+
+  public ResponseEntity<?> getImagesDataByAnnotationId(String userId) {
+    RestTemplate restTemplate = new RestTemplate();
+    HttpEntity<String> request = new HttpEntity<>(userId);
+    List<String> imageIds = restTemplate
+        .getForObject(dotenv.get("ANNOTATION_SERVICE_GET_ANNOTATION_BY_USERID") + userId, List.class, request);
+
+    List<Image> images = new ArrayList<>();
+
+    for (String id : imageIds) {
+      List<Image> image = mongoTemplate.find(Query.query(Criteria.where("_id").is(id)), Image.class,
+          Constants.IMAGE_COLLECTION);
+      if (image == null) {
+        return new ResponseEntity<>("Image id does not exist.", HttpStatus.BAD_REQUEST);
+      }
+      images.addAll(image);
+    }
+
+    return new ResponseEntity<>(new GetImagesDataResponse("Images data received successfully.", images), HttpStatus.OK);
   }
 
   public ResponseEntity<?> deleteImage(String imageId) {

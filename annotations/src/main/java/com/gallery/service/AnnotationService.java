@@ -1,6 +1,7 @@
 package com.gallery.service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -76,6 +77,15 @@ public class AnnotationService {
     }
 
     return new ResponseEntity<>(new AnnotationsResponse("Retrieved annotation", annotations), HttpStatus.OK);
+  }
+
+  public List<String> getAllImageIdByAnnotations(List<Annotation> list) {
+    List<String> imageId = new ArrayList<>();
+    for (Annotation annotation : list) {
+      imageId.add(annotation.getImageId());
+    }
+
+    return imageId;
   }
 
   public ResponseEntity<AnnotationsResponse> getAllAnnotations() {

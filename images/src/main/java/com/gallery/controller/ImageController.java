@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@CrossOrigin
 @RequestMapping(value = "/image")
 public class ImageController {
   @Autowired
@@ -56,13 +57,16 @@ public class ImageController {
     return imageService.getImageData(imageId);
   }
 
-  @CrossOrigin(origins = "*")
   @RequestMapping(value = "/user/{userId}", method = RequestMethod.GET)
   public ResponseEntity<?> getImagesDataByUserId(@PathVariable("userId") String userId) {
     return imageService.getImagesDataByUserId(userId);
   }
 
-  @CrossOrigin(origins = "*")
+  @RequestMapping(value = "/annotation/{userId}", method = RequestMethod.GET)
+  public ResponseEntity<?> getImagesDataByAnnotationId(@PathVariable("userId") String userId) {
+    return imageService.getImagesDataByAnnotationId(userId);
+  }
+
   @RequestMapping(value = "/{imageId}", method = RequestMethod.DELETE)
   public ResponseEntity<?> deleteImage(@PathVariable("imageId") String imageId) {
     return imageService.deleteImage(imageId);

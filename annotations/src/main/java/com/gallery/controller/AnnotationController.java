@@ -1,5 +1,7 @@
 package com.gallery.controller;
 
+import java.util.List;
+
 import com.gallery.core.request.AnnotationRequest;
 import com.gallery.core.request.AnnotationVoteRequest;
 import com.gallery.core.response.AnnotationResponse;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(value = "/annotation")
+@CrossOrigin
 public class AnnotationController {
 
   @Autowired
@@ -60,10 +63,15 @@ public class AnnotationController {
     return annotationService.getAllAnnotationsByImageId(imageId);
   }
 
-  @CrossOrigin(origins = "*")
   @RequestMapping(value = "/user/{userId}", method = RequestMethod.GET)
   public ResponseEntity<AnnotationsResponse> getAllAnnotationsByUserId(@PathVariable("userId") String userId) {
     return annotationService.getAllAnnotationsByUserId(userId);
+  }
+
+  @RequestMapping(value = "/user/images/{userId}", method = RequestMethod.GET)
+  public List<String> getListOfAllAnnotationsByUserId(@PathVariable("userId") String userId) {
+    ResponseEntity<AnnotationsResponse> response = annotationService.getAllAnnotationsByUserId(userId);
+    return annotationService.getAllImageIdByAnnotations(response.getBody().getAnnotations());
   }
 
   @RequestMapping(value = "/{annotationId}", method = RequestMethod.DELETE)

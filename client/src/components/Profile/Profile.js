@@ -48,15 +48,27 @@ const HoverContent = styled.div.attrs(() => ({
 
 function Profile() {
   const userData = useFetch("http://localhost:8080/api/users/user/cait");
-  const imageData = useFetch(
-    "http://localhost:8080/api/images/image/user/cait"
+  const userImageData = useFetch(
+    "http://localhost:8080/api/images/image/user/5fe6646148b9896b7968bf69"
   );
   const annotationData = useFetch(
-    "http://localhost:8080/api/image/annotations/annotation/user/cait"
+    "http://localhost:8080/api/annotations/annotation/user/5fe6646148b9896b7968bf69"
   );
 
+  const imagesByAnnotation = useFetch(
+    "http://localhost:8080/api/images/image/annotation/5fe6646148b9896b7968bf69"
+  );
+  /**
+   * Get userId
+   * Get annotations by the userId
+   * For each annotation, get the image using the imageId from the annotation
+   * Return images
+   */
+
   console.log(userData.data);
-  console.log(imageData.data);
+  console.log(userImageData.data);
+  console.log(annotationData.data);
+  console.log(imagesByAnnotation.data);
 
   return (
     <Container fluid>
@@ -75,7 +87,9 @@ function Profile() {
                 <Col lg={4} className="grow">
                   <UserDetailsHeading>Photos</UserDetailsHeading>
                   <UserDetails>
-                    {imageData.isLoading ? "" : imageData.data.msg.date}
+                    {userImageData.isLoading
+                      ? ""
+                      : userImageData.data.images.length}
                   </UserDetails>
                 </Col>
                 <Col lg={4} className=" grow">
@@ -88,10 +102,9 @@ function Profile() {
                 <Col lg={4} className="grow">
                   <UserDetailsHeading>Annotations</UserDetailsHeading>
                   <UserDetails>
-                    {" "}
                     {annotationData.isLoading
                       ? ""
-                      : annotationData.data.msg.date}
+                      : annotationData.data.annotations.length}
                   </UserDetails>
                 </Col>
               </Row>
@@ -107,45 +120,30 @@ function Profile() {
             </Col>
           </Row>
           <Row className="mt3">
-            <Col>
-              <ImageOverlay
-                className="mw5"
-                src={Dexter}
-                description={
-                  <Hover>
-                    <HoverContent>Title</HoverContent>
-                    <HoverContent>Description</HoverContent>
-                    <HoverContent>User</HoverContent>
-                  </Hover>
-                }
-              />
-            </Col>
-            <Col>
-              <ImageOverlay
-                className="mw5"
-                src={Dexter}
-                description={
-                  <Hover>
-                    <HoverContent>Title</HoverContent>
-                    <HoverContent>Description</HoverContent>
-                    <HoverContent>User</HoverContent>
-                  </Hover>
-                }
-              />
-            </Col>
-            <Col>
-              <ImageOverlay
-                className="mw5"
-                src={Dexter}
-                description={
-                  <Hover>
-                    <HoverContent>Title</HoverContent>
-                    <HoverContent>Description</HoverContent>
-                    <HoverContent>User</HoverContent>
-                  </Hover>
-                }
-              />
-            </Col>
+            {userImageData.isLoading
+              ? ""
+              : userImageData.data.images.map((image, key) => {
+                  return (
+                    <Col className="pa3">
+                      <ImageOverlay
+                        key={key}
+                        className="mw5"
+                        src={Dexter}
+                        description={
+                          <Hover>
+                            <HoverContent>
+                              <p className="f3">{image.title}</p>
+                            </HoverContent>
+                            <HoverContent>{image.description}</HoverContent>
+                            {/* <HoverContent className="ba">
+                              <p className="f7">{image.userId}</p>
+                            </HoverContent> */}
+                          </Hover>
+                        }
+                      />
+                    </Col>
+                  );
+                })}
           </Row>
         </Col>
       </Row>
@@ -157,45 +155,27 @@ function Profile() {
             </Col>
           </Row>
           <Row className="mt3">
-            <Col>
-              <ImageOverlay
-                className="mw5"
-                src={Dexter}
-                description={
-                  <Hover>
-                    <HoverContent>Title</HoverContent>
-                    <HoverContent>Description</HoverContent>
-                    <HoverContent>User</HoverContent>
-                  </Hover>
-                }
-              />
-            </Col>
-            <Col>
-              <ImageOverlay
-                className="mw5"
-                src={Dexter}
-                description={
-                  <Hover>
-                    <HoverContent>Title</HoverContent>
-                    <HoverContent>Description</HoverContent>
-                    <HoverContent>User</HoverContent>
-                  </Hover>
-                }
-              />
-            </Col>
-            <Col>
-              <ImageOverlay
-                className="mw5"
-                src={Dexter}
-                description={
-                  <Hover>
-                    <HoverContent>Title</HoverContent>
-                    <HoverContent>Description</HoverContent>
-                    <HoverContent>User</HoverContent>
-                  </Hover>
-                }
-              />
-            </Col>
+            {imagesByAnnotation.isLoading
+              ? ""
+              : imagesByAnnotation.data.images.map((image, key) => {
+                  return (
+                    <Col className="pa3">
+                      <ImageOverlay
+                        key={key}
+                        className="mw5"
+                        src={Dexter}
+                        description={
+                          <Hover>
+                            <HoverContent>
+                              <p className="f3">{image.title}</p>
+                            </HoverContent>
+                            <HoverContent>{image.description}</HoverContent>
+                          </Hover>
+                        }
+                      />
+                    </Col>
+                  );
+                })}
           </Row>
         </Col>
       </Row>
