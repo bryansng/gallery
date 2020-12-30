@@ -49,7 +49,7 @@ function RecentAnnotations(props) {
 
   return (
     <Container>
-      <Title></Title>
+      <Title>Recent Annoations</Title>
       <CustomCardDeck>
         {annotations.map((annotation) => (
           <AnnotationCard
