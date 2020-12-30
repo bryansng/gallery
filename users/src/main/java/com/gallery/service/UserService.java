@@ -64,30 +64,6 @@ public class UserService {
     return new ResponseEntity<>(new RegisterResponse("User registered successfully.", user, token), HttpStatus.CREATED);
   }
 
-  /**
-   * Create user
-   *
-   * @param username
-   * @return
-   */
-  public ResponseEntity<UserResponse> createUser(String email, String username) {
-    boolean userExists = mongoTemplate.exists(Query.query(Criteria.where("username").is(username)), User.class,
-        Constants.USER_COLLECTION);
-
-    if (userExists) {
-      return new ResponseEntity<>(new UserResponse("Username exists", null), HttpStatus.BAD_REQUEST);
-    }
-
-    User user = new User(username, email, LocalDateTime.now());
-    user = mongoTemplate.insert(user, Constants.USER_COLLECTION);
-
-    RestTemplate restTemplate = new RestTemplate();
-    HttpEntity<User> request = new HttpEntity<>(user);
-    restTemplate.postForObject(dotenv.get("SEARCH_SERVICE_USER_POST"), request, Object.class);
-
-    return new ResponseEntity<>(new UserResponse("User created", user), HttpStatus.CREATED);
-  }
-
   // signin
   public ResponseEntity<SignInResponse> getUserByEmail(String email, String token) {
     User user = mongoTemplate.findOne(Query.query(Criteria.where("email").is(email)), User.class,
@@ -149,7 +125,7 @@ public class UserService {
 
     RestTemplate restTemplate = new RestTemplate();
     HttpEntity<User> request = new HttpEntity<>(user);
-    restTemplate.exchange(dotenv.get("SEARCH_SERVICE_USER_UPDATE") + user.getId(), HttpMethod.PUT, request,
+    restTemplate.exchange(dotenv.get("SEARCH_SERVICE_USER_UPDATE") + currUsername, HttpMethod.PUT, request,
         Object.class);
 
     return new ResponseEntity<>(new UserResponse("Username updated from " + currUsername + " to " + newUsername, user),

@@ -8,6 +8,9 @@ import Image from "./components/Image/Image.js";
 import routes from "./config/routes";
 
 export default function App() {
+  const [isSearch, setIsSearch] = useState(false);
+  const [searchEndpoint, setSearchEndpoint] = useState("");
+
   const {
     isAuthenticated,
     token,
@@ -28,7 +31,7 @@ export default function App() {
 
   const components = {};
   components[routes.homepage] = (
-    <Home setRoute={updateRoute} setRouteData={updateRoute} />
+    <Home setRoute={updateRoute} setRouteData={updateRouteData} />
   );
   components[routes.view_image] = (
     <Image
@@ -37,6 +40,15 @@ export default function App() {
       setRouteData={updateRouteData}
     />
   );
+  components[routes.searchPage] = (
+    <Search 
+      isSearch={isSearch} 
+      searchEndpoint={searchEndpoint}
+      setRoute={updateRoute} 
+      setRouteData={updateRouteData} 
+      routeData={routeData} 
+    />
+  )
 
   return (
     <div>
@@ -46,6 +58,8 @@ export default function App() {
         user={user}
         setRoute={updateRoute}
         setRouteData={updateRouteData}
+        setIsSearch={setIsSearch}
+        setSearchEndpoint={setSearchEndpoint}
       />
       {/* {authComponent} */}
       {components[route]}
