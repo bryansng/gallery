@@ -11,11 +11,12 @@ const Container = styled.div.attrs({
 
 function Navigation(props) {
   const { setRoute } = props;
+
   return (
     <Container>
       <Logo setRoute={setRoute} />
       <Search />
-      <Upload />
+      <Upload {...props} />
       <Account />
     </Container>
   );
