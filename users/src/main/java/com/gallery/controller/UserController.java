@@ -17,17 +17,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "/user")
 @CrossOrigin
 public class UserController {
-
   @Autowired
   UserService userService;
 
   public UserController() {
-  }
-
-  @CrossOrigin(origins = "*")
-  @RequestMapping(method = RequestMethod.POST)
-  public ResponseEntity<UserResponse> createUser(@RequestBody UserRequest userRequest) {
-    return userService.createUser(userRequest.getEmail(), userRequest.getUsername());
   }
 
   @CrossOrigin(origins = "*")

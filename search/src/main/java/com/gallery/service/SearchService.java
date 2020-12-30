@@ -94,9 +94,9 @@ public class SearchService {
    * @param userRequest
    * @return
    */
-  public ResponseEntity<ObjectResponse> updateUsername(User user) {
+  public ResponseEntity<ObjectResponse> updateUsername(String currUsername, User user) {
     Query searchQuery = new NativeSearchQueryBuilder()
-        .withQuery(matchQuery("id", user.getId()).minimumShouldMatch("100%")).build();
+        .withQuery(matchQuery("username", currUsername).minimumShouldMatch("100%")).build();
 
     SearchHits<User> users = elasticSearchTemplate.search(searchQuery, User.class,
         IndexCoordinates.of(Constants.USER_INDEX_NAME));

@@ -15,7 +15,7 @@ function Navigation(props) {
   return (
     <Container>
       <Logo setRoute={setRoute} />
-      <Search />
+      <Search {...props} />
       <Upload {...props} />
       <Account />
     </Container>
