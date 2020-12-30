@@ -5,6 +5,7 @@ import useAuthentication from "./components/Authentication/Authentication";
 import useRouter from "./components/Router/Router";
 import Home from "./components/Home/Home.js";
 import ViewImage from "./components/Image/Image.js";
+import Search from "./components/Search/Search.js";
 import routes from "./config/routes";
 
 export default function App() {
@@ -41,14 +42,14 @@ export default function App() {
     />
   );
   components[routes.searchPage] = (
-    <Search 
-      isSearch={isSearch} 
+    <Search
+      isSearch={isSearch}
       searchEndpoint={searchEndpoint}
-      setRoute={updateRoute} 
-      setRouteData={updateRouteData} 
-      routeData={routeData} 
+      setRoute={updateRoute}
+      setRouteData={updateRouteData}
+      routeData={routeData}
     />
-  )
+  );
 
   return (
     <div>
