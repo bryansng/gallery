@@ -24,12 +24,6 @@ public class UserController {
   }
 
   @CrossOrigin(origins = "*")
-  @RequestMapping(method = RequestMethod.POST)
-  public ResponseEntity<UserResponse> createUser(@RequestBody UserRequest userRequest) {
-    return userService.createUser(userRequest.getEmail(), userRequest.getUsername());
-  }
-
-  @CrossOrigin(origins = "*")
   @RequestMapping(value = "/{username}", method = RequestMethod.GET)
   public ResponseEntity<UserResponse> getUser(@PathVariable("username") String username) {
     return userService.getUser(username);
