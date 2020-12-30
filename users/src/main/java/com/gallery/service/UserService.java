@@ -93,6 +93,17 @@ public class UserService {
     return new ResponseEntity<>(new UserResponse("Retrieved user", user), HttpStatus.OK);
   }
 
+  public ResponseEntity<UserResponse> getUserById(String userId) {
+    User user = mongoTemplate.findOne(Query.query(Criteria.where("id").is(userId)), User.class,
+        Constants.USER_COLLECTION);
+
+    if (user == null) {
+      return new ResponseEntity<>(new UserResponse("Username does not exist", null), HttpStatus.NOT_FOUND);
+    }
+
+    return new ResponseEntity<>(new UserResponse("Retrieved user", user), HttpStatus.OK);
+  }
+
   /**
    * Update user
    *

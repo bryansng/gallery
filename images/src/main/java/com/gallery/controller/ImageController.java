@@ -7,6 +7,7 @@ import com.gallery.service.ImageService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(value = "/image")
+@CrossOrigin
 public class ImageController {
   @Autowired
   ImageService imageService;
@@ -53,6 +55,11 @@ public class ImageController {
   @RequestMapping(value = "/{imageId}", method = RequestMethod.GET)
   public ResponseEntity<?> getImageData(@PathVariable("imageId") String imageId) {
     return imageService.getImageData(imageId);
+  }
+
+  @RequestMapping(value = "/recent/{numOfImages}", method = RequestMethod.GET)
+  public ResponseEntity<?> getRecentImageData(@PathVariable("numOfImages") int numOfImages) {
+    return imageService.getRecentImageData(numOfImages);
   }
 
   @RequestMapping(value = "/user/{userId}", method = RequestMethod.GET)
