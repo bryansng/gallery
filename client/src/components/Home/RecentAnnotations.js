@@ -3,6 +3,7 @@ import styled from "styled-components";
 import AnnotationCard from "./AnnotationCard";
 import CardDeck from "react-bootstrap/CardDeck";
 import content from "../../config/content.json";
+import routes from "../../config/routes";
 
 const Container = styled.div.attrs({
   className: `center mt5 mb5`,
@@ -30,6 +31,7 @@ function GetUsername(props) {
 }
 
 function RecentAnnotations(props) {
+  const { setRoute, setRouteData } = props;
   const [annotations, setAnnotations] = useState([]);
 
   useEffect(() => {
@@ -55,8 +57,13 @@ function RecentAnnotations(props) {
             creationDate={annotation.creationDate}
             content={annotation.content}
             totalVotes={annotation.totalVotes}
-            imageId={annotation.imageId}
-            {...props}
+            onClick={() => {
+              setRoute(routes.view_image);
+              setRouteData({
+                imageId: annotation.imageId,
+              });
+              console.log("CLICKED ANNOTATION GOING TO IMAGE NOW");
+            }}
           />
         ))}
       </CustomCardDeck>

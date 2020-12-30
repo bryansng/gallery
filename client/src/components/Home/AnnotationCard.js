@@ -48,19 +48,11 @@ function AnnotationCard(props) {
     content,
     totalVotes,
     imageId,
+    onClick,
   } = props;
 
   return (
-    <CustomCard
-      onClick={(e) => {
-        e.preventDefault();
-        setRoute(routes.view_image);
-        setRouteData({
-          imageId: { imageId },
-        });
-        console.log("CLICKED IMAGE");
-      }}
-    >
+    <CustomCard onClick={() => onClick()}>
       <Card.Body>
         <Card.Subtitle className="pv1">
           {username} @ {creationDate}
