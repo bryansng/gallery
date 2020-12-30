@@ -6,13 +6,12 @@ import ImageCarousel from "./ImageCarousel";
 // import Navigation from "./components/Navigation/Navigation.js";
 
 const Container = styled.div.attrs({
-  className: `center w-75-l w-80 `,
+  className: `center w-60-l w-70 mt3`,
 })``;
 
 function Home(props) {
   return (
     <Container>
-      <h2>Recent images</h2>
       <ImageCarousel {...props} />
     </Container>
   );

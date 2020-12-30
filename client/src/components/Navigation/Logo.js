@@ -1,11 +1,32 @@
-import React from "react"
-import styled from "styled-components"
+import React from "react";
+import styled from "styled-components";
+import routes from "../../config/routes";
 
-const Gallery = styled.h1.attrs({
+const GalleryLogo = styled.h1.attrs({
   className: `avenir fw6 ma0`,
-})``
+})``;
 
-function Logo() {
-  return <Gallery>Gallery.</Gallery>
+const Link = styled.a.attrs({
+  className: `pointer near-black dim`,
+})`
+  text-decoration: none;
+  :hover {
+    text-decoration: none;
+    color: #111;
+  }
+`;
+function Logo(props) {
+  const { setRoute } = props;
+  return (
+    <Link
+      onClick={(e) => {
+        e.preventDefault();
+        setRoute(routes.homepage);
+        console.log("CLICKED LOGO");
+      }}
+    >
+      <GalleryLogo>Gallery.</GalleryLogo>
+    </Link>
+  );
 }
-export default Logo
+export default Logo;

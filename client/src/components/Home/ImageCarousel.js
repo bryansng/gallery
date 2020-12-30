@@ -9,7 +9,6 @@ import {
   ButtonBack,
   ButtonNext,
   DotGroup,
-  Dot,
   Image,
 } from "pure-react-carousel";
 
@@ -19,11 +18,17 @@ const Container = styled.div.attrs({
   className: `center mt5 mb5`,
 })``;
 
+const Title = styled.h2.attrs({
+  className: `mt2 mb5 avenir fw6 f2 dark-gray`,
+})``;
+
 const CenteredSlider = styled(Slider).attrs({
   className: `center`,
 })`
   .carousel__slider-tray {
     transition: 0.2s ease-in-out;
+    padding: 0;
+    margin: 0;
   }
 `;
 
@@ -169,6 +174,7 @@ function ImageCarousel(props) {
 
   return (
     <Container>
+      <Title>Recent Images</Title>
       <CarouselProvider
         totalSlides={5}
         currentSlide={2}
@@ -176,14 +182,14 @@ function ImageCarousel(props) {
         hasMasterSpinner
         lockOnWindowScroll
         infinite
-        className="overflow-x-hidden"
+        className="overflow-x-hidden ma0"
       >
         <CenteredSlider>
           {imagesData.map((image, index) => (
             <CustomSlide
               index={index}
               classNameHidden="o-50"
-              classNameVisible="o-100 grow ma0 "
+              classNameVisible="o-100 grow"
               className="center flex flex-row items-center "
               innerClassName="center v-mid "
             >
