@@ -58,9 +58,10 @@ public class SearchController {
      * @return
      */
     @CrossOrigin(origins = "*")
-    @RequestMapping(value = "/user/{userID}", method = RequestMethod.PUT)
-    public ResponseEntity<ObjectResponse> updateUsername(@PathVariable("userID") String id, @RequestBody User user) {
-        return searchService.updateUsername(user);
+    @RequestMapping(value = "/user/{currUsername}", method = RequestMethod.PUT)
+    public ResponseEntity<ObjectResponse> updateUsername(@PathVariable("currUsername") String currUsername,
+            @RequestBody User user) {
+        return searchService.updateUsername(currUsername, user);
     }
 
     /**
