@@ -3,6 +3,7 @@ import React from "react";
 import styled from "styled-components";
 import "tachyons";
 import ImageCarousel from "./ImageCarousel";
+import RecentAnnotations from "./RecentAnnotations";
 // import Navigation from "./components/Navigation/Navigation.js";
 
 const Container = styled.div.attrs({
@@ -13,6 +14,7 @@ function Home(props) {
   return (
     <Container>
       <ImageCarousel {...props} />
+      <RecentAnnotations {...props} />
     </Container>
   );
 }

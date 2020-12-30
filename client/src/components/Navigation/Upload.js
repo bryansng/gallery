@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react"
-import styled from "styled-components"
-import Modal from "react-bootstrap/Modal"
-import Form from "react-bootstrap/Form"
-import { ReactComponent as Icon } from "../../assets/svgs/add.svg"
+import React, { useState, useEffect } from "react";
+import styled from "styled-components";
+import Modal from "react-bootstrap/Modal";
+import Form from "react-bootstrap/Form";
+import { ReactComponent as Icon } from "../../assets/svgs/add.svg";
 
 const UploadButton = styled.button.attrs({
   className: `bn bg-transparent b--transparent pa0 ma0 `,
@@ -14,14 +14,14 @@ const UploadButton = styled.button.attrs({
     fill: #505050;
     transition: 0.15s ease-in;
   }
-`
+`;
 
 const UploadIcon = styled(Icon).attrs({ className: `shadow-hover` })`
   height: 1.6rem;
   object-fit: contain;
-`
+`;
 
-const UploadFile = styled(Form.File).attrs({ className: `vh50` })``
+const UploadFile = styled(Form.File).attrs({ className: `vh50` })``;
 
 const Button = styled.button.attrs({
   className: `b--gray ma0 br2 ba hover-bg-light-gray`,
@@ -34,10 +34,10 @@ const Button = styled.button.attrs({
     border-color: #505050;
     transition: 0.15s ease-in;
   }
-`
+`;
 
 function UploadModal(props) {
-  const [fileName, setFileName] = useState("Drop or select image here")
+  const [fileName, setFileName] = useState("Drop or select image here");
   return (
     <Modal {...props} size="lg" centered>
       <Modal.Header closeButton>
@@ -60,24 +60,22 @@ function UploadModal(props) {
         </Modal.Footer>
       </Form.Group>
     </Modal>
-  )
+  );
 }
 
 function Upload() {
-  const [show, setShow] = useState(false)
-
-  const handleClose = () => setShow(false)
-  const handleShow = () => setShow(true)
+  const [show, setShow] = useState(false);
+  const toggleShow = () => setShow(true);
 
   return (
     <>
-      <UploadButton type="button" onClick={handleShow}>
+      <UploadButton type="button" onClick={toggleShow}>
         <UploadIcon />
       </UploadButton>
 
       <UploadModal show={show} onHide={() => setShow(false)} />
     </>
-  )
+  );
 }
 
-export default Upload
+export default Upload;

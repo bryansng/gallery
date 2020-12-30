@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 
+import org.springframework.data.domain.Sort;
 import com.gallery.config.MongoConfig;
 import com.gallery.constants.Constants;
 import com.gallery.core.response.AnnotationResponse;
@@ -80,6 +81,19 @@ public class AnnotationService {
 
   public ResponseEntity<AnnotationsResponse> getAllAnnotations() {
     List<Annotation> annotations = mongoTemplate.findAll(Annotation.class, Constants.ANNOTATION_COLLECTION);
+
+    if (annotations == null) {
+      return new ResponseEntity<>(new AnnotationsResponse("Annotations does not exist", null), HttpStatus.NOT_FOUND);
+    }
+
+    return new ResponseEntity<>(new AnnotationsResponse("Retrieved annotations", annotations), HttpStatus.OK);
+  }
+
+  public ResponseEntity<AnnotationsResponse> getRecentAnnotations(int numberOfAnnotations) {
+    Query query = new Query();
+    query.limit(numberOfAnnotations);
+    query.with(Sort.by(Sort.Direction.DESC, "creationDate"));
+    List<Annotation> annotations = mongoTemplate.find(query, Annotation.class, Constants.ANNOTATION_COLLECTION);
 
     if (annotations == null) {
       return new ResponseEntity<>(new AnnotationsResponse("Annotations does not exist", null), HttpStatus.NOT_FOUND);
