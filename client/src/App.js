@@ -27,9 +27,9 @@ export default function App() {
   });
 
   const components = {};
-  components[routes.homepage] = (
-    <Home setRoute={updateRoute} setRouteData={updateRoute} />
-  );
+  // components[routes.homepage] = (
+  //   <Home setRoute={updateRoute} setRouteData={updateRoute} />
+  // );
   components[routes.view_image] = (
     <Image
       routeData={routeData}
@@ -47,7 +47,7 @@ export default function App() {
         setRoute={updateRoute}
         setRouteData={updateRouteData}
       />
-      {/* {authComponent} */}
+      {authComponent}
       {components[route]}
       {/* <Home />
       <Image /> */}
