@@ -51,8 +51,7 @@ const Button = styled.button.attrs({
   }
 `;
 
-function UploadModal(props) {
-  const { show, onHide, token, user, setRoute, setRouteData } = props;
+function UploadModal({ show, onHide, token, user, setRoute, setRouteData }) {
   const [fileName, setFileName] = useState(null);
 
   const handleSubmit = (e) => {
@@ -84,7 +83,7 @@ function UploadModal(props) {
         throw new Error(`${resp.status} Unable to create new image.`);
       })
       .then((res) => {
-        setRouteData({ image: res.image });
+        setRouteData(res.image.id);
         setRoute(routes.view_image);
         console.log("Image created successfully.");
       })

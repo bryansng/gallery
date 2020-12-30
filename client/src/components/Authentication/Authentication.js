@@ -53,6 +53,7 @@ function useAuthentication() {
         })
         .catch((error) => {
           console.error(error);
+          logOut();
         });
     }
   });

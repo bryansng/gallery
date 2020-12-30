@@ -9,7 +9,7 @@ function useRouter() {
   );
   const [routeData, setRouteData] = useState(
     window.localStorage.getItem("routeData") === null
-      ? {}
+      ? ""
       : JSON.parse(window.localStorage.getItem("routeData"))
   );
 
