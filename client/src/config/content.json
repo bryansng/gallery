@@ -10,7 +10,7 @@
     "image": {
       "create": "http://localhost:8080/api/images/image/upload",
       "get_image": "http://localhost:8080/api/images/image/download",
-      "get_data": "http://localhost:8080/api/images/image/upload",
+      "get_data": "http://localhost:8080/api/images/image",
       "edit": "http://localhost:8080/api/images/image",
       "delete": "http://localhost:8080/api/images/image/delete",
       "increment": "http://localhost:8080/api/images/image/increment",

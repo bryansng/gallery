@@ -1,14 +1,11 @@
 import React, { useState, useEffect } from "react";
 import Profile from "./components/Profile/Profile.js";
 import Navigation from "./components/Navigation/Navigation";
-import Authentication from "./components/Authentication/Authentication";
+import useAuthentication from "./components/Authentication/Authentication";
+import useRouter from "./components/Router/Router";
 import Home from "./components/Home/Home.js";
+import Image from "./components/Image/Image.js";
 import routes from "./config/routes";
-
-function Image(props) {
-  const { routeData } = props;
-  return <div>Image Id: {routeData.imageId}</div>;
-}
 
 export default function App() {
   const {
@@ -19,7 +16,9 @@ export default function App() {
     logOut,
     register,
     authComponent,
-  } = Authentication();
+  } = useAuthentication();
+
+  const { route, routeData, updateRoute, updateRouteData } = useRouter();
 
   useEffect(() => {
     // if (isAuthenticated) {
@@ -27,26 +26,28 @@ export default function App() {
     // }
   });
 
-  const [route, setRoute] = useState(routes.homepage);
-  const [routeData, setRouteData] = useState({});
-
   const components = {};
-  components[routes.homepage] = (
-    <Home setRoute={setRoute} setRouteData={setRouteData} />
-  );
+  // components[routes.homepage] = (
+  //   <Home setRoute={updateRoute} setRouteData={updateRoute} />
+  // );
   components[routes.view_image] = (
     <Image
       routeData={routeData}
-      setRoute={setRoute}
-      setRouteData={setRouteData}
+      setRoute={updateRoute}
+      setRouteData={updateRouteData}
     />
   );
 
   return (
     <div>
       {/* Hello, this is the root level */}
-      <Navigation />
-      {/* {authComponent} */}
+      <Navigation
+        token={token}
+        user={user}
+        setRoute={updateRoute}
+        setRouteData={updateRouteData}
+      />
+      {authComponent}
       {components[route]}
       {/* <Home />
       <Image /> */}

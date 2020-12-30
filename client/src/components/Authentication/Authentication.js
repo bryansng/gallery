@@ -2,15 +2,8 @@ import React, { useState, useEffect } from "react";
 import { service_endpoints } from "../../config/content.json";
 const userEndpoints = service_endpoints.user;
 
-const leToken =
-  "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJ1Yi1aN0hleDctSy1fQTh2U3ZUX0JINFdPM2ItRy02RFdWdDdJcGFXRzFFIn0.eyJleHAiOjE2MTAxMjI3NjgsImlhdCI6MTYwOTI1ODc2OCwianRpIjoiNjMyOWE5N2QtMTI0OC00M2Q1LTk2ZWYtYmJiN2YyYTFhYTgyIiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDkwL2F1dGgvcmVhbG1zL2dhbGxlcnkiLCJzdWIiOiI4MzYxMWUyOS1hMjZkLTRmZGYtYTNjYi0yYjkxMjI4ZWJlYzEiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJsb2dpbi1hcHAiLCJzZXNzaW9uX3N0YXRlIjoiZTY4NmUyYjEtNDBiOC00NzUxLTk0ZDQtYTBiMmY2OTRlYTY1IiwiYWNyIjoiMSIsInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJvZmZsaW5lX2FjY2VzcyIsInVtYV9hdXRob3JpemF0aW9uIl19LCJzY29wZSI6ImVtYWlsIHByb2ZpbGUiLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsInByZWZlcnJlZF91c2VybmFtZSI6InRlc3QxQGgxaDExMTExMW8xLmNvbSIsImVtYWlsIjoidGVzdDFAaDFoMTExMTExbzEuY29tIn0.e6-xUsBA9-H3xJaXKCK7PYCEZ5sA0uheixB0VaEpjxjhHxZiLLAK4Ejj1YmQaUmJXs1-FtMD5iWpiGoX43efR3GExlrPwvR3qNtFk_2dpSxZoLzBhYbI-r6L_xaoTxkK5Uq6iEdop4Q7ZgVb51nrXnDP9shd4V_i7qF8ZELF6xJemOcRAXb05qID7bMW4G8FW7T46V3MRxHISfuADWTkd93Gx9Y0VvjgxIIC87vWfM0jZvc9pyzHD1xq1GtTNbkADi6WBT00hPAp6Df-iupQW9NFsAcnc5foFr3oFlTWaBx9gIAIIl4bAc4NYHkaVJV8_jOI-OpSBN3V9N-N-FsRig";
-
-const loggedIn = false;
-
-function Authentication(props) {
-  // window.localStorage.removeItem("token");
+function useAuthentication() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  // const [token, setToken] = useState(loggedIn ? leToken : "");
   const [token, setToken] = useState(window.localStorage.getItem("token"));
   const userInitialState = {
     id: "",
@@ -20,13 +13,6 @@ function Authentication(props) {
   };
   const [user, setUser] = useState(userInitialState);
 
-  // function takes in
-
-  // if not authed, show signin or register.
-  // else, show user profile button.
-
-  // App.js handles auth and tokening.
-  // passes token and user object to other components.
   useEffect(() => {
     // open first time.
     // if (isAuthenticated) {
@@ -166,4 +152,4 @@ function Authentication(props) {
   };
 }
 
-export default Authentication;
+export default useAuthentication;

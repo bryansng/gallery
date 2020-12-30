@@ -9,12 +9,14 @@ const Container = styled.div.attrs({
   className: `center w-75-l w-80 flex flex-wrap flex-row justify-between items-center`,
 })``;
 
-function Navigation() {
+function Navigation(props) {
+  // const { user } = props;
+
   return (
     <Container>
       <Logo />
       <Search />
-      <Upload />
+      <Upload {...props} />
       <Account />
     </Container>
   );
