@@ -4,7 +4,7 @@ import Navigation from "./components/Navigation/Navigation";
 import useAuthentication from "./components/Authentication/Authentication";
 import useRouter from "./components/Router/Router";
 import Home from "./components/Home/Home.js";
-import Image from "./components/Image/Image.js";
+import ViewImage from "./components/Image/Image.js";
 import routes from "./config/routes";
 
 export default function App() {
@@ -27,11 +27,11 @@ export default function App() {
   });
 
   const components = {};
-  // components[routes.homepage] = (
-  //   <Home setRoute={updateRoute} setRouteData={updateRoute} />
-  // );
+  components[routes.homepage] = (
+    <Home setRoute={updateRoute} setRouteData={updateRouteData} />
+  );
   components[routes.view_image] = (
-    <Image
+    <ViewImage
       routeData={routeData}
       setRoute={updateRoute}
       setRouteData={updateRouteData}
@@ -50,7 +50,7 @@ export default function App() {
       {authComponent}
       {components[route]}
       {/* <Home />
-      <Image /> */}
+      <ViewImage /> */}
       {/* <Profile /> */}
     </div>
   );

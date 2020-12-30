@@ -158,19 +158,20 @@ function GetAnnotationNum(props) {
 const { recent, get_image } = content.service_endpoints.image;
 function ImageCarousel(props) {
   const { setRoute, setRouteData } = props;
+  const [isFetching, setIsFetching] = useState(false);
   const [imagesData, setImagesData] = useState([]);
 
   useEffect(() => {
-    console.log(`${recent}/5`);
-    if (imagesData.length === 0) {
+    if (!isFetching && imagesData.length === 0) {
+      setIsFetching(true);
       fetch(`${recent}/5`)
         .then((resp) => resp.json())
         .then((res) => {
           setImagesData(res.images);
-          console.log(res);
+          // console.log(res);
         });
     }
-  });
+  }, [isFetching, imagesData]);
 
   return (
     <Container>
@@ -192,6 +193,7 @@ function ImageCarousel(props) {
               classNameVisible="o-100 grow"
               className="center flex flex-row items-center "
               innerClassName="center v-mid "
+              key={index}
             >
               <Image
                 src={`${get_image}/${image.id}`}
@@ -199,12 +201,9 @@ function ImageCarousel(props) {
                 alt={image.title}
                 className="hide-child relative contain bg-center"
                 style={{ width: "45vw", minHeight: "45vh" }}
-                onClick={(e) => {
-                  e.preventDefault();
+                onClick={() => {
+                  setRouteData(image.id);
                   setRoute(routes.view_image);
-                  setRouteData({
-                    imageId: image.id,
-                  });
                   console.log("CLICKED IMAGE");
                 }}
               >

@@ -32,38 +32,38 @@ function GetUsername(props) {
 
 function RecentAnnotations(props) {
   const { setRoute, setRouteData } = props;
+  const [isFetching, setIsFetching] = useState(false);
   const [annotations, setAnnotations] = useState([]);
 
   useEffect(() => {
-    const url = `${content.service_endpoints.annotation.recent}/6`;
-    console.log(url);
-    if (annotations.length === 0) {
-      fetch(url)
+    if (!isFetching && annotations.length === 0) {
+      setIsFetching(true);
+      fetch(`${content.service_endpoints.annotation.recent}/6`)
         .then((resp) => resp.json())
         .then((res) => {
           setAnnotations(res.annotations);
+          setIsFetching(false);
           console.log(res);
         });
     }
-  });
+  }, [isFetching, annotations]);
 
   return (
     <Container>
       <Title>Recent Annoations</Title>
       <CustomCardDeck>
-        {annotations.map((annotation) => (
+        {annotations.map((annotation, index) => (
           <AnnotationCard
             username={<GetUsername userId={annotation.userId} />}
             creationDate={annotation.creationDate}
             content={annotation.content}
             totalVotes={annotation.totalVotes}
             onClick={() => {
+              setRouteData(annotation.imageId);
               setRoute(routes.view_image);
-              setRouteData({
-                imageId: annotation.imageId,
-              });
               console.log("CLICKED ANNOTATION GOING TO IMAGE NOW");
             }}
+            key={index}
           />
         ))}
       </CustomCardDeck>
