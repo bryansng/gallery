@@ -9,9 +9,6 @@ import Search from "./components/Search/Search.js";
 import routes from "./config/routes";
 
 export default function App() {
-  const [isSearch, setIsSearch] = useState(false);
-  const [searchEndpoint, setSearchEndpoint] = useState("");
-
   const {
     isAuthenticated,
     token,
@@ -41,13 +38,11 @@ export default function App() {
       setRouteData={updateRouteData}
     />
   );
-  components[routes.searchPage] = (
+  components[routes.search_keyword] = (
     <Search
-      isSearch={isSearch}
-      searchEndpoint={searchEndpoint}
+      routeData={routeData}
       setRoute={updateRoute}
       setRouteData={updateRouteData}
-      routeData={routeData}
     />
   );
 
@@ -59,8 +54,6 @@ export default function App() {
         user={user}
         setRoute={updateRoute}
         setRouteData={updateRouteData}
-        setIsSearch={setIsSearch}
-        setSearchEndpoint={setSearchEndpoint}
       />
       {authComponent}
       {components[route]}

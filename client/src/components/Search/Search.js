@@ -6,8 +6,9 @@ import Col from "react-bootstrap/Col";
 import useFetch from "react-fetch-hook";
 import { ImageOverlay } from "react-image-overlay-effect";
 import { FaUser } from "react-icons/fa";
-
+import content from "../../config/content.json";
 import Dexter from "../../assets/images/dexter.png";
+const searchEndpoints = content.service_endpoints.search;
 
 const Headers = styled.p.attrs(() => ({
   className: `f2 fw3 avenir `,
@@ -29,9 +30,10 @@ const HoverContent = styled.div.attrs(() => ({
   className: `text-white my-auto`,
 }))``;
 
-function Search({ searchEndpoint }) {
+function Search({ routeData }) {
+  const searchKeyword = routeData;
   const { isLoading, data } = useFetch(
-    "http://localhost:8080/api/search/" + searchEndpoint
+    `${searchEndpoints.search}/${searchKeyword}`
   );
 
   console.log(data);
@@ -114,7 +116,7 @@ function Search({ searchEndpoint }) {
                   </UserContainer>
 
                   {/* <Card>
-                    
+
                     <Card.Title className="avenir fw3">Dexter</Card.Title>
                   </Card> */}
                 </Col>
