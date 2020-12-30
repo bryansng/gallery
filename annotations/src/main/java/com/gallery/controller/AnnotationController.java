@@ -53,6 +53,12 @@ public class AnnotationController {
     return annotationService.getAllAnnotations();
   }
 
+  @RequestMapping(value = "/recent/{numberOfAnnotations}", method = RequestMethod.GET)
+  public ResponseEntity<AnnotationsResponse> getRecentAnnotations(
+      @PathVariable("numberOfAnnotations") int numberOfAnnotations) {
+    return annotationService.getRecentAnnotations(numberOfAnnotations);
+  }
+
   @RequestMapping(value = "/image/{imageId}", method = RequestMethod.GET)
   public ResponseEntity<AnnotationsResponse> getAllAnnotationsByImageId(@PathVariable("imageId") String imageId) {
     return annotationService.getAllAnnotationsByImageId(imageId);

@@ -23,7 +23,8 @@
       "get_by_image": "http://localhost:8080/api/annotations/annotation/image",
       "edit": "http://localhost:8080/api/annotations/annotation",
       "delete": "http://localhost:8080/api/annotations/annotation",
-      "vote": "http://localhost:8080/api/annotations/annotation/vote"
+      "vote": "http://localhost:8080/api/annotations/annotation/vote",
+      "recent": "http://localhost:8080/api/annotations/annotation/recent"
     },
     "search": {
       "search": "http://localhost:8080/api/search"

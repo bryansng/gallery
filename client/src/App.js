@@ -45,7 +45,7 @@ export default function App() {
   return (
     <div>
       {/* Hello, this is the root level */}
-      <Navigation />
+      <Navigation setRoute={setRoute} />
       {/* {authComponent} */}
       {components[route]}
       {/* <Home />
