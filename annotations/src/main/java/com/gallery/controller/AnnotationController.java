@@ -28,22 +28,19 @@ public class AnnotationController {
 
   @RequestMapping(method = RequestMethod.POST)
   public ResponseEntity<AnnotationResponse> createAnnotation(@RequestBody AnnotationRequest annotationRequest) {
-    return annotationService.createAnnotation(annotationRequest.getUserId(), annotationRequest.getImageId(),
-        annotationRequest.getCoordinates(), annotationRequest.getContent());
+    return annotationService.createAnnotation(annotationRequest);
   }
 
   @RequestMapping(value = "/{annotationId}", method = RequestMethod.PUT)
   public ResponseEntity<AnnotationResponse> updateAnnotation(@RequestBody AnnotationRequest annotationRequest,
       @PathVariable("annotationId") String annotationId) throws Exception {
-    return annotationService.updateAnnotation(annotationId, annotationRequest.getUserId(),
-        annotationRequest.getCoordinates(), annotationRequest.getContent());
+    return annotationService.updateAnnotation(annotationId, annotationRequest);
   }
 
   @RequestMapping(value = "/vote", method = RequestMethod.PUT)
   public ResponseEntity<AnnotationResponse> voteAnnotation(@RequestBody AnnotationVoteRequest annotationVoteRequest)
       throws Exception {
-    return annotationService.voteAnnotation(annotationVoteRequest.getAnnotationId(), annotationVoteRequest.getUserId(),
-        annotationVoteRequest.getVote());
+    return annotationService.voteAnnotation(annotationVoteRequest);
   }
 
   @RequestMapping(value = "/{annotationId}", method = RequestMethod.GET)
@@ -54,6 +51,12 @@ public class AnnotationController {
   @RequestMapping(method = RequestMethod.GET)
   public ResponseEntity<AnnotationsResponse> getAnnotations() {
     return annotationService.getAllAnnotations();
+  }
+
+  @RequestMapping(value = "/recent/{numberOfAnnotations}", method = RequestMethod.GET)
+  public ResponseEntity<AnnotationsResponse> getRecentAnnotations(
+      @PathVariable("numberOfAnnotations") int numberOfAnnotations) {
+    return annotationService.getRecentAnnotations(numberOfAnnotations);
   }
 
   @RequestMapping(value = "/image/{imageId}", method = RequestMethod.GET)

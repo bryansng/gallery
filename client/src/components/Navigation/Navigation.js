@@ -6,15 +6,15 @@ import Upload from "./Upload.js";
 import Account from "./Account.js";
 
 const Container = styled.div.attrs({
-  className: `center w-75-l w-80 flex flex-wrap flex-row justify-between items-center`,
+  className: `center w-75-l w-80 flex flex-wrap flex-row justify-between items-center mt3 mb3`,
 })``;
 
 function Navigation(props) {
-  // const { user } = props;
+  const { setRoute } = props;
 
   return (
     <Container>
-      <Logo />
+      <Logo setRoute={setRoute} />
       <Search />
       <Upload {...props} />
       <Account />

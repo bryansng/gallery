@@ -1,18 +1,18 @@
 import React from "react";
-// import Container from "react-bootstrap/Container";
 import styled from "styled-components";
 import "tachyons";
 import ImageCarousel from "./ImageCarousel";
-// import Navigation from "./components/Navigation/Navigation.js";
+import RecentAnnotations from "./RecentAnnotations";
 
 const Container = styled.div.attrs({
-  className: `center w-75-l w-80 `,
+  className: `center w-60-l w-70 mt3`,
 })``;
 
 function Home(props) {
   return (
     <Container>
       <ImageCarousel {...props} />
+      <RecentAnnotations {...props} />
     </Container>
   );
 }
