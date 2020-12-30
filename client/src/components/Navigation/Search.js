@@ -21,14 +21,16 @@ const SearchButton = styled.button.attrs({
   className: `bn bg-transparent b--transparent pa0 ma0`,
 })`
   position: absolute;
-  top: 48%;
-  right: -6.5%;
-  transform: translate(-50%, -50%);
+  top: 15%;
+  left: 0.5rem;
+  /* transform: translate(-50%, -50%); */
   fill: gray;
 `;
 const SearchInput = styled(Form.Control).attrs({
   className: ``,
-})``;
+})`
+  padding-left: 2.5rem;
+`;
 
 const SearchIcon = styled(MagnifyingGlass).attrs({
   className: ``,
