@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import Card from "react-bootstrap/Card";
 import { ReactComponent as Arrow } from "../../assets/svgs/arrow.svg";
-import routes from "../../config/routes";
 
 const Downvote = styled(Arrow).attrs({
   className: ``,
@@ -40,16 +39,7 @@ const DownvoteButton = styled.button.attrs({
 `;
 
 function AnnotationCard(props) {
-  const {
-    setRoute,
-    setRouteData,
-    username,
-    creationDate,
-    content,
-    totalVotes,
-    imageId,
-    onClick,
-  } = props;
+  const { username, creationDate, content, totalVotes, onClick } = props;
 
   return (
     <CustomCard onClick={() => onClick()}>
