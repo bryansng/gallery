@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { ReactComponent as Next } from "../../assets/svgs/next.svg";
 import content from "../../config/content.json";
+import { GetUsername } from "../Common/GetUsername.js";
+import { GetAnnotationNum } from "../Common/GetAnnotationNum.js";
 import {
   CarouselProvider,
   Slider,
@@ -122,32 +124,6 @@ const BackIcon = styled(Next).attrs({
   object-fit: contain;
   transform: rotate(180deg);
 `;
-
-function GetUsername(props) {
-  const { userId } = props;
-  const [name, setUsername] = useState("");
-  useEffect(() => {
-    fetch(`${content.service_endpoints.user.username}/${userId}`)
-      .then((resp) => resp.json())
-      .then((res) => {
-        setUsername(res.user.username);
-      });
-  });
-  return name;
-}
-
-function GetAnnotationNum(props) {
-  const { imageId } = props;
-  const [number, setNumber] = useState(0);
-  useEffect(() => {
-    fetch(`${content.service_endpoints.annotation.get_by_image}/${imageId}`)
-      .then((resp) => resp.json())
-      .then((res) => {
-        setNumber(res.annotations.length);
-      });
-  });
-  return number;
-}
 
 /**
  * Images as an array
