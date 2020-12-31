@@ -1,21 +1,45 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Boxes from "./Boxes";
+import AnnotationCard from "../Home/AnnotationCard";
 import { service_endpoints } from "../../config/content.json";
 import routes from "../../config/routes";
+import placeholderImage from "../../assets/images/placeholder.png";
+import { GetUsername } from "../Common/GetUsername.js";
 const imageEndpoints = service_endpoints.image;
 const annotationEndpoints = service_endpoints.annotation;
 
+const Container = styled.div.attrs({
+  className: `center mv5 flex flex-wrap mh0 pa0`,
+})``;
+
+const ImageContainer = styled.div.attrs({
+  className: `center mr1 flex flex-column w-70 ph4 w-100-m ph3-m ma0-m`,
+})``;
+
 const Image = styled.img.attrs({
-  className: ``,
+  className: `center`,
 })`
-  width: auto;
-  height: 500px;
+  max-height: 80vh;
 `;
+
+const ImageDescriptionContainer = styled.div.attrs({
+  className: `pb4`,
+})``;
+
+const Title = styled.h2.attrs({
+  className: `avenir fw6 f2 dark-gray`,
+})``;
+
+const AnnotationContainer = styled.div.attrs({
+  className: `center ml1 flex flex-column w-30 pr4 w-100-m ph3-m ma0-m`,
+})``;
+
+const AnnotationPrompt = styled.div.attrs({ className: `` })``;
 
 function ViewImage({ routeData, setRoute, setRouteData }) {
   var viewImageId = routeData;
-  viewImageId = "5fe931051897c026c1591825";
+  // viewImageId = "5fe931051897c026c1591825";
   const [isFetching, setIsFetching] = useState(false);
   const [isImageFetched, setIsImageFetched] = useState(false);
   const [isAnnotationFetched, setIsAnnotationFetched] = useState(false);
@@ -79,38 +103,54 @@ function ViewImage({ routeData, setRoute, setRouteData }) {
     annotationToView,
   ]);
 
+  // console.log(image.userId);
   return (
-    <div className="center">
-      <div className="absolute mt2">
-        <Boxes
-          annotations={annotations}
-          setAnnotationToView={setAnnotationToView}
-        />
+    <Container>
+      {/* <Boxes
+        annotations={annotations}
+        setAnnotationToView={setAnnotationToView}
+      /> */}
+      <ImageContainer>
         <Image
-          src={`${imageEndpoints.get_image}/${image.id}`}
+          src={
+            image ? `${imageEndpoints.get_image}/${image.id}` : placeholderImage
+          }
           alt={image.title}
         />
-        <div className="pb4">
-          Image Id: {image.id} <br />
-          Title: {image.title} <br />
-          Description: {image.description} <br />
-        </div>
-        <div>
-          Annotation id: {annotationToView ? annotationToView.annotationId : ""}
-          <br />
-          User id: {annotationToView ? annotationToView.userId : ""} <br />
-          image id: {annotationToView ? annotationToView.imageId : ""} <br />
-          content: {annotationToView ? annotationToView.content : ""} <br />
-          total votes: {annotationToView ? annotationToView.totalVotes : ""}
-          <br />
-          coordinates:
-          {annotationToView
-            ? JSON.stringify(annotationToView.rectangleCoordinates)
-            : ""}{" "}
-          <br />
-        </div>
-      </div>
-    </div>
+        <ImageDescriptionContainer>
+          <Title>{image.title}</Title>
+          <p className="i">
+            by <GetUsername userId={image.userId} />
+          </p>
+          {image.description}
+        </ImageDescriptionContainer>
+      </ImageContainer>
+
+      <AnnotationContainer>
+        <AnnotationPrompt>Make an annotation!</AnnotationPrompt>
+        {annotationToView ? (
+          <AnnotationCard
+            username={
+              annotationToView ? (
+                <GetUsername userId={annotationToView.userId} />
+              ) : (
+                ""
+              )
+            }
+            creationDate={annotationToView ? annotationToView.creationDate : ""}
+            content={annotationToView ? annotationToView.content : ""}
+            totalVotes={annotationToView ? annotationToView.totalVotes : ""}
+          />
+        ) : (
+          // coordinates:
+          // {annotationToView
+          //   ? JSON.stringify(annotationToView.rectangleCoordinates)
+          //   : ""}{" "}
+          // <br />
+          ""
+        )}
+      </AnnotationContainer>
+    </Container>
   );
 }
 
