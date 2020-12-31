@@ -1,11 +1,9 @@
 import React from "react";
 import styled from "styled-components";
 import Card from "react-bootstrap/Card";
-import * as dayjs from "dayjs";
+import { ShowDate } from "../Common/ShowDate";
 import { ReactComponent as Arrow } from "../../assets/svgs/arrow.svg";
-import relativeTime from "dayjs/plugin/relativeTime";
 
-dayjs.extend(relativeTime);
 const Downvote = styled(Arrow).attrs({
   className: ``,
 })`
@@ -51,7 +49,7 @@ function AnnotationCard({
     <CustomCard onClick={() => onClick()} className={extraClassName}>
       <Card.Body>
         <Card.Subtitle className="pv1">
-          {username} @ {dayjs(creationDate).fromNow()}
+          {username} @ <ShowDate creationDateTime={creationDate} />
         </Card.Subtitle>
         <Card.Text className="pv2">{content}</Card.Text>
         <div className="flex flex-wrap flex-row items-center">
