@@ -24,20 +24,6 @@ const UploadIcon = styled(Icon).attrs({ className: `shadow-hover` })`
   object-fit: contain;
 `;
 
-const FakeButton = styled.div.attrs({
-  className: `b--gray ma0 br2 ba hover-bg-light-gray tc pointer`,
-})`
-  padding: 6px 20px;
-  transition: 0.15s ease-out;
-  background-color: transparent;
-  min-width: 100px;
-  &:hover {
-    border-color: #505050;
-    transition: 0.15s ease-in;
-  }
-  user-select: none;
-`;
-
 const Button = styled.button.attrs({
   className: `b--gray ma0 br2 ba hover-bg-light-gray tc`,
 })`
@@ -52,7 +38,8 @@ const Button = styled.button.attrs({
 `;
 
 function UploadModal({ show, onHide, token, user, setRoute, setRouteData }) {
-  const [fileName, setFileName] = useState(null);
+  const defaultFileName = "Drop or select image here";
+  const [fileName, setFileName] = useState(defaultFileName);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -85,6 +72,7 @@ function UploadModal({ show, onHide, token, user, setRoute, setRouteData }) {
       .then((res) => {
         setRouteData(res.image.id);
         setRoute(routes.view_image);
+        onHide();
         console.log("Image created successfully.");
       })
       .catch((error) => {
@@ -102,11 +90,13 @@ function UploadModal({ show, onHide, token, user, setRoute, setRouteData }) {
           <Form.Group controlId="formImageFile">
             <Form.File
               type="file"
-              label={fileName}
-              className=""
-              onChange={(e) => setFileName(e.target.files[0].name)}
+              label={fileName ? fileName : ""}
+              onChange={(e) =>
+                setFileName(
+                  e.target.files[0] ? e.target.files[0].name : defaultFileName
+                )
+              }
               accept="image/*"
-              defaultValue=""
               required
               custom
             />
@@ -134,10 +124,7 @@ function UploadModal({ show, onHide, token, user, setRoute, setRouteData }) {
             <Form.Text className="text-muted"></Form.Text>
           </Form.Group>
           <Modal.Footer>
-            <FakeButton onClick={() => onHide()}>Close</FakeButton>
-            <Button onClick={() => onHide()} type="submit">
-              Upload
-            </Button>
+            <Button type="submit">Upload</Button>
           </Modal.Footer>
         </Form>
       </Modal.Body>
@@ -145,7 +132,7 @@ function UploadModal({ show, onHide, token, user, setRoute, setRouteData }) {
   );
 }
 
-function Upload(props) {
+function Upload({ token, user, setRoute, setRouteData }) {
   const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
@@ -157,7 +144,14 @@ function Upload(props) {
         <UploadIcon />
       </UploadButton>
 
-      <UploadModal {...props} show={show} onHide={handleClose} />
+      <UploadModal
+        show={show}
+        onHide={handleClose}
+        token={token}
+        user={user}
+        setRoute={setRoute}
+        setRouteData={setRouteData}
+      />
     </>
   );
 }

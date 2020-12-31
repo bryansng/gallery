@@ -52,6 +52,10 @@ export default function App() {
       <Navigation
         token={token}
         user={user}
+        signIn={signIn}
+        register={register}
+        logOut={logOut}
+        isAuthenticated={isAuthenticated}
         setRoute={updateRoute}
         setRouteData={updateRouteData}
       />
