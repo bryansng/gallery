@@ -6,23 +6,34 @@ const BoundingBoxContainer = styled.div.attrs({
 })`
   position: absolute;
   display: flex;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
 `;
 
 const BoundingBox = styled.div.attrs({
   className: ``,
 })`
   position: absolute;
-  box-shadow: inset 0 0 0 3px #149df2;
+  box-shadow: inset 0 0 0 1.2px
+    ${(props) => (props.isAddingAnnotation ? "#b3b3b3" : "#149df2")};
+  opacity: 0.5;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  cursor: pointer;
+
+  ${(props) =>
+    !props.isAddingAnnotation &&
+    `
+    cursor: pointer;
+
+    :hover {
+    opacity: 1;
+  }`}
 `;
 
-const Boxes = ({ annotations, setAnnotationToView }) => {
+const Boxes = ({ annotations, setAnnotationToView, isAddingAnnotation }) => {
+  function preventDragHandler(e) {
+    e.preventDefault();
+  }
+
   return (
     <BoundingBoxContainer>
       {annotations.map((annotation, index) => {
@@ -31,17 +42,24 @@ const Boxes = ({ annotations, setAnnotationToView }) => {
           <BoundingBox
             key={annotation.annotationId}
             style={{
-              top: x1,
-              left: y1,
-              bottom: x2,
-              right: y2,
+              top: y1,
+              left: x1,
+              width: x2 - x1 === 0 ? 1 : x2 - x1,
+              height: y2 - y1 === 0 ? 1 : y2 - y1,
               zIndex: index,
               // zIndex: 99999 - index,
             }}
             onClick={() => {
-              setAnnotationToView(annotation);
-              console.log(`Clicked Annotation: ${annotation.annotationId}`);
+              if (!isAddingAnnotation) {
+                setAnnotationToView(annotation);
+                console.log(`Clicked Annotation: ${annotation.annotationId}`);
+              }
             }}
+            // onClick={() =>
+            //   !isAddingAnnotation ? setAnnotationToView(annotation) : {}
+            // }
+            onDragStart={preventDragHandler}
+            isAddingAnnotation={isAddingAnnotation}
           ></BoundingBox>
         ) : (
           <div key={annotation.annotationId}></div>
@@ -52,3 +70,5 @@ const Boxes = ({ annotations, setAnnotationToView }) => {
 };
 
 export default Boxes;
+
+export { BoundingBoxContainer };
