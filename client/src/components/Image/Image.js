@@ -35,7 +35,29 @@ const AnnotationContainer = styled.div.attrs({
   className: `center ml1 flex flex-column w-30 pr4 w-100-m ph3-m ma0-m`,
 })``;
 
-const AnnotationPrompt = styled.div.attrs({ className: `` })``;
+const Button = styled.button.attrs({
+  className: `mv2 mh2 relative w-100 b--gray ma0 br2 ba hover-bg-light-gray tc`,
+})`
+  padding: 6px 20px;
+  transition: 0.15s ease-out;
+  background-color: transparent;
+  min-width: 100px;
+  &:hover {
+    border-color: #505050;
+    transition: 0.15s ease-in;
+  }
+`;
+
+function AnnotationPrompt() {
+  const [isCreateMode, setCreateMode] = useState(false);
+  const [isViewMode, setViewMode] = useState(false);
+
+  return (
+    <Button type="button" onClick={() => {}}>
+      {isCreateMode ? "Cancel" : "Make an annotation!"}
+    </Button>
+  );
+}
 
 function ViewImage({ routeData, setRoute, setRouteData }) {
   var viewImageId = routeData;
@@ -127,7 +149,7 @@ function ViewImage({ routeData, setRoute, setRouteData }) {
       </ImageContainer>
 
       <AnnotationContainer>
-        <AnnotationPrompt>Make an annotation!</AnnotationPrompt>
+        <AnnotationPrompt />
         {annotationToView ? (
           <AnnotationCard
             username={
