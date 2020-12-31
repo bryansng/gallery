@@ -13,8 +13,8 @@ import {
   DotGroup,
   Image,
 } from "pure-react-carousel";
-
 import routes from "../../config/routes";
+import common from "../../config/common";
 
 const Container = styled.div.attrs({
   className: `center mt5 mb5`,
@@ -39,16 +39,24 @@ const CustomSlide = styled(Slide).attrs({ className: `` })`
 `;
 
 const ImageHoverCover = styled.div.attrs({
-  className: `child center bg-black-40 white v-mid flex flex-column items-center justify-center w-100 h-100 pointer`,
+  className: `child center bg-black-40 white v-mid flex flex-column items-center justify-center pointer`,
 })`
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
 `;
 
 const ImageHoverTitle = styled.h4.attrs({ className: `` })``;
-const ImageHoverDesc = styled.p.attrs({ className: `` })``;
+const ImageHoverDesc = styled.p.attrs({
+  className: `ph4 ph2-m overflow-hidden`,
+})`
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+`;
 const ImageHoverUser = styled.p.attrs({ className: `i` })``;
 const ImageHoverNumberOfViews = styled.p.attrs({ className: `` })``;
 const ImageHoverNumberOfAnnotations = styled.p.attrs({ className: `` })``;
@@ -79,7 +87,6 @@ const RoundDotGroup = styled(DotGroup).attrs({
     height: 1rem;
     border-radius: 50%;
   }
-
   .carousel__dot:hover {
     background-color: #505050;
     transition: 0.15s ease-in;
@@ -176,7 +183,7 @@ function ImageCarousel(props) {
                 tag="div"
                 alt={image.title}
                 className="hide-child relative contain bg-center"
-                style={{ width: "45vw", minHeight: "45vh" }}
+                style={{ width: "45vw", height: "45vh" }}
                 onClick={() => {
                   setRouteData(image.id);
                   setRoute(routes.view_image);
@@ -185,7 +192,17 @@ function ImageCarousel(props) {
               >
                 <ImageHover
                   title={image.title}
-                  description={image.description}
+                  description={`${
+                    image.description
+                    // }
+                    // .substring(
+                    //   0,
+                    //   common.truncateAtLength
+                    // )}${
+                    //   image.description.length > common.truncateAtLength
+                    //     ? "..."
+                    //     : ""
+                  }`}
                   username={<GetUsername userId={image.userId} />}
                   totalViews={image.totalViews}
                   annotationNum={<GetAnnotationNum imageId={image.id} />}

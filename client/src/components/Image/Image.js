@@ -140,6 +140,7 @@ function ViewImage({ routeData, setRoute, setRouteData }) {
             creationDate={annotationToView ? annotationToView.creationDate : ""}
             content={annotationToView ? annotationToView.content : ""}
             totalVotes={annotationToView ? annotationToView.totalVotes : ""}
+            extraClassName="w-100"
           />
         ) : (
           // coordinates:

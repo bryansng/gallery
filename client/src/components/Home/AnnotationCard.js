@@ -1,8 +1,11 @@
 import React from "react";
 import styled from "styled-components";
 import Card from "react-bootstrap/Card";
+import * as dayjs from "dayjs";
 import { ReactComponent as Arrow } from "../../assets/svgs/arrow.svg";
+import relativeTime from "dayjs/plugin/relativeTime";
 
+dayjs.extend(relativeTime);
 const Downvote = styled(Arrow).attrs({
   className: ``,
 })`
@@ -21,10 +24,8 @@ const Upvote = styled(Arrow).attrs({
 `;
 
 const CustomCard = styled(Card).attrs({
-  className: `mv2 w-25-l w-40-m w-100 relative pointer`,
-})`
-  min-width: 300px;
-`;
+  className: `mv2 mh2 relative`,
+})``;
 
 const UpvoteButton = styled.button.attrs({
   className: `pointer bn b--transparent bg pa0 ma0 bg-transparent dim`,
@@ -38,14 +39,19 @@ const DownvoteButton = styled.button.attrs({
   fill: gray;
 `;
 
-function AnnotationCard(props) {
-  const { username, creationDate, content, totalVotes, onClick } = props;
-
+function AnnotationCard({
+  username,
+  creationDate,
+  content,
+  totalVotes,
+  onClick = () => {},
+  extraClassName,
+}) {
   return (
-    <CustomCard onClick={() => onClick()}>
+    <CustomCard onClick={() => onClick()} className={extraClassName}>
       <Card.Body>
         <Card.Subtitle className="pv1">
-          {username} @ {creationDate}
+          {username} @ {dayjs(creationDate).fromNow()}
         </Card.Subtitle>
         <Card.Text className="pv2">{content}</Card.Text>
         <div className="flex flex-wrap flex-row items-center">
