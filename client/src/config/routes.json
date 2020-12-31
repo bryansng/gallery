@@ -1,5 +1,6 @@
 {
   "homepage": "homepage",
   "view_image": "view_image",
-  "view_user_profile": "view_user_profile"
+  "view_user_profile": "view_user_profile",
+  "search_keyword": "search_keyword"
 }

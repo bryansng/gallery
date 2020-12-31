@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import Form from "react-bootstrap/Form";
 import { ReactComponent as MagnifyingGlass } from "../../assets/svgs/search.svg";
-import useFetch from "react-fetch-hook";
+import routes from "../../config/routes";
 
 const SearchForm = styled(Form).attrs({
   className: `w-50 mw-10 ma0`,
@@ -21,15 +21,15 @@ const SearchButton = styled.button.attrs({
   className: `bn bg-transparent b--transparent pa0 ma0`,
 })`
   position: absolute;
-  top: 15%;
-  left: 0.5rem;
-  /* transform: translate(-50%, -50%); */
+  top: 50%;
+  left: 1.3rem;
+  transform: translate(-50%, -50%);
   fill: gray;
 `;
 const SearchInput = styled(Form.Control).attrs({
   className: ``,
 })`
-  padding-left: 2.5rem;
+  padding-left: 2.2rem;
 `;
 
 const SearchIcon = styled(MagnifyingGlass).attrs({
@@ -39,30 +39,18 @@ const SearchIcon = styled(MagnifyingGlass).attrs({
   object-fit: contain;
 `;
 
-function Search({ keyword, setKeyword, setIsSearch, setSearchEndpoint }) {
-  const [search, setSearch] = useState("");
-
-  console.log("search: " + search);
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    setSearchEndpoint(search);
-    setIsSearch(true);
-  };
-
-  const handleChange = (event) => {
-    var str = event.target.value;
-    if (str.length === 0) {
-      setIsSearch(false);
-    }
-    setSearch(str);
+function Search({ keyword, setKeyword, setRoute, setRouteData }) {
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setRouteData(e.target.search.value);
+    setRoute(routes.search_keyword);
+    console.log("Going to search page.");
   };
 
   return (
     <SearchForm onSubmit={handleSubmit}>
-      <SearchFormGroup controlId="Search">
+      <SearchFormGroup controlId="search">
         <SearchInput
-          onChange={handleChange}
           label="Search"
           aria-label="search"
           type="search"
