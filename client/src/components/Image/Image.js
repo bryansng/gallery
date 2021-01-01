@@ -260,9 +260,6 @@ function ViewImage({ routeData, setRoute, setRouteData }) {
 
   return (
     <Container>
-      <Button type="button" onClick={() => toggleAnnotations()}>
-        Toggle annotations
-      </Button>
       <ImageContainer>
         {isViewAnnotations && (
           <Boxes
@@ -309,7 +306,21 @@ function ViewImage({ routeData, setRoute, setRouteData }) {
           onMouseLeave={stopDrawingRectangle}
         />
         <ImageDescriptionContainer>
-          <Title>{image.title}</Title>
+          <div className="flex justify-between items-center">
+            <Title>{image.title}</Title>
+
+            <Form>
+              <Form.Check
+                type="switch"
+                id="toggle-annotations"
+                label="Toggle annotations"
+                title="Toggle annotations"
+                onChange={() => toggleAnnotations()}
+                defaultChecked
+              />
+            </Form>
+          </div>
+
           <p className="i">
             by <GetUsername userId={image.userId} />
           </p>
