@@ -9,13 +9,20 @@ export function GetUsername({ userId }) {
     if (!isFetching) {
       if (userId && !isUserFetched) {
         setIsFetching(true);
-        fetch(`${service_endpoints.user.username}/${userId}`)
-          .then((resp) => resp.json())
+        fetch(`${service_endpoints.user.get_by_id}/${userId}`)
+          .then((resp) => {
+            if (resp.ok) {
+              return resp.json();
+            }
+            throw new Error(`${resp.status} User id does not exist.`);
+          })
           .then((res) => {
             setUsername(res.user.username);
             setIsFetching(false);
             setIsUserFetched(true);
-            console.log(res.user);
+          })
+          .catch((error) => {
+            console.error(error);
           });
       }
     }

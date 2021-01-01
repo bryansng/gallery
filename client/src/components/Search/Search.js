@@ -36,7 +36,10 @@ function Search({ routeData }) {
     `${searchEndpoints.search}/${searchKeyword}`
   );
 
-  console.log(data);
+  if (!isLoading) {
+    console.log(data);
+  }
+
   return (
     <Container className="mt3">
       <Row>

@@ -16,27 +16,65 @@ const Button = styled.button.attrs({
   }
 `;
 
+const ErrorMessage = styled.div.attrs({
+  className: `p-3 my-3 w-100 font-weight-bolder`,
+})`
+  background-color: ${(props) => props.error && "#dc3546b6"};
+  background-color: ${(props) => props.success && "#28a745b6"};
+`;
+
 const Container = styled.div.attrs({ className: `ma0 pa0` })``;
 
-function SignInModal(props) {
+function SignInModal({ show, onHide, toggleBetweenSignInRegister, signIn }) {
+  const [hasFormError, setHasFormError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const onSubmitError = (msg) => {
+    setErrorMessage(msg);
+    setHasFormError(true);
+  };
+
+  const onSubmitSuccess = (msg) => {
+    onHide();
+    setHasFormError(false);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const email = e.target.formSignInEmail.value;
+    const password = e.target.formSignInPassword.value;
+    signIn(email, password, onSubmitError, onSubmitSuccess);
+  };
+
   return (
-    <Modal {...props} size="lg" centered>
+    <Modal show={show} onHide={onHide} size="lg" centered>
       <Modal.Header closeButton>
         <h2>Welcome back!</h2>
       </Modal.Header>
-      <Form>
+      <Form onSubmit={(e) => handleSubmit(e)}>
         <Modal.Body>
           <Form.Group controlId="formSignInEmail">
             <Form.Label>Email address</Form.Label>
-            <Form.Control type="email" placeholder="Enter email" required />
+            <Form.Control
+              type="email"
+              placeholder="johndoe@gmail.com"
+              // defaultValue="test1@h1h111111o1.com"
+              required
+            />
           </Form.Group>
           <Form.Group controlId="formSignInPassword">
             <Form.Label>Password</Form.Label>
-            <Form.Control type="password" placeholder="Password" required />
+            <Form.Control
+              type="password"
+              placeholder=""
+              // defaultValue="test"
+              required
+            />
           </Form.Group>
+          {hasFormError && <ErrorMessage error>{errorMessage}</ErrorMessage>}
         </Modal.Body>
         <Modal.Footer>
-          <Button type="button" onClick={props.switch}>
+          <Button type="button" onClick={toggleBetweenSignInRegister}>
             New user? Register
           </Button>
           <Button type="submit">Sign in</Button>
@@ -45,37 +83,96 @@ function SignInModal(props) {
     </Modal>
   );
 }
-function RegisterModal(props) {
+
+function RegisterModal({
+  show,
+  onHide,
+  toggleBetweenSignInRegister,
+  register,
+}) {
+  const [hasFormError, setHasFormError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [isPasswordsValid, setIsPasswordsValid] = useState(true);
+
+  const onSubmitError = (msg) => {
+    setErrorMessage(msg);
+    setHasFormError(true);
+  };
+
+  const onSubmitSuccess = (msg) => {
+    onHide();
+    setHasFormError(false);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const username = e.target.formRegisterUsername.value;
+    const email = e.target.formRegisterEmail.value;
+    const password = e.target.formRegisterPassword.value;
+    const confirmPassword = e.target.formRegisterConfirmPassword.value;
+
+    if (password !== confirmPassword) {
+      setIsPasswordsValid(false);
+    } else {
+      register(username, email, password, onSubmitError, onSubmitSuccess);
+      setIsPasswordsValid(true);
+      console.log("Registered successfuly.");
+    }
+  };
+
   return (
-    <Modal {...props} size="lg" centered>
+    <Modal show={show} onHide={onHide} size="lg" centered>
       <Modal.Header closeButton>
         <h2>Welcome!</h2>
       </Modal.Header>
-      <Form>
+      <Form onSubmit={(e) => handleSubmit(e)}>
         <Modal.Body>
           <Form.Group controlId="formRegisterUsername">
             <Form.Label>Username</Form.Label>
-            <Form.Control type="username" placeholder="Username" required />
+            <Form.Control type="username" placeholder="johndoe360" required />
           </Form.Group>
           <Form.Group controlId="formRegisterEmail">
             <Form.Label>Email address</Form.Label>
-            <Form.Control type="email" placeholder="Email address" required />
+            <Form.Control
+              type="email"
+              placeholder="johndoe@gmail.com"
+              required
+              // defaultValue="test1@h1h111111o1.com"
+            />
           </Form.Group>
           <Form.Group controlId="formRegisterPassword">
             <Form.Label>Password</Form.Label>
-            <Form.Control type="password" placeholder="Password" required />
+            <Form.Control
+              type="password"
+              placeholder=""
+              required
+              // isInvalid={!isPasswordsValid}
+            />
+            {/* <Form.Control.Feedback type="invalid">
+              Passwords do not match.
+            </Form.Control.Feedback> */}
           </Form.Group>
           <Form.Group controlId="formRegisterConfirmPassword">
             <Form.Label>Confirm password</Form.Label>
             <Form.Control
               type="password"
-              placeholder="Confirm password"
+              placeholder=""
               required
+              // isInvalid={!isPasswordsValid}
             />
+            {/* <Form.Control.Feedback type="invalid">
+              Passwords do not match.
+            </Form.Control.Feedback> */}
           </Form.Group>
+          {hasFormError && <ErrorMessage error>{errorMessage}</ErrorMessage>}
+          {!isPasswordsValid && (
+            <ErrorMessage error>Passwords do not match.</ErrorMessage>
+          )}
         </Modal.Body>
         <Modal.Footer>
-          <Button onClick={props.switch}>Existing user? Sign in</Button>
+          <Button onClick={toggleBetweenSignInRegister}>
+            Existing user? Sign in
+          </Button>
           <Button type="submit">Register</Button>
         </Modal.Footer>
       </Form>
@@ -83,33 +180,48 @@ function RegisterModal(props) {
   );
 }
 
-function Account() {
+function Account({ signIn, register, logOut, isAuthenticated }) {
   const [showSignIn, setShowSignIn] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
   return (
     <Container>
-      <Button type="button" onClick={() => setShowSignIn(true)}>
-        Sign in
-      </Button>
-      <Button type="button" onClick={() => setShowRegister(true)}>
-        Register
-      </Button>
-      <SignInModal
-        show={showSignIn}
-        switch={() => {
-          setShowSignIn(false);
-          setShowRegister(true);
-        }}
-        onHide={() => setShowSignIn(false)}
-      />
-      <RegisterModal
-        show={showRegister}
-        switch={() => {
-          setShowRegister(false);
-          setShowSignIn(true);
-        }}
-        onHide={() => setShowRegister(false)}
-      />
+      {!isAuthenticated ? (
+        <>
+          <Button type="button" onClick={() => setShowSignIn(true)}>
+            Sign in
+          </Button>
+          <Button type="button" onClick={() => setShowRegister(true)}>
+            Register
+          </Button>
+          <SignInModal
+            show={showSignIn}
+            toggleBetweenSignInRegister={() => {
+              setShowSignIn(false);
+              setShowRegister(true);
+            }}
+            onHide={() => setShowSignIn(false)}
+            signIn={signIn}
+          />
+          <RegisterModal
+            show={showRegister}
+            toggleBetweenSignInRegister={() => {
+              setShowRegister(false);
+              setShowSignIn(true);
+            }}
+            onHide={() => setShowRegister(false)}
+            register={register}
+          />
+        </>
+      ) : (
+        <>
+          <Button type="button" onClick={() => setShowSignIn(true)}>
+            Profile
+          </Button>
+          <Button type="button" onClick={() => logOut()}>
+            Logout
+          </Button>
+        </>
+      )}
     </Container>
   );
 }

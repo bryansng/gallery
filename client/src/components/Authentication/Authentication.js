@@ -5,6 +5,7 @@ const userEndpoints = service_endpoints.user;
 function useAuthentication() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [token, setToken] = useState(window.localStorage.getItem("token"));
+  // const [token, setToken] = useState("");
   const userInitialState = {
     id: "",
     email: "",
@@ -48,8 +49,6 @@ function useAuthentication() {
         .then((res) => {
           setIsAuthenticated(true);
           setUser({ ...user, ...res.user });
-          // ? atm token lifespan is long, what if its short and token expires?
-          // ? user will need to login again.
         })
         .catch((error) => {
           console.error(error);
@@ -66,7 +65,13 @@ function useAuthentication() {
     console.log("User logged out successfully.");
   }
 
-  function register(username, email, password) {
+  function register(
+    username,
+    email,
+    password,
+    onErrorCallback = () => {},
+    onSuccessCallback = () => {}
+  ) {
     const requestOptions = {
       method: "POST",
       headers: {
@@ -91,14 +96,21 @@ function useAuthentication() {
         window.localStorage.setItem("token", res.token);
         setIsAuthenticated(true);
         setUser({ ...user, ...res.user });
+        onSuccessCallback();
         console.log("User registered in successfully.");
       })
       .catch((error) => {
+        onErrorCallback(error.message);
         console.error(error);
       });
   }
 
-  function signIn(email, password) {
+  function signIn(
+    email,
+    password,
+    onErrorCallback = () => {},
+    onSuccessCallback = () => {}
+  ) {
     const requestOptions = {
       method: "POST",
       headers: {
@@ -122,9 +134,11 @@ function useAuthentication() {
         window.localStorage.setItem("token", res.token);
         setIsAuthenticated(true);
         setUser({ ...user, ...res.user });
+        onSuccessCallback();
         console.log("User signed in successfully.");
       })
       .catch((error) => {
+        onErrorCallback(error.message);
         console.error(error);
       });
   }
