@@ -1,13 +1,29 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Boxes, { BoundingBoxContainer } from "./Boxes";
+import AnnotationCard from "../Home/AnnotationCard";
 import { service_endpoints } from "../../config/content.json";
 import routes from "../../config/routes";
+import placeholderImage from "../../assets/images/placeholder.png";
+import { GetUsername } from "../Common/GetUsername.js";
 const imageEndpoints = service_endpoints.image;
 const annotationEndpoints = service_endpoints.annotation;
 
+// const Button = styled.button.attrs({
+//   className: `b--gray ma0 br2 ba hover-bg-light-gray ml1 mr1`,
+// })`
+//   padding: 6px 20px;
+//   transition: 0.15s ease-out;
+//   background-color: transparent;
+//   min-width: 100px;
+//   &:hover {
+//     border-color: #505050;
+//     transition: 0.15s ease-in;
+//   }
+// `;
+
 const Button = styled.button.attrs({
-  className: `b--gray ma0 br2 ba hover-bg-light-gray ml1 mr1`,
+  className: `mv2 mh2 relative w-100 b--gray ma0 br2 ba hover-bg-light-gray tc`,
 })`
   padding: 6px 20px;
   transition: 0.15s ease-out;
@@ -33,13 +49,6 @@ const DrawingRectangle = styled.div.attrs({
   pointer-events: none;
 `;
 
-const Image = styled.img.attrs({
-  className: `ba b--yellow`,
-})`
-  width: auto;
-  height: 500px;
-`;
-
 const initialCoordsState = {
   x1: 0,
   x2: 0,
@@ -53,6 +62,45 @@ const initialRectStyleState = {
   width: 0,
   height: 0,
 };
+
+const Container = styled.div.attrs({
+  className: `center mv5 flex flex-wrap mh0 pa0`,
+})``;
+
+const ImageContainer = styled.div.attrs({
+  className: `center mr1 flex flex-column w-70 ph4 w-100-m ph3-m ma0-m`,
+})``;
+
+const Image = styled.img.attrs({
+  className: `center ba b--yellow`,
+})`
+  max-height: 80vh;
+  // width: auto;
+  // height: 500px;
+`;
+
+const ImageDescriptionContainer = styled.div.attrs({
+  className: `pb4`,
+})``;
+
+const Title = styled.h2.attrs({
+  className: `avenir fw6 f2 dark-gray`,
+})``;
+
+const AnnotationContainer = styled.div.attrs({
+  className: `center ml1 flex flex-column w-30 pr4 w-100-m ph3-m ma0-m`,
+})``;
+
+function AnnotationPrompt() {
+  const [isCreateMode, setCreateMode] = useState(false);
+  const [isViewMode, setViewMode] = useState(false);
+
+  return (
+    <Button type="button" onClick={() => {}}>
+      {isCreateMode ? "Cancel" : "Make an annotation!"}
+    </Button>
+  );
+}
 
 function ViewImage({ routeData, setRoute, setRouteData }) {
   var viewImageId = routeData;
@@ -98,10 +146,6 @@ function ViewImage({ routeData, setRoute, setRouteData }) {
                   );
                 })
                 .then((res) => {
-                  console.log(
-                    "🚀 ~ file: Image.js ~ line 52 ~ .then ~ res",
-                    res
-                  );
                   setAnnotations(res.annotations);
                   setAnnotationToView(
                     res.annotations.length > 0 ? res.annotations[0] : null
@@ -241,32 +285,31 @@ function ViewImage({ routeData, setRoute, setRouteData }) {
   }
 
   return (
-    <div className="my-2 mx-5 ba">
-      <div className="">
-        <Button type="button" onClick={() => toggleAnnotations()}>
-          Toggle annotations
+    <Container>
+      <Button type="button" onClick={() => toggleAnnotations()}>
+        Toggle annotations
+      </Button>
+      {!isAddingAnnotation ? (
+        <Button type="button" onClick={() => startAddingAnnotationProcess()}>
+          Add annotation
         </Button>
-        {!isAddingAnnotation ? (
-          <Button type="button" onClick={() => startAddingAnnotationProcess()}>
-            Add annotation
+      ) : (
+        <>
+          <FakeButton
+            type="button"
+            onClick={() => cancelAddingAnnotationProcess()}
+          >
+            Cancel
+          </FakeButton>
+          <Button
+            type="button"
+            onClick={() => completeAddingAnnotationProcess()}
+          >
+            Create
           </Button>
-        ) : (
-          <>
-            <FakeButton
-              type="button"
-              onClick={() => cancelAddingAnnotationProcess()}
-            >
-              Cancel
-            </FakeButton>
-            <Button
-              type="button"
-              onClick={() => completeAddingAnnotationProcess()}
-            >
-              Create
-            </Button>
-          </>
-        )}
-
+        </>
+      )}
+      <ImageContainer>
         <div className="">
           {isViewAnnotations && (
             <Boxes
@@ -301,7 +344,11 @@ function ViewImage({ routeData, setRoute, setRouteData }) {
             </BoundingBoxContainer>
           )}
           <Image
-            src={`${imageEndpoints.get_image}/${image.id}`}
+            src={
+              image
+                ? `${imageEndpoints.get_image}/${image.id}`
+                : placeholderImage
+            }
             alt={image.title}
             onClick={getClickedCoords}
             onDragStart={preventDragHandler}
@@ -311,27 +358,41 @@ function ViewImage({ routeData, setRoute, setRouteData }) {
             onMouseLeave={stopDrawingRectangle}
           />
         </div>
-        <div className="pb4">
-          Image Id: {image.id} <br />
-          Title: {image.title} <br />
-          Description: {image.description} <br />
-        </div>
-        <div>
-          Annotation id: {annotationToView ? annotationToView.annotationId : ""}
-          <br />
-          User id: {annotationToView ? annotationToView.userId : ""} <br />
-          image id: {annotationToView ? annotationToView.imageId : ""} <br />
-          content: {annotationToView ? annotationToView.content : ""} <br />
-          total votes: {annotationToView ? annotationToView.totalVotes : ""}
-          <br />
-          coordinates:
-          {annotationToView
-            ? JSON.stringify(annotationToView.rectangleCoordinates)
-            : ""}{" "}
-          <br />
-        </div>
-      </div>
-    </div>
+        <ImageDescriptionContainer>
+          <Title>{image.title}</Title>
+          <p className="i">
+            by <GetUsername userId={image.userId} />
+          </p>
+          {image.description}
+        </ImageDescriptionContainer>
+      </ImageContainer>
+
+      <AnnotationContainer>
+        <AnnotationPrompt />
+        {annotationToView ? (
+          <AnnotationCard
+            username={
+              annotationToView ? (
+                <GetUsername userId={annotationToView.userId} />
+              ) : (
+                ""
+              )
+            }
+            creationDate={annotationToView ? annotationToView.creationDate : ""}
+            content={annotationToView ? annotationToView.content : ""}
+            totalVotes={annotationToView ? annotationToView.totalVotes : ""}
+            extraClassName="w-100"
+          />
+        ) : (
+          // coordinates:
+          // {annotationToView
+          //   ? JSON.stringify(annotationToView.rectangleCoordinates)
+          //   : ""}{" "}
+          // <br />
+          ""
+        )}
+      </AnnotationContainer>
+    </Container>
   );
 }
 

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import Form from "react-bootstrap/Form";
 import { ReactComponent as MagnifyingGlass } from "../../assets/svgs/search.svg";
