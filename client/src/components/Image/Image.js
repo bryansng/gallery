@@ -3,15 +3,17 @@ import styled from "styled-components";
 import Boxes, { BoundingBoxContainer } from "./Boxes";
 import AnnotationCard from "../Home/AnnotationCard";
 import ResizeObserver from "rc-resize-observer";
+import { CreateAnnotationForm } from "../Home/AnnotationCard";
+import { service_endpoints } from "../../config/content.json";
 import placeholderImage from "../../assets/images/placeholder.png";
+import Form from "react-bootstrap/Form";
 import routes from "../../config/routes";
 import { GetUsername } from "../Common/GetUsername.js";
-import { service_endpoints } from "../../config/content.json";
 const imageEndpoints = service_endpoints.image;
 const annotationEndpoints = service_endpoints.annotation;
 
 const Button = styled.button.attrs({
-  className: `mv2 mh2 relative w-100 b--gray ma0 br2 ba hover-bg-light-gray tc`,
+  className: `ma2 relative w-100 b--gray ma0 br2 ba hover-bg-light-gray tc`,
 })`
   padding: 6px 20px;
   transition: 0.15s ease-out;
@@ -22,8 +24,6 @@ const Button = styled.button.attrs({
     transition: 0.15s ease-in;
   }
 `;
-
-const FakeButton = styled(Button)``;
 
 const DrawingRectangle = styled.div.attrs({
   className: ``,
@@ -56,20 +56,18 @@ const Container = styled.div.attrs({
 })``;
 
 const ImageContainer = styled.div.attrs({
-  className: `center mr1 flex flex-column w-70 ph4 w-100-m ph3-m ma0-m`,
+  className: `ma0 flex flex-column w-60 pl6 pr-4 w-100-m pl4-m`,
 })``;
 
 const Image = styled.img.attrs({
   className: `center ba b--yellow`,
 })`
-  max-height: 80vh;
+  max-height: 60vh;
   user-select: none;
-  // width: auto;
-  // height: 500px;
 `;
 
 const ImageDescriptionContainer = styled.div.attrs({
-  className: `pb4`,
+  className: `pb4 aspect-ratio--4x3 mh5 mv4 center w-80`,
 })``;
 
 const Title = styled.h2.attrs({
@@ -77,7 +75,7 @@ const Title = styled.h2.attrs({
 })``;
 
 const AnnotationContainer = styled.div.attrs({
-  className: `center ml1 flex flex-column w-30 pr4 w-100-m ph3-m ma0-m`,
+  className: `flex flex-column w-30 pr4 w-100-m ph3-m ma0-m`,
 })``;
 
 function ViewImage({ token, user, routeData, setRoute, setRouteData }) {
@@ -413,7 +411,9 @@ function ViewImage({ token, user, routeData, setRoute, setRouteData }) {
     }
   }
 
-  function completeAddingAnnotationProcess() {
+  function completeAddingAnnotationProcess(e) {
+    e.preventDefault();
+
     /* adds new annotation here. */
     if (isAddingAnnotation) {
       // POST new annotation.
@@ -426,7 +426,7 @@ function ViewImage({ token, user, routeData, setRoute, setRouteData }) {
         body: JSON.stringify({
           userId: user.id,
           imageId: image.id,
-          content: "GET FROM FORM",
+          content: e.target.formAnnotationContent.value,
           coordinates: {
             x1: coordsPercentage.x1,
             y1: coordsPercentage.y1,
@@ -447,6 +447,9 @@ function ViewImage({ token, user, routeData, setRoute, setRouteData }) {
           // add annotation to existing annontations array.
           setAnnotations([...annotations, res.annotation]);
           console.log("Created an annotation successfully.");
+
+          // set this annotation to view.
+          setAnnotationToView(res.annotation);
 
           // exit add annotation.
           setIsViewAnnotations(true);
@@ -481,29 +484,6 @@ function ViewImage({ token, user, routeData, setRoute, setRouteData }) {
 
   return (
     <Container>
-      <Button type="button" onClick={() => toggleAnnotations()}>
-        Toggle annotations
-      </Button>
-      {!isAddingAnnotation ? (
-        <Button type="button" onClick={() => startAddingAnnotationProcess()}>
-          Add annotation
-        </Button>
-      ) : (
-        <>
-          <FakeButton
-            type="button"
-            onClick={() => cancelAddingAnnotationProcess()}
-          >
-            Cancel
-          </FakeButton>
-          <Button
-            type="button"
-            onClick={() => completeAddingAnnotationProcess()}
-          >
-            Create
-          </Button>
-        </>
-      )}
       <ImageContainer>
         <div className="">
           {isViewAnnotations &&
@@ -560,7 +540,21 @@ function ViewImage({ token, user, routeData, setRoute, setRouteData }) {
           </ResizeObserver>
         </div>
         <ImageDescriptionContainer>
-          <Title>{image.title}</Title>
+          <div className="flex justify-between items-center">
+            <Title>{image.title}</Title>
+
+            <Form>
+              <Form.Check
+                type="switch"
+                id="toggle-annotations"
+                label="Toggle annotations"
+                title="Toggle annotations"
+                onChange={() => toggleAnnotations()}
+                defaultChecked
+              />
+            </Form>
+          </div>
+
           <p className="i">
             by <GetUsername userId={image.userId} />
           </p>
@@ -569,23 +563,59 @@ function ViewImage({ token, user, routeData, setRoute, setRouteData }) {
       </ImageContainer>
 
       <AnnotationContainer>
-        {annotationToView ? (
-          annotations.map(
-            (annotation, index) =>
-              annotationToView.annotationId === annotation.annotationId && (
-                <AnnotationCard
-                  token={token}
-                  user={user}
-                  originalAnnotation={annotation}
-                  key={index}
-                  indexInParentArray={index}
-                  extraClassName="w-100"
-                  updateAnnotationInParent={updateAnAnnotation}
-                />
+        {!isAddingAnnotation ? (
+          <>
+            <Button
+              type="button"
+              onClick={() => startAddingAnnotationProcess()}
+            >
+              Add annotation
+            </Button>
+            {annotationToView ? (
+              annotations.map(
+                (annotation, index) =>
+                  annotationToView.annotationId === annotation.annotationId && (
+                    <AnnotationCard
+                      token={token}
+                      user={user}
+                      originalAnnotation={annotation}
+                      key={index}
+                      indexInParentArray={index}
+                      extraClassName="w-100"
+                      updateAnnotationInParent={updateAnAnnotation}
+                    />
+                  )
               )
-          )
+            ) : (
+              <div>Loading annotation...</div>
+            )}
+          </>
         ) : (
-          <div>Loading annotation...</div>
+          <>
+            <Button
+              type="button"
+              onClick={() => cancelAddingAnnotationProcess()}
+            >
+              Cancel
+            </Button>
+
+            <Form onSubmit={(e) => completeAddingAnnotationProcess(e)}>
+              <Form.Group controlId="formAnnotationContent">
+                <CreateAnnotationForm
+                  content={
+                    <Form.Control
+                      as="textarea"
+                      rows={5}
+                      placeholder="Try dragging over the image! What do you think?"
+                      className="pa0 "
+                    ></Form.Control>
+                  }
+                  extraClassName="w-100"
+                />
+                <Button type="submit">Create</Button>
+              </Form.Group>
+            </Form>
+          </>
         )}
       </AnnotationContainer>
     </Container>

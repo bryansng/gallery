@@ -158,7 +158,7 @@ function AnnotationCard({
       <Card.Body>
         <Card.Subtitle className="pv1">
           {<GetUsername userId={annotation.userId} />} @{" "}
-          <ShowDate creationDateTime={annotation.creationDate} />
+          <ShowDate creationDateTime={annotation.creationDate} /> said:
         </Card.Subtitle>
         <Card.Text className="pv2">{annotation.content}</Card.Text>
         <div className="flex flex-wrap flex-row items-center">
@@ -184,3 +184,13 @@ function AnnotationCard({
 }
 
 export default AnnotationCard;
+
+export function CreateAnnotationForm({ content, extraClassName }) {
+  return (
+    <div
+      className={`mv2 mh2 relative pa0 ma0 bn b--transparent ${extraClassName}`}
+    >
+      <Card.Text className="pa0 ma0">{content}</Card.Text>
+    </div>
+  );
+}

@@ -14,7 +14,8 @@
       "edit": "http://localhost:8080/api/images/image",
       "delete": "http://localhost:8080/api/images/image/delete",
       "increment": "http://localhost:8080/api/images/image/increment",
-      "recent": "http://localhost:8080/api/images/image/recent"
+      "recent": "http://localhost:8080/api/images/image/recent",
+      "get_by_user": "http://localhost:8080/api/images/image/user"
     },
     "annotation": {
       "create": "http://localhost:8080/api/annotations/annotation",

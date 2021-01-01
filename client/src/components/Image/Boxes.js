@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 
 const BoundingBoxContainer = styled.div.attrs({
@@ -51,6 +51,12 @@ const Boxes = ({
   const [annotationIdToView, setAnnotationIdToView] = useState(
     annotationToViewInParent ? annotationToViewInParent.annotationId : ""
   );
+
+  useEffect(() => {
+    setAnnotationIdToView(
+      annotationToViewInParent ? annotationToViewInParent.annotationId : ""
+    );
+  }, [annotationToViewInParent]);
 
   function preventDragHandler(e) {
     e.preventDefault();

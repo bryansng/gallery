@@ -28,7 +28,13 @@ export default function App() {
   });
 
   const components = {};
-  components[routes.view_user_profile] = <Profile user={user} />;
+  components[routes.view_user_profile] = (
+    <Profile
+      user={user}
+      setRoute={updateRoute}
+      setRouteData={updateRouteData}
+    />
+  );
   components[routes.homepage] = (
     <Home
       token={token}

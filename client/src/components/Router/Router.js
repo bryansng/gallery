@@ -15,7 +15,11 @@ function useRouter() {
 
   useEffect(() => {
     // console.log(Object.keys(routeData).length === 0);
-    if (Object.keys(routeData).length === 0 && route !== routes.homepage) {
+    if (
+      Object.keys(routeData).length === 0 &&
+      route !== routes.homepage &&
+      route !== routes.view_user_profile
+    ) {
       updateRoute(routes.homepage);
       window.localStorage.removeItem("routeData");
     }
