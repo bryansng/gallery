@@ -29,3 +29,32 @@ export function GetUsername({ userId }) {
   }, [userId, isFetching, isUserFetched]);
   return username;
 }
+
+export function GetUserByUserId({ userId }) {
+  const [isFetching, setIsFetching] = useState(false);
+  const [isUserFetched, setIsUserFetched] = useState(false);
+  const [user, setUser] = useState("");
+  useEffect(() => {
+    if (!isFetching) {
+      if (userId && !isUserFetched) {
+        setIsFetching(true);
+        fetch(`${service_endpoints.user.get_by_id}/${userId}`)
+          .then((resp) => {
+            if (resp.ok) {
+              return resp.json();
+            }
+            throw new Error(`${resp.status} User id does not exist.`);
+          })
+          .then((res) => {
+            setUser(res.user);
+            setIsFetching(false);
+            setIsUserFetched(true);
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      }
+    }
+  }, [userId, isFetching, isUserFetched]);
+  return user;
+}
