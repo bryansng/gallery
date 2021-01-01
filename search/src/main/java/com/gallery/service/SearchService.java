@@ -49,7 +49,9 @@ public class SearchService {
 
   @PostConstruct
   private void init() throws Exception {
+    System.out.println("1");
     elasticSearchTemplate = config.elasticsearchTemplate();
+    System.out.println("4");
   }
 
   /**
@@ -62,8 +64,10 @@ public class SearchService {
 
     Query searchQuery = new NativeSearchQueryBuilder().withFilter(regexpQuery("username", ".*" + keyword + ".*"))
         .build();
+    System.out.println("here1");
     SearchHits<User> usersByUsername = elasticSearchTemplate.search(searchQuery, User.class,
         IndexCoordinates.of(Constants.USER_INDEX_NAME));
+    System.out.println("here2");
 
     searchQuery = new NativeSearchQueryBuilder().withFilter(regexpQuery("title", ".*" + keyword + ".*")).build();
     SearchHits<Image> imagesByTitle = elasticSearchTemplate.search(searchQuery, Image.class,

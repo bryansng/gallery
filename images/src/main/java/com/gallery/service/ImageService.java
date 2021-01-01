@@ -22,6 +22,7 @@ import com.netflix.discovery.converters.Auto;
 
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.ApplicationArguments;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -36,8 +37,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
-
-import io.github.cdimascio.dotenv.Dotenv;
 
 @Service
 public class ImageService {
@@ -56,14 +55,10 @@ public class ImageService {
   @Autowired
   private MongoConfig mongoConfig;
 
-  private Dotenv dotenv;
+  @Autowired
+  private ApplicationArguments appArgs;
 
   public ImageService() {
-  }
-
-  @PostConstruct
-  private void init() throws Exception {
-    dotenv = Dotenv.configure().directory("../.env").ignoreIfMalformed().ignoreIfMissing().load();
   }
 
   // creates gridfs image and fill image document.
@@ -86,7 +81,8 @@ public class ImageService {
 
     RestTemplate restTemplate = new RestTemplate();
     HttpEntity<Image> request = new HttpEntity<>(image);
-    restTemplate.postForObject(dotenv.get("SEARCH_SERVICE_IMAGE_POST"), request, Object.class);
+
+    restTemplate.postForObject(Constants.SEARCH_SERVICE_IMAGE_POST, request, Object.class);
 
     // return the image document.
     return new ResponseEntity<>(new UploadImageResponse("Image uploaded successfully", image), HttpStatus.CREATED);
@@ -127,8 +123,7 @@ public class ImageService {
 
     RestTemplate restTemplate = new RestTemplate();
     HttpEntity<Image> request = new HttpEntity<>(image);
-    restTemplate.exchange(dotenv.get("SEARCH_SERVICE_IMAGE_UPDATE") + image.getId(), HttpMethod.PUT, request,
-        Object.class);
+    restTemplate.exchange(Constants.SEARCH_SERVICE_IMAGE_UPDATE + image.getId(), HttpMethod.PUT, request, Object.class);
 
     return new ResponseEntity<>(new UpdateImageDataResponse("Image data updated successfully.", image),
         HttpStatus.CREATED);
@@ -218,7 +213,8 @@ public class ImageService {
 
     RestTemplate restTemplate = new RestTemplate();
     HttpEntity<String> request = new HttpEntity<>(image.getId());
-    restTemplate.delete(dotenv.get("SEARCH_SERVICE_IMAGE_DELETE") + image.getId(), request);
+
+    restTemplate.delete(Constants.SEARCH_SERVICE_IMAGE_DELETE + image.getId(), request);
 
     return new ResponseEntity<>(new GetImageDataResponse("Image deleted successfully.", image), HttpStatus.CREATED);
   }

@@ -17,13 +17,15 @@ public class Config {
 
     @Bean
     public RestHighLevelClient client() {
+        System.out.println("2");
         ClientConfiguration clientConfiguration = ClientConfiguration.builder().connectedTo("localhost:9200").build();
-
+        System.out.println("3");
         return RestClients.create(clientConfiguration).rest();
     }
 
     @Bean
     public ElasticsearchOperations elasticsearchTemplate() {
+
         return new ElasticsearchRestTemplate(client());
     }
 }

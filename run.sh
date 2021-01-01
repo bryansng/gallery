@@ -31,14 +31,18 @@
 # 2/3. zuul.
 # 2/3. all microservices.
 
+# mvn install
+docker-compose build
+docker-compose up
+
 
 if [ "$1" == "zuul" ]; then
-  mvn spring-boot:run -pl api.gateway
-elif [ "$1" == "eureka" ]; then
-  mvn spring-boot:run -pl service.discovery
-elif [ "$1" == "user" ]; then
-  mvn spring-boot:run -pl users
-  mvn spring-boot:run -pl service.discovery
-elif [ "$1" == "annotation" ]; then
-  mvn spring-boot:run -pl annotations
+    mvn spring-boot:run -pl api.gateway
+    elif [ "$1" == "eureka" ]; then
+    mvn spring-boot:run -pl service.discovery
+    elif [ "$1" == "user" ]; then
+    mvn spring-boot:run -pl users
+    mvn spring-boot:run -pl service.discovery
+    elif [ "$1" == "annotation" ]; then
+    mvn spring-boot:run -pl annotations
 fi
