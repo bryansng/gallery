@@ -97,7 +97,7 @@ function useAuthentication() {
         setIsAuthenticated(true);
         setUser({ ...user, ...res.user });
         onSuccessCallback();
-        console.log("User registered in successfully.");
+        console.log("User registered successfully.");
       })
       .catch((error) => {
         onErrorCallback(error.message);

@@ -116,7 +116,6 @@ function RegisterModal({
     } else {
       register(username, email, password, onSubmitError, onSubmitSuccess);
       setIsPasswordsValid(true);
-      console.log("Registered successfuly.");
     }
   };
 

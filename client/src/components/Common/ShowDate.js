@@ -5,13 +5,15 @@ import Tooltip from "react-bootstrap/Tooltip";
 
 dayjs.extend(relativeTime);
 
-export function ShowDate({ creationDateTime }) {
+export function ShowDate({ creationDateTime, placement }) {
   return (
     <OverlayTrigger
-      key="top"
-      placement="top"
+      key={placement}
+      placement={placement}
       overlay={
-        <Tooltip id="tooltip-top">{dayjs(creationDateTime).toString()}</Tooltip>
+        <Tooltip id="Actual date time">
+          {dayjs(creationDateTime).toString()}
+        </Tooltip>
       }
     >
       <span>{dayjs(creationDateTime).fromNow()}</span>

@@ -63,7 +63,11 @@ export default function App() {
       {components[route]}
       {/* <Home />
       <ViewImage /> */}
-      {/* <Profile /> */}
+      <Profile
+        user={user}
+        setRoute={updateRoute}
+        setRouteData={updateRouteData}
+      />
     </div>
   );
 }
