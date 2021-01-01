@@ -28,6 +28,7 @@ export default function App() {
   });
 
   const components = {};
+  components[routes.view_user_profile] = <Profile user={user} />;
   components[routes.homepage] = (
     <Home setRoute={updateRoute} setRouteData={updateRouteData} />
   );

@@ -7,7 +7,7 @@ import Card from "react-bootstrap/Card";
 import useFetch from "react-fetch-hook";
 import { ImageOverlay } from "react-image-overlay-effect";
 
-import Dexter from "../../assets/images/dexter.png";
+import placeholderImage from "../../assets/images/placeholder.png";
 
 /**
  * Custom img using styled components and tachyons
@@ -46,13 +46,11 @@ const HoverContent = styled.div.attrs(() => ({
   className: `text-white my-auto`,
 }))``;
 
-function Profile() {
-  const { isLoading, data } = useFetch(
-    "http://localhost:8080/api/users/user/cait"
-  );
-
-  console.log(data);
-
+function Profile({ user }) {
+  /*
+  TODO - fetch images by user.
+  TODO - fetch annotations by user.
+   */
   return (
     <Container fluid>
       <Row className="justify-content-md-center mb3">
@@ -61,7 +59,7 @@ function Profile() {
             <Card.Body>
               <Row className="justify-content-md-center mb3">
                 <Col>
-                  <Username>{isLoading ? "" : data.user.username}</Username>
+                  <Username>{user ? "" : user.username}</Username>
                 </Col>
               </Row>
               <Row className="mb3">
@@ -71,7 +69,9 @@ function Profile() {
                 </Col>
                 <Col lg={4} className=" grow">
                   <UserDetailsHeading>Date Joined</UserDetailsHeading>
-                  <UserDetails>{isLoading ? "" : data.msg.date}</UserDetails>
+                  <UserDetails>
+                    {user ? "" : user.creationDate.split("T")[0]}
+                  </UserDetails>
                 </Col>
 
                 <Col lg={4} className="grow">
@@ -94,7 +94,7 @@ function Profile() {
             <Col>
               <ImageOverlay
                 className="mw5"
-                src={Dexter}
+                src={placeholderImage}
                 description={
                   <Hover>
                     <HoverContent>Title</HoverContent>
@@ -107,7 +107,7 @@ function Profile() {
             <Col>
               <ImageOverlay
                 className="mw5"
-                src={Dexter}
+                src={placeholderImage}
                 description={
                   <Hover>
                     <HoverContent>Title</HoverContent>
@@ -120,7 +120,7 @@ function Profile() {
             <Col>
               <ImageOverlay
                 className="mw5"
-                src={Dexter}
+                src={placeholderImage}
                 description={
                   <Hover>
                     <HoverContent>Title</HoverContent>
@@ -144,7 +144,7 @@ function Profile() {
             <Col>
               <ImageOverlay
                 className="mw5"
-                src={Dexter}
+                src={placeholderImage}
                 description={
                   <Hover>
                     <HoverContent>Title</HoverContent>
@@ -157,7 +157,7 @@ function Profile() {
             <Col>
               <ImageOverlay
                 className="mw5"
-                src={Dexter}
+                src={placeholderImage}
                 description={
                   <Hover>
                     <HoverContent>Title</HoverContent>
@@ -170,7 +170,7 @@ function Profile() {
             <Col>
               <ImageOverlay
                 className="mw5"
-                src={Dexter}
+                src={placeholderImage}
                 description={
                   <Hover>
                     <HoverContent>Title</HoverContent>

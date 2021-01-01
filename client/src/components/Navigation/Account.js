@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
+import routes from "../../config/routes";
 
 const Button = styled.button.attrs({
   className: `b--gray ma0 br2 ba hover-bg-light-gray ml1 mr1`,
@@ -58,7 +59,7 @@ function SignInModal({ show, onHide, toggleBetweenSignInRegister, signIn }) {
             <Form.Control
               type="email"
               placeholder="johndoe@gmail.com"
-              // defaultValue="test1@h1h111111o1.com"
+              defaultValue="test1@h1h111111o1.com"
               required
             />
           </Form.Group>
@@ -67,7 +68,7 @@ function SignInModal({ show, onHide, toggleBetweenSignInRegister, signIn }) {
             <Form.Control
               type="password"
               placeholder=""
-              // defaultValue="test"
+              defaultValue="test"
               required
             />
           </Form.Group>
@@ -180,7 +181,7 @@ function RegisterModal({
   );
 }
 
-function Account({ signIn, register, logOut, isAuthenticated }) {
+function Account({ signIn, register, logOut, isAuthenticated, setRoute }) {
   const [showSignIn, setShowSignIn] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
   return (
@@ -214,7 +215,10 @@ function Account({ signIn, register, logOut, isAuthenticated }) {
         </>
       ) : (
         <>
-          <Button type="button" onClick={() => setShowSignIn(true)}>
+          <Button
+            type="button"
+            onClick={() => setRoute(routes.view_user_profile)}
+          >
             Profile
           </Button>
           <Button type="button" onClick={() => logOut()}>
