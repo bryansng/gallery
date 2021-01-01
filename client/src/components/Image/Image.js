@@ -2,28 +2,17 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Boxes, { BoundingBoxContainer } from "./Boxes";
 import AnnotationCard from "../Home/AnnotationCard";
+import { CreateAnnotationForm } from "../Home/AnnotationCard";
 import { service_endpoints } from "../../config/content.json";
 import routes from "../../config/routes";
 import placeholderImage from "../../assets/images/placeholder.png";
 import { GetUsername } from "../Common/GetUsername.js";
+import Form from "react-bootstrap/Form";
 const imageEndpoints = service_endpoints.image;
 const annotationEndpoints = service_endpoints.annotation;
 
-// const Button = styled.button.attrs({
-//   className: `b--gray ma0 br2 ba hover-bg-light-gray ml1 mr1`,
-// })`
-//   padding: 6px 20px;
-//   transition: 0.15s ease-out;
-//   background-color: transparent;
-//   min-width: 100px;
-//   &:hover {
-//     border-color: #505050;
-//     transition: 0.15s ease-in;
-//   }
-// `;
-
 const Button = styled.button.attrs({
-  className: `mv2 mh2 relative w-100 b--gray ma0 br2 ba hover-bg-light-gray tc`,
+  className: `ma2 relative w-100 b--gray ma0 br2 ba hover-bg-light-gray tc`,
 })`
   padding: 6px 20px;
   transition: 0.15s ease-out;
@@ -34,8 +23,6 @@ const Button = styled.button.attrs({
     transition: 0.15s ease-in;
   }
 `;
-
-const FakeButton = styled(Button)``;
 
 const DrawingRectangle = styled.div.attrs({
   className: ``,
@@ -68,19 +55,17 @@ const Container = styled.div.attrs({
 })``;
 
 const ImageContainer = styled.div.attrs({
-  className: `center mr1 flex flex-column w-70 ph4 w-100-m ph3-m ma0-m`,
+  className: `ma0 flex flex-column w-60 pl6 pr-4 w-100-m pl4-m`,
 })``;
 
 const Image = styled.img.attrs({
   className: `center ba b--yellow`,
 })`
-  max-height: 80vh;
-  // width: auto;
-  // height: 500px;
+  max-height: 60vh;
 `;
 
 const ImageDescriptionContainer = styled.div.attrs({
-  className: `pb4`,
+  className: `pb4 aspect-ratio--4x3 mh5 mv4 center w-80`,
 })``;
 
 const Title = styled.h2.attrs({
@@ -88,23 +73,12 @@ const Title = styled.h2.attrs({
 })``;
 
 const AnnotationContainer = styled.div.attrs({
-  className: `center ml1 flex flex-column w-30 pr4 w-100-m ph3-m ma0-m`,
+  className: `flex flex-column w-30 pr4 w-100-m ph3-m ma0-m`,
 })``;
-
-function AnnotationPrompt() {
-  const [isCreateMode, setCreateMode] = useState(false);
-  const [isViewMode, setViewMode] = useState(false);
-
-  return (
-    <Button type="button" onClick={() => {}}>
-      {isCreateMode ? "Cancel" : "Make an annotation!"}
-    </Button>
-  );
-}
 
 function ViewImage({ routeData, setRoute, setRouteData }) {
   var viewImageId = routeData;
-  viewImageId = "5fe931051897c026c1591825";
+  // viewImageId = "5fe931051897c026c1591825";
   const [isFetching, setIsFetching] = useState(false);
   const [isImageFetched, setIsImageFetched] = useState(false);
   const [isAnnotationFetched, setIsAnnotationFetched] = useState(false);
@@ -286,80 +260,67 @@ function ViewImage({ routeData, setRoute, setRouteData }) {
 
   return (
     <Container>
-      <Button type="button" onClick={() => toggleAnnotations()}>
-        Toggle annotations
-      </Button>
-      {!isAddingAnnotation ? (
-        <Button type="button" onClick={() => startAddingAnnotationProcess()}>
-          Add annotation
-        </Button>
-      ) : (
-        <>
-          <FakeButton
-            type="button"
-            onClick={() => cancelAddingAnnotationProcess()}
-          >
-            Cancel
-          </FakeButton>
-          <Button
-            type="button"
-            onClick={() => completeAddingAnnotationProcess()}
-          >
-            Create
-          </Button>
-        </>
-      )}
       <ImageContainer>
-        <div className="">
-          {isViewAnnotations && (
-            <Boxes
-              annotations={annotations}
-              setAnnotationToView={setAnnotationToView}
-              isAddingAnnotation={isAddingAnnotation}
-            />
-          )}
-          {isAddingAnnotation && (
-            <BoundingBoxContainer>
-              <DrawingRectangle
-                style={{
-                  top:
-                    coordsPercentage.y2 - coordsPercentage.y1 >= 0
-                      ? coordsPercentage.y1
-                      : coordsPercentage.y2,
-                  left:
-                    coordsPercentage.x2 - coordsPercentage.x1 >= 0
-                      ? coordsPercentage.x1
-                      : coordsPercentage.x2,
-                  width:
-                    coordsPercentage.x2 - coordsPercentage.x1 === 0
-                      ? 1
-                      : Math.abs(coordsPercentage.x2 - coordsPercentage.x1),
-                  height:
-                    coordsPercentage.y2 - coordsPercentage.y1 === 0
-                      ? 1
-                      : Math.abs(coordsPercentage.y2 - coordsPercentage.y1),
-                  zIndex: 99999,
-                }}
-              />
-            </BoundingBoxContainer>
-          )}
-          <Image
-            src={
-              image
-                ? `${imageEndpoints.get_image}/${image.id}`
-                : placeholderImage
-            }
-            alt={image.title}
-            onClick={getClickedCoords}
-            onDragStart={preventDragHandler}
-            onMouseDown={startDrawingRectangle}
-            onMouseUp={stopDrawingRectangle}
-            onMouseMove={whileDrawingRectangle}
-            onMouseLeave={stopDrawingRectangle}
+        {isViewAnnotations && (
+          <Boxes
+            annotations={annotations}
+            setAnnotationToView={setAnnotationToView}
+            isAddingAnnotation={isAddingAnnotation}
           />
-        </div>
+        )}
+        {isAddingAnnotation && (
+          <BoundingBoxContainer>
+            <DrawingRectangle
+              style={{
+                top:
+                  coordsPercentage.y2 - coordsPercentage.y1 >= 0
+                    ? coordsPercentage.y1
+                    : coordsPercentage.y2,
+                left:
+                  coordsPercentage.x2 - coordsPercentage.x1 >= 0
+                    ? coordsPercentage.x1
+                    : coordsPercentage.x2,
+                width:
+                  coordsPercentage.x2 - coordsPercentage.x1 === 0
+                    ? 1
+                    : Math.abs(coordsPercentage.x2 - coordsPercentage.x1),
+                height:
+                  coordsPercentage.y2 - coordsPercentage.y1 === 0
+                    ? 1
+                    : Math.abs(coordsPercentage.y2 - coordsPercentage.y1),
+                zIndex: 99999,
+              }}
+            />
+          </BoundingBoxContainer>
+        )}
+        <Image
+          src={
+            image ? `${imageEndpoints.get_image}/${image.id}` : placeholderImage
+          }
+          alt={image.title}
+          onClick={getClickedCoords}
+          onDragStart={preventDragHandler}
+          onMouseDown={startDrawingRectangle}
+          onMouseUp={stopDrawingRectangle}
+          onMouseMove={whileDrawingRectangle}
+          onMouseLeave={stopDrawingRectangle}
+        />
         <ImageDescriptionContainer>
-          <Title>{image.title}</Title>
+          <div className="flex justify-between items-center">
+            <Title>{image.title}</Title>
+
+            <Form>
+              <Form.Check
+                type="switch"
+                id="toggle-annotations"
+                label="Toggle annotations"
+                title="Toggle annotations"
+                onChange={() => toggleAnnotations()}
+                defaultChecked
+              />
+            </Form>
+          </div>
+
           <p className="i">
             by <GetUsername userId={image.userId} />
           </p>
@@ -368,28 +329,70 @@ function ViewImage({ routeData, setRoute, setRouteData }) {
       </ImageContainer>
 
       <AnnotationContainer>
-        <AnnotationPrompt />
-        {annotationToView ? (
-          <AnnotationCard
-            username={
-              annotationToView ? (
-                <GetUsername userId={annotationToView.userId} />
-              ) : (
-                ""
-              )
-            }
-            creationDate={annotationToView ? annotationToView.creationDate : ""}
-            content={annotationToView ? annotationToView.content : ""}
-            totalVotes={annotationToView ? annotationToView.totalVotes : ""}
-            extraClassName="w-100"
-          />
+        {!isAddingAnnotation ? (
+          <>
+            <Button
+              type="button"
+              onClick={() => startAddingAnnotationProcess()}
+            >
+              Add annotation
+            </Button>
+            {annotationToView ? (
+              <AnnotationCard
+                username={
+                  annotationToView ? (
+                    <GetUsername userId={annotationToView.userId} />
+                  ) : (
+                    ""
+                  )
+                }
+                creationDate={
+                  annotationToView ? annotationToView.creationDate : ""
+                }
+                content={annotationToView ? annotationToView.content : ""}
+                totalVotes={annotationToView ? annotationToView.totalVotes : ""}
+                extraClassName="w-100"
+              />
+            ) : (
+              // coordinates:
+              // {annotationToView
+              //   ? JSON.stringify(annotationToView.rectangleCoordinates)
+              //   : ""}{" "}
+              // <br />
+              ""
+            )}
+          </>
         ) : (
-          // coordinates:
-          // {annotationToView
-          //   ? JSON.stringify(annotationToView.rectangleCoordinates)
-          //   : ""}{" "}
-          // <br />
-          ""
+          <>
+            <Button
+              type="button"
+              onClick={() => cancelAddingAnnotationProcess()}
+            >
+              Cancel
+            </Button>
+
+            <Form>
+              <Form.Group controlId="formAddAnnotation">
+                <CreateAnnotationForm
+                  content={
+                    <Form.Control
+                      as="textarea"
+                      rows={5}
+                      placeholder="Try dragging over the image! What do you think?"
+                      className="pa0 "
+                    ></Form.Control>
+                  }
+                  extraClassName="w-100"
+                />
+                <Button
+                  type="submit"
+                  onSubmit={() => completeAddingAnnotationProcess()}
+                >
+                  Create
+                </Button>
+              </Form.Group>
+            </Form>
+          </>
         )}
       </AnnotationContainer>
     </Container>
