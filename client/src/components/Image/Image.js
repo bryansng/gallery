@@ -55,17 +55,17 @@ const Container = styled.div.attrs({
 })``;
 
 const ImageContainer = styled.div.attrs({
-  className: `center mr1 flex flex-column w-70 ph4 w-100-m ph3-m ma0-m`,
+  className: `ma0 flex flex-column w-60 pl6 pr-4 w-100-m pl4-m`,
 })``;
 
 const Image = styled.img.attrs({
   className: `center ba b--yellow`,
 })`
-  max-height: 80vh;
+  max-height: 60vh;
 `;
 
 const ImageDescriptionContainer = styled.div.attrs({
-  className: `pb4`,
+  className: `pb4 aspect-ratio--4x3 mh5 mv4 center w-80`,
 })``;
 
 const Title = styled.h2.attrs({
@@ -73,7 +73,7 @@ const Title = styled.h2.attrs({
 })``;
 
 const AnnotationContainer = styled.div.attrs({
-  className: `center ml1 flex flex-column w-30 pr4 w-100-m ph3-m ma0-m`,
+  className: `flex flex-column w-30 pr4 w-100-m ph3-m ma0-m`,
 })``;
 
 function ViewImage({ routeData, setRoute, setRouteData }) {
