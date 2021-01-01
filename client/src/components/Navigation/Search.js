@@ -42,9 +42,12 @@ const SearchIcon = styled(MagnifyingGlass).attrs({
 function Search({ keyword, setKeyword, setRoute, setRouteData }) {
   const handleSubmit = (e) => {
     e.preventDefault();
-    setRouteData(e.target.search.value);
-    setRoute(routes.search_keyword);
-    console.log("Going to search page.");
+    const searchKeyword = e.target.search.value;
+    if (searchKeyword !== "") {
+      setRouteData(searchKeyword);
+      setRoute(routes.search_keyword);
+      console.log("Going to search page.");
+    }
   };
 
   return (

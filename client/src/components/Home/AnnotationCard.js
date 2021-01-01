@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Card from "react-bootstrap/Card";
 import { ShowDate } from "../Common/ShowDate";
+import { GetUsername } from "../Common/GetUsername.js";
 import { ReactComponent as Arrow } from "../../assets/svgs/arrow.svg";
 import { service_endpoints } from "../../config/content.json";
+import routes from "../../config/routes";
 const annotationEndpoints = service_endpoints.annotation;
 
 const Downvote = styled(Arrow).attrs({
@@ -54,21 +56,46 @@ const DownvoteButton = styled(StyledButton).attrs({})`
 function AnnotationCard({
   token,
   user,
-  username,
-  annotationId,
-  creationDate,
-  content,
-  originalTotalVotes,
-  originalUserVoteType,
+  originalAnnotation,
   onClick = () => {},
+  setRoute,
+  setRouteData,
   extraClassName,
+  indexInParentArray,
+  updateAnnotationInParent = () => {},
 }) {
+  const [annotation, setAnnotation] = useState(originalAnnotation);
   const [currentTotalVotes, setCurrentTotalVotes] = useState(
-    originalTotalVotes
+    annotation.totalVotes
   );
   const [currentUserVoteType, setCurrentUserVoteType] = useState(
-    originalUserVoteType
+    annotation.allUserVotes[user.id] ? annotation.allUserVotes[user.id] : 0
   );
+
+  // useEffect(() => {
+  //   setCurrentUserVoteType(originalUserVoteType);
+  //   setCurrentTotalVotes(originalTotalVotes);
+  // }, [originalUserVoteType, originalTotalVotes]);
+
+  // if (annotationId === "5fef3d4af7335220c5c11e3f") {
+  //   console.log("\n\n");
+  //   console.log(
+  //     "🚀 ~ file: AnnotationCard.js ~ line 70 ~ currentUserVoteType",
+  //     currentUserVoteType
+  //   );
+  //   console.log(
+  //     "🚀 ~ file: AnnotationCard.js ~ line 70 ~ originalUserVoteType",
+  //     originalUserVoteType
+  //   );
+  //   console.log(
+  //     "🚀 ~ file: AnnotationCard.js ~ line 67 ~ allUserVotes",
+  //     allUserVotes
+  //   );
+  //   console.log(
+  //     "🚀 ~ file: AnnotationCard.js ~ line 67 ~ allUserVotes",
+  //     allUserVotes[user.id]
+  //   );
+  // }
 
   function handlePOSTVote(e, voteType) {
     e.preventDefault();
@@ -82,7 +109,7 @@ function AnnotationCard({
         Authorization: `bearer ${token}`,
       },
       body: JSON.stringify({
-        annotationId: annotationId,
+        annotationId: annotation.annotationId,
         userId: user.id,
         vote: voteType,
       }),
@@ -102,6 +129,12 @@ function AnnotationCard({
         // update total votes on the annotation.
         setCurrentTotalVotes(res.annotation.totalVotes);
 
+        // update annotation.
+        setAnnotation(res.annotation);
+
+        // update annotation in parent if any.
+        updateAnnotationInParent(res.annotation, indexInParentArray);
+
         console.log("Voted annotation successfully.");
       })
       .catch((error) => {
@@ -110,12 +143,24 @@ function AnnotationCard({
   }
 
   return (
-    <CustomCard onClick={() => onClick()} className={extraClassName}>
+    <CustomCard
+      onClick={() => {
+        if (setRouteData && setRoute) {
+          setRouteData({
+            imageId: annotation.imageId,
+            annotationToView: annotation,
+          });
+          setRoute(routes.view_image);
+        }
+      }}
+      className={extraClassName}
+    >
       <Card.Body>
         <Card.Subtitle className="pv1">
-          {username} @ <ShowDate creationDateTime={creationDate} />
+          {<GetUsername userId={annotation.userId} />} @{" "}
+          <ShowDate creationDateTime={annotation.creationDate} />
         </Card.Subtitle>
-        <Card.Text className="pv2">{content}</Card.Text>
+        <Card.Text className="pv2">{annotation.content}</Card.Text>
         <div className="flex flex-wrap flex-row items-center">
           <Card.Link className="pointer near-black dim pr1">
             {currentTotalVotes}

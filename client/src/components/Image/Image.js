@@ -469,6 +469,16 @@ function ViewImage({ token, user, routeData, setRoute, setRouteData }) {
     console.log("Cancelled adding process.");
   }
 
+  function updateAnAnnotation(newAnnotation, indexOfAnnotationInArray) {
+    const newAnnotations = annotations
+      .slice(0, indexOfAnnotationInArray)
+      .concat(newAnnotation)
+      .concat(
+        annotations.slice(indexOfAnnotationInArray + 1, annotations.length)
+      );
+    setAnnotations(newAnnotations);
+  }
+
   return (
     <Container>
       <Button type="button" onClick={() => toggleAnnotations()}>
@@ -499,10 +509,12 @@ function ViewImage({ token, user, routeData, setRoute, setRouteData }) {
           {isViewAnnotations &&
             imgReference.current &&
             imgReference.current.width &&
-            imgReference.current.height && (
+            imgReference.current.height &&
+            annotationToView && (
               <Boxes
                 annotations={annotations}
-                setAnnotationToView={setAnnotationToView}
+                annotationToViewInParent={annotationToView}
+                setAnnotationToViewInParent={setAnnotationToView}
                 isAddingAnnotation={isAddingAnnotation}
                 imgWidth={imgReference.current.width}
                 imgHeight={imgReference.current.height}
@@ -564,17 +576,11 @@ function ViewImage({ token, user, routeData, setRoute, setRouteData }) {
                 <AnnotationCard
                   token={token}
                   user={user}
-                  username={<GetUsername userId={annotationToView.userId} />}
-                  annotationId={annotationToView.annotationId}
-                  creationDate={annotationToView.creationDate}
-                  content={annotationToView.content}
-                  originalTotalVotes={annotationToView.totalVotes}
-                  originalUserVoteType={
-                    user && user.id && annotationToView.allUserVotes[user.id]
-                      ? annotationToView.allUserVotes[user.id]
-                      : 0
-                  }
+                  originalAnnotation={annotation}
+                  key={index}
+                  indexInParentArray={index}
                   extraClassName="w-100"
+                  updateAnnotationInParent={updateAnAnnotation}
                 />
               )
           )

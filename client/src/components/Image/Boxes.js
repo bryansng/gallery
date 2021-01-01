@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 
 const BoundingBoxContainer = styled.div.attrs({
@@ -12,12 +12,18 @@ const BoundingBox = styled.div.attrs({
   className: ``,
 })`
   position: absolute;
-  box-shadow: inset 0 0 0 1.2px
-    ${(props) => (props.isAddingAnnotation ? "#b3b3b3" : "#149df2")};
   opacity: 0.5;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+
+  box-shadow: inset 0 0 0 1.2px
+    ${(props) =>
+      props.isAddingAnnotation
+        ? "#b3b3b3"
+        : props.isInView
+        ? "#149df2"
+        : "#b3b3b3"};
 
   ${(props) =>
     !props.isAddingAnnotation
@@ -32,7 +38,8 @@ const BoundingBox = styled.div.attrs({
 
 const Boxes = ({
   annotations,
-  setAnnotationToView,
+  annotationToViewInParent,
+  setAnnotationToViewInParent,
   isAddingAnnotation,
   imgWidth,
   imgHeight,
@@ -41,8 +48,20 @@ const Boxes = ({
   calculateWidthStyle,
   calculateHeightStyle,
 }) => {
+  const [annotationIdToView, setAnnotationIdToView] = useState(
+    annotationToViewInParent ? annotationToViewInParent.annotationId : ""
+  );
+
   function preventDragHandler(e) {
     e.preventDefault();
+  }
+
+  function handleBoxOnClick(e, theAnnotation) {
+    if (!isAddingAnnotation) {
+      setAnnotationIdToView(theAnnotation.annotationId);
+      setAnnotationToViewInParent(theAnnotation);
+      // console.log(`Clicked Annotation: ${annotation.annotationId}`);
+    }
   }
 
   return (
@@ -60,17 +79,10 @@ const Boxes = ({
               zIndex: index,
               // zIndex: 99999 - index,
             }}
-            onClick={() => {
-              if (!isAddingAnnotation) {
-                setAnnotationToView(annotation);
-                console.log(`Clicked Annotation: ${annotation.annotationId}`);
-              }
-            }}
-            // onClick={() =>
-            //   !isAddingAnnotation ? setAnnotationToView(annotation) : {}
-            // }
+            onClick={(e) => handleBoxOnClick(e, annotation)}
             onDragStart={preventDragHandler}
             isAddingAnnotation={isAddingAnnotation}
+            isInView={annotationIdToView === annotation.annotationId}
           ></BoundingBox>
         ) : (
           <div key={annotation.annotationId}></div>

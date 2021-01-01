@@ -3,8 +3,6 @@ import styled from "styled-components";
 import AnnotationCard from "./AnnotationCard";
 import CardDeck from "react-bootstrap/CardDeck";
 import content from "../../config/content.json";
-import routes from "../../config/routes";
-import { GetUsername } from "../Common/GetUsername.js";
 
 const Container = styled.div.attrs({
   className: `center mt5 mb5 flex flex-wrap justify-center items-stretch`,
@@ -37,31 +35,19 @@ function RecentAnnotations({ token, user, setRoute, setRouteData }) {
   return (
     <Container>
       <Title>Recent Annotations</Title>
-      {annotations.map((annotation, index) => (
-        <AnnotationCard
-          token={token}
-          user={user}
-          username={<GetUsername userId={annotation.userId} />}
-          annotationId={annotation.annotationId}
-          creationDate={annotation.creationDate}
-          content={annotation.content}
-          originalTotalVotes={annotation.totalVotes}
-          originalUserVoteType={
-            user && user.id && annotation.allUserVotes[user.id]
-              ? annotation.allUserVotes[user.id]
-              : 0
-          }
-          onClick={() => {
-            setRouteData({
-              imageId: annotation.imageId,
-              annotationToView: annotation,
-            });
-            setRoute(routes.view_image);
-          }}
-          key={index}
-          extraClassName="w-40-l pointer"
-        />
-      ))}
+      {user &&
+        user.id &&
+        annotations.map((annotation, index) => (
+          <AnnotationCard
+            token={token}
+            user={user}
+            originalAnnotation={annotation}
+            setRoute={setRoute}
+            setRouteData={setRouteData}
+            key={index}
+            extraClassName="w-40-l pointer"
+          />
+        ))}
     </Container>
   );
 }
