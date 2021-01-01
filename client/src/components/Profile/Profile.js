@@ -36,38 +36,38 @@ const UserDetails = styled.p.attrs(() => ({
   className: `avenir f5 fw3 tc`,
 }))``;
 
-const UserObjectHeading = styled.a.attrs(() => ({
-  className: `avenir gray pointer link dim f2 fw3 `,
-}))``;
+// const UserObjectHeading = styled.a.attrs(() => ({
+//   className: `avenir gray pointer link dim f2 fw3 `,
+// }))``;
 
 // const Img = styled.img.attrs(() => ({
 //   className: `pa3 ba b--light-silver grow pointer img-fluid`,
 // }))``;
 
-const Hover = styled.div.attrs(() => ({
-  className: `d-flex flex-column justify-content-center align-items-center my-auto`,
-}))``;
+// const Hover = styled.div.attrs(() => ({
+//   className: `d-flex flex-column justify-content-center align-items-center my-auto`,
+// }))``;
 
-const HoverContent = styled.div.attrs(() => ({
-  className: `text-white my-auto`,
-}))``;
+// const HoverContent = styled.div.attrs(() => ({
+//   className: `text-white my-auto`,
+// }))``;
 
 const Container = styled.div.attrs({
-  className: `center mt5 mb5 flex flex-wrap justify-center`,
+  className: `center mt5 mb5  w-60-l w-70 flex flex-wrap justify-center`,
 })``;
 
-const Title = styled.h2.attrs({
-  className: `mt2 mb5 avenir fw6 f2 dark-gray`,
-})``;
+// const Title = styled.h2.attrs({
+//   className: `mt2 mb5 avenir fw6 f2 dark-gray`,
+// })``;
 
-function Profile({ user }) {
+function Profile({ user, setRoute, setRouteData }) {
   const images = useGetImagesByUserId(user.id);
   const annotations = useGetAnnotationsByUserId(user.id);
 
   return (
     <Container>
       <div className="w-100 mv4">
-        <Card className="shadow-5 tc w-40 center">
+        <Card className="shadow-5 tc w-50-ns flex-auto center">
           <Card.Body>
             <Row className="justify-content-md-center mb3">
               <Col>
@@ -101,17 +101,20 @@ function Profile({ user }) {
       </div>
       {images.map((image) => (
         <ImageHoverSquare
-          imageUrl={
-            { image }
-              ? `${service_endpoints.image.get_image}/${image.id}`
-              : { placeholderImage }
-          }
-          title={image.title}
-          description={image.description}
-          totalViews={image.totalViews}
-          annotationNum={<GetAnnotationNum imageId={image.id} />}
+          image={image}
+          setRoute={setRoute}
+          setRouteData={setRouteData}
+          // imageUrl={
+          //   { image }
+          //     ? `${service_endpoints.image.get_image}/${image.id}`
+          //     : { placeholderImage }
+          // }
+          // title={image.title}
+          // description={image.description}
+          // totalViews={image.totalViews}
+          // annotationNum={<GetAnnotationNum imageId={image.id} />}
         />
-      ))}{" "}
+      ))}
     </Container>
     // <Container fluid>
     //   <Row className="justify-content-md-center mb3">

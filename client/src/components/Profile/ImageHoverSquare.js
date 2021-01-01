@@ -1,24 +1,47 @@
 import React from "react";
 import styled from "styled-components";
+import { ShowDate } from "../Common/ShowDate";
+import { GetAnnotationNum } from "../Common/GetAnnotationNum";
+import { GetUsername } from "../Common/GetUsername";
+import { service_endpoints } from "../../config/content.json";
+import routes from "../../config/routes";
 
 export default function ImageHoverSquare({
-  imageUrl,
-  title,
-  description,
-  username,
-  totalViews,
-  annotationNum,
+  image,
+  showUsername,
+  setRoute,
+  setRouteData,
 }) {
   return (
-    <Image style={{ backgroundImage: `url("${imageUrl}")` }}>
+    <Image
+      style={{
+        backgroundImage: `url("${service_endpoints.image.get_image}/${image.id}")`,
+      }}
+      onClick={() => {
+        console.log(image.id);
+        setRouteData(image.id);
+        setRoute(routes.view_image);
+        console.log("CLICKED IMAGE");
+      }}
+    >
       <ImageHoverCover>
-        <ImageHoverTitle>{title}</ImageHoverTitle>
-        <ImageHoverDesc>{description}</ImageHoverDesc>
-        {{ username } ? <ImageHoverUser>by {username}</ImageHoverUser> : ""}
-        <ImageHoverNumberOfViews>{totalViews} views</ImageHoverNumberOfViews>
-        <ImageHoverNumberOfAnnotations>
-          {annotationNum} annotations
-        </ImageHoverNumberOfAnnotations>
+        <ImageHoverTitle>{image.title}</ImageHoverTitle>
+        <ImageHoverDesc>{image.description}</ImageHoverDesc>
+        {showUsername ? (
+          <ImageHoverUser>
+            by <GetUsername userId={image.userId} />
+          </ImageHoverUser>
+        ) : (
+          ""
+        )}
+        <ImageHoverDate>
+          {<ShowDate creationDateTime={image.creationDate} />}
+        </ImageHoverDate>
+        <ImageHoverNumberOfViews>
+          {image.totalViews} views |{" "}
+          {<GetAnnotationNum imageId={image.annotationNum} />} annotations
+        </ImageHoverNumberOfViews>
+        <ImageHoverNumberOfAnnotations></ImageHoverNumberOfAnnotations>
       </ImageHoverCover>
     </Image>
   );
@@ -51,5 +74,6 @@ const ImageHoverDesc = styled.p.attrs({
   -webkit-box-orient: vertical;
 `;
 const ImageHoverUser = styled.p.attrs({ className: `i` })``;
+const ImageHoverDate = styled.p.attrs({ className: `i` })``;
 const ImageHoverNumberOfViews = styled.p.attrs({ className: `` })``;
 const ImageHoverNumberOfAnnotations = styled.p.attrs({ className: `` })``;
