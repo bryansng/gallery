@@ -83,7 +83,7 @@ const AnnotationContainer = styled.div.attrs({
 function ViewImage({ token, user, routeData, setRoute, setRouteData }) {
   var viewImageId = routeData.imageId;
   var routedAnnotationToView = routeData.annotationToView;
-  viewImageId = "5fe931051897c026c1591825";
+  // viewImageId = "5fe931051897c026c1591825";
   const [isFetching, setIsFetching] = useState(false);
   const [isImageFetched, setIsImageFetched] = useState(false);
   const [isAnnotationFetched, setIsAnnotationFetched] = useState(false);
