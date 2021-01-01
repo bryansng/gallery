@@ -15,7 +15,11 @@ function useRouter() {
 
   useEffect(() => {
     // console.log(Object.keys(routeData).length === 0);
-    if (Object.keys(routeData).length === 0 && route !== routes.homepage) {
+    if (
+      Object.keys(routeData).length === 0 &&
+      route !== routes.homepage &&
+      route !== routes.view_user_profile
+    ) {
       updateRoute(routes.homepage);
       window.localStorage.removeItem("routeData");
     }
@@ -24,6 +28,7 @@ function useRouter() {
   function updateRoute(newRoute) {
     window.localStorage.setItem("route", newRoute);
     setRoute(newRoute);
+    window.scrollTo(0, 0);
   }
 
   function updateRouteData(newRouteData) {

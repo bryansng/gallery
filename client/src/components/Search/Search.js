@@ -43,7 +43,7 @@ const Title = styled.h2.attrs({
   className: `mt2 mb5 avenir fw6 f2 dark-gray`,
 })``;
 
-function Search({ routeData }) {
+function Search({ routeData, setRoute, setRouteData }) {
   const searchKeyword = routeData;
   const { isLoading, data } = useFetch(
     `${searchEndpoints.search}/${searchKeyword}`

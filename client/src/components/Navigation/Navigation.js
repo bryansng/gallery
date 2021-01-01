@@ -29,6 +29,7 @@ function Navigation({
         register={register}
         logOut={logOut}
         isAuthenticated={isAuthenticated}
+        setRoute={setRoute}
       />
     </Container>
   );

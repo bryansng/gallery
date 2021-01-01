@@ -1,13 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import Boxes, { BoundingBoxContainer } from "./Boxes";
 import AnnotationCard from "../Home/AnnotationCard";
+import ResizeObserver from "rc-resize-observer";
 import { CreateAnnotationForm } from "../Home/AnnotationCard";
 import { service_endpoints } from "../../config/content.json";
-import routes from "../../config/routes";
 import placeholderImage from "../../assets/images/placeholder.png";
-import { GetUsername } from "../Common/GetUsername.js";
 import Form from "react-bootstrap/Form";
+import routes from "../../config/routes";
+import { GetUsername } from "../Common/GetUsername.js";
 const imageEndpoints = service_endpoints.image;
 const annotationEndpoints = service_endpoints.annotation;
 
@@ -62,6 +63,7 @@ const Image = styled.img.attrs({
   className: `center ba b--yellow`,
 })`
   max-height: 60vh;
+  user-select: none;
 `;
 
 const ImageDescriptionContainer = styled.div.attrs({
@@ -76,8 +78,9 @@ const AnnotationContainer = styled.div.attrs({
   className: `flex flex-column w-30 pr4 w-100-m ph3-m ma0-m`,
 })``;
 
-function ViewImage({ routeData, setRoute, setRouteData }) {
-  var viewImageId = routeData;
+function ViewImage({ token, user, routeData, setRoute, setRouteData }) {
+  var viewImageId = routeData.imageId;
+  var routedAnnotationToView = routeData.annotationToView;
   // viewImageId = "5fe931051897c026c1591825";
   const [isFetching, setIsFetching] = useState(false);
   const [isImageFetched, setIsImageFetched] = useState(false);
@@ -92,6 +95,7 @@ function ViewImage({ routeData, setRoute, setRouteData }) {
   const [drawingRectStyle, setDrawingRectStyle] = useState(
     initialRectStyleState
   );
+  const imgReference = useRef(null);
 
   useEffect(() => {
     if (!isFetching) {
@@ -122,7 +126,11 @@ function ViewImage({ routeData, setRoute, setRouteData }) {
                 .then((res) => {
                   setAnnotations(res.annotations);
                   setAnnotationToView(
-                    res.annotations.length > 0 ? res.annotations[0] : null
+                    res.annotations.length > 0
+                      ? routedAnnotationToView
+                        ? routedAnnotationToView
+                        : res.annotations[0]
+                      : null
                   );
                   setIsAnnotationFetched(true);
                   console.log("Annotations received successfully.");
@@ -140,16 +148,62 @@ function ViewImage({ routeData, setRoute, setRouteData }) {
   }, [
     isFetching,
     viewImageId,
+    routedAnnotationToView,
     isImageFetched,
     isAnnotationFetched,
     annotationToView,
   ]);
 
-  function getCoordsWithinBoundaryLimits(e) {
-    console.log(e.target);
-    const imgWidth = e.target.width;
-    const imgHeight = e.target.height;
-    console.log(`Width, Height: ${imgWidth}, ${imgHeight}`);
+  function getXYCoordsWithinBoundaryLimits(
+    preprocessedX,
+    preprocessedY,
+    imgWidth,
+    imgHeight
+  ) {
+    var processedX = preprocessedX;
+    var processedY = preprocessedY;
+
+    if (preprocessedX > imgWidth) {
+      processedX = imgWidth;
+    } else if (preprocessedX < 0) {
+      processedX = 0;
+    }
+
+    if (preprocessedY > imgHeight) {
+      processedY = imgHeight;
+    } else if (preprocessedY < 0) {
+      processedY = 0;
+    }
+
+    // console.log(`processedX, processedY: ${processedX}, ${processedY}`);
+    return { xCoord: processedX, yCoord: processedY };
+  }
+
+  function getXYCoordsPercentRelativeToImage(
+    preprocessedX,
+    preprocessedY,
+    imgWidth,
+    imgHeight
+  ) {
+    // console.log(`imgWidth, imgHeight: ${imgWidth}, ${imgHeight}`);
+
+    const { xCoord, yCoord } = getXYCoordsWithinBoundaryLimits(
+      preprocessedX,
+      preprocessedY,
+      imgWidth,
+      imgHeight
+    );
+
+    const xRelativeToImageWidth = (xCoord / imgWidth) * 100;
+    const yRelativeToImageHeight = (yCoord / imgHeight) * 100;
+
+    // console.log(
+    //   `xPercent, yPercent: ${xRelativeToImageWidth}, ${yRelativeToImageHeight}`
+    // );
+    return {
+      xCoordPercent: xRelativeToImageWidth,
+      yCoordPercent: yRelativeToImageHeight,
+    };
   }
 
   function getClickedCoords(e) {
@@ -162,53 +216,176 @@ function ViewImage({ routeData, setRoute, setRouteData }) {
     console.log(`offset Clicked: x, y: ${xCoord}, ${yCoord}`);
   }
 
+  function coordPercentToPixel(percentValue, ofValue) {
+    return Math.ceil((percentValue * ofValue) / 100);
+  }
+
+  function calculateTopStyle(y1, y2, imgWidth, imgHeight) {
+    return y2 - y1 >= 0
+      ? coordPercentToPixel(y1, imgHeight)
+      : coordPercentToPixel(y2, imgHeight);
+  }
+
+  function calculateLeftStyle(x1, x2, imgWidth, imgHeight) {
+    return x2 - x1 >= 0
+      ? coordPercentToPixel(x1, imgWidth)
+      : coordPercentToPixel(x2, imgWidth);
+  }
+
+  function calculateWidthStyle(x1, x2, imgWidth) {
+    return x2 - x1 === 0 ? 1 : coordPercentToPixel(Math.abs(x2 - x1), imgWidth);
+  }
+
+  function calculateHeightStyle(y1, y2, imgHeight) {
+    return y2 - y1 === 0
+      ? 1
+      : coordPercentToPixel(Math.abs(y2 - y1), imgHeight);
+  }
+
+  function updateDrawingRectStyle(imgWidth, imgHeight) {
+    var top = calculateTopStyle(
+      coordsPercentage.y1,
+      coordsPercentage.y2,
+      imgWidth,
+      imgHeight
+    );
+    var left = calculateLeftStyle(
+      coordsPercentage.x1,
+      coordsPercentage.x2,
+      imgWidth,
+      imgHeight
+    );
+    var width = calculateWidthStyle(
+      coordsPercentage.x1,
+      coordsPercentage.x2,
+      imgWidth
+    );
+    var height = calculateHeightStyle(
+      coordsPercentage.y1,
+      coordsPercentage.y2,
+      imgHeight
+    );
+
+    setDrawingRectStyle({ top: top, left: left, width: width, height: height });
+
+    // console.log(
+    //   `Coords: left, top, width, height: ${left}, ${top}, ${width}, ${height}`
+    // );
+  }
+
+  function resizeRectangle() {
+    if (
+      imgReference &&
+      imgReference.current &&
+      imgReference.current.width &&
+      imgReference.current.height
+    ) {
+      const imgWidth = imgReference.current.width;
+      const imgHeight = imgReference.current.height;
+      updateDrawingRectStyle(imgWidth, imgHeight);
+    }
+  }
+
   function startDrawingRectangle(e) {
     e.preventDefault();
     if (!isDrawing && isAddingAnnotation) {
-      console.log("Is drawing.");
+      // console.log("\nIs drawing.");
       setIsDrawing(true);
-      setCoordsPercentage({
-        x1: e.nativeEvent.offsetX,
-        x2: e.nativeEvent.offsetX,
-        y1: e.nativeEvent.offsetY,
-        y2: e.nativeEvent.offsetY,
-      });
-      console.log(
-        `Start at coords: x, y: ${e.nativeEvent.offsetX}, ${e.nativeEvent.offsetY}`
+
+      const offsetX = e.nativeEvent.offsetX;
+      const offsetY = e.nativeEvent.offsetY;
+      const imgWidth = e.target.width;
+      const imgHeight = e.target.height;
+
+      const {
+        xCoordPercent,
+        yCoordPercent,
+      } = getXYCoordsPercentRelativeToImage(
+        offsetX,
+        offsetY,
+        imgWidth,
+        imgHeight
       );
+
+      setCoordsPercentage({
+        x1: xCoordPercent,
+        x2: xCoordPercent,
+        y1: yCoordPercent,
+        y2: yCoordPercent,
+      });
+      updateDrawingRectStyle(imgWidth, imgHeight);
+
+      // console.log(
+      //   `Start at coords: x, y: ${offsetX}:${xCoordPercent}, ${offsetY}:${yCoordPercent}`
+      // );
     }
   }
 
   function whileDrawingRectangle(e) {
     e.preventDefault();
     if (isDrawing) {
-      console.log("Drawing.");
+      // console.log("\nDrawing.");
+
       // update coords.
+      const offsetX = e.nativeEvent.offsetX;
+      const offsetY = e.nativeEvent.offsetY;
+      const imgWidth = e.target.width;
+      const imgHeight = e.target.height;
+
+      const {
+        xCoordPercent,
+        yCoordPercent,
+      } = getXYCoordsPercentRelativeToImage(
+        offsetX,
+        offsetY,
+        imgWidth,
+        imgHeight
+      );
+
       setCoordsPercentage({
         ...coordsPercentage,
-        x2: e.nativeEvent.offsetX,
-        y2: e.nativeEvent.offsetY,
+        x2: xCoordPercent,
+        y2: yCoordPercent,
       });
-      console.log(
-        `Dragged till coords: x, y: ${e.nativeEvent.offsetX}, ${e.nativeEvent.offsetY}`
-      );
+      updateDrawingRectStyle(imgWidth, imgHeight);
+
+      // console.log(
+      //   `Dragged till coords: x, y: ${offsetX}:${xCoordPercent}, ${offsetY}:${yCoordPercent}`
+      // );
     }
   }
 
   function stopDrawingRectangle(e) {
     e.preventDefault();
     if (isDrawing) {
-      console.log("Stopped drawing.");
-      getCoordsWithinBoundaryLimits(e);
-      setIsDrawing(false);
+      const offsetX = e.nativeEvent.offsetX;
+      const offsetY = e.nativeEvent.offsetY;
+      const imgWidth = e.target.width;
+      const imgHeight = e.target.height;
+
+      const {
+        xCoordPercent,
+        yCoordPercent,
+      } = getXYCoordsPercentRelativeToImage(
+        offsetX,
+        offsetY,
+        imgWidth,
+        imgHeight
+      );
+
       setCoordsPercentage({
         ...coordsPercentage,
-        x2: e.nativeEvent.offsetX,
-        y2: e.nativeEvent.offsetY,
+        x2: xCoordPercent,
+        y2: yCoordPercent,
       });
-      console.log(
-        `Stopped at coords: x, y: ${e.nativeEvent.offsetX}, ${e.nativeEvent.offsetY}`
-      );
+      updateDrawingRectStyle(imgWidth, imgHeight);
+
+      // console.log("\nStopped drawing.");
+      setIsDrawing(false);
+
+      // console.log(
+      //   `Stopped at coords: x, y: ${offsetX}:${xCoordPercent}, ${offsetY}:${yCoordPercent}`
+      // );
     }
   }
 
@@ -234,20 +411,57 @@ function ViewImage({ routeData, setRoute, setRouteData }) {
     }
   }
 
-  function completeAddingAnnotationProcess() {
+  function completeAddingAnnotationProcess(e) {
+    e.preventDefault();
+
     /* adds new annotation here. */
     if (isAddingAnnotation) {
-      //
-
       // POST new annotation.
+      const requestOptions = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `bearer ${token}`,
+        },
+        body: JSON.stringify({
+          userId: user.id,
+          imageId: image.id,
+          content: e.target.formAnnotationContent.value,
+          coordinates: {
+            x1: coordsPercentage.x1,
+            y1: coordsPercentage.y1,
+            x2: coordsPercentage.x2,
+            y2: coordsPercentage.y2,
+          },
+        }),
+      };
 
-      // exit add annotation.
-      setIsViewAnnotations(true);
-      setIsAddingAnnotation(false);
-      setCoordsPercentage(initialCoordsState);
-      console.log("Completed adding process.");
+      fetch(annotationEndpoints.create, requestOptions)
+        .then((resp) => {
+          if (resp.ok) {
+            return resp.json();
+          }
+          throw new Error(`${resp.status}: Unable to add new annotation.`);
+        })
+        .then((res) => {
+          // add annotation to existing annontations array.
+          setAnnotations([...annotations, res.annotation]);
+          console.log("Created an annotation successfully.");
+
+          // set this annotation to view.
+          setAnnotationToView(res.annotation);
+
+          // exit add annotation.
+          setIsViewAnnotations(true);
+          setIsAddingAnnotation(false);
+          setCoordsPercentage(initialCoordsState);
+          setDrawingRectStyle(initialRectStyleState);
+          console.log("Completed adding process.");
+        })
+        .catch((error) => {
+          console.error(error);
+        });
     }
-    //
   }
 
   function cancelAddingAnnotationProcess() {
@@ -258,53 +472,73 @@ function ViewImage({ routeData, setRoute, setRouteData }) {
     console.log("Cancelled adding process.");
   }
 
+  function updateAnAnnotation(newAnnotation, indexOfAnnotationInArray) {
+    const newAnnotations = annotations
+      .slice(0, indexOfAnnotationInArray)
+      .concat(newAnnotation)
+      .concat(
+        annotations.slice(indexOfAnnotationInArray + 1, annotations.length)
+      );
+    setAnnotations(newAnnotations);
+  }
+
   return (
     <Container>
       <ImageContainer>
-        {isViewAnnotations && (
-          <Boxes
-            annotations={annotations}
-            setAnnotationToView={setAnnotationToView}
-            isAddingAnnotation={isAddingAnnotation}
-          />
-        )}
-        {isAddingAnnotation && (
-          <BoundingBoxContainer>
-            <DrawingRectangle
-              style={{
-                top:
-                  coordsPercentage.y2 - coordsPercentage.y1 >= 0
-                    ? coordsPercentage.y1
-                    : coordsPercentage.y2,
-                left:
-                  coordsPercentage.x2 - coordsPercentage.x1 >= 0
-                    ? coordsPercentage.x1
-                    : coordsPercentage.x2,
-                width:
-                  coordsPercentage.x2 - coordsPercentage.x1 === 0
-                    ? 1
-                    : Math.abs(coordsPercentage.x2 - coordsPercentage.x1),
-                height:
-                  coordsPercentage.y2 - coordsPercentage.y1 === 0
-                    ? 1
-                    : Math.abs(coordsPercentage.y2 - coordsPercentage.y1),
-                zIndex: 99999,
-              }}
-            />
-          </BoundingBoxContainer>
-        )}
-        <Image
-          src={
-            image ? `${imageEndpoints.get_image}/${image.id}` : placeholderImage
-          }
-          alt={image.title}
-          onClick={getClickedCoords}
-          onDragStart={preventDragHandler}
-          onMouseDown={startDrawingRectangle}
-          onMouseUp={stopDrawingRectangle}
-          onMouseMove={whileDrawingRectangle}
-          onMouseLeave={stopDrawingRectangle}
-        />
+        <div className="">
+          {isViewAnnotations &&
+            imgReference.current &&
+            imgReference.current.width &&
+            imgReference.current.height &&
+            annotationToView && (
+              <Boxes
+                annotations={annotations}
+                annotationToViewInParent={annotationToView}
+                setAnnotationToViewInParent={setAnnotationToView}
+                isAddingAnnotation={isAddingAnnotation}
+                imgWidth={imgReference.current.width}
+                imgHeight={imgReference.current.height}
+                calculateTopStyle={calculateTopStyle}
+                calculateLeftStyle={calculateLeftStyle}
+                calculateWidthStyle={calculateWidthStyle}
+                calculateHeightStyle={calculateHeightStyle}
+              />
+            )}
+          {isAddingAnnotation && (
+            <BoundingBoxContainer>
+              <DrawingRectangle
+                style={{
+                  top: drawingRectStyle.top,
+                  left: drawingRectStyle.left,
+                  width: drawingRectStyle.width,
+                  height: drawingRectStyle.height,
+                  zIndex: 99999,
+                }}
+              />
+            </BoundingBoxContainer>
+          )}
+          <ResizeObserver onResize={resizeRectangle}>
+            {image && image.id ? (
+              <Image
+                ref={imgReference}
+                src={`${imageEndpoints.get_image}/${image.id}`}
+                alt={image.title}
+                onClick={getClickedCoords}
+                onDragStart={preventDragHandler}
+                onMouseDown={startDrawingRectangle}
+                onMouseUp={stopDrawingRectangle}
+                onMouseMove={whileDrawingRectangle}
+                onMouseLeave={stopDrawingRectangle}
+              />
+            ) : (
+              <Image
+                src={placeholderImage}
+                alt="Placeholder image"
+                onDragStart={preventDragHandler}
+              />
+            )}
+          </ResizeObserver>
+        </div>
         <ImageDescriptionContainer>
           <div className="flex justify-between items-center">
             <Title>{image.title}</Title>
@@ -338,28 +572,22 @@ function ViewImage({ routeData, setRoute, setRouteData }) {
               Add annotation
             </Button>
             {annotationToView ? (
-              <AnnotationCard
-                username={
-                  annotationToView ? (
-                    <GetUsername userId={annotationToView.userId} />
-                  ) : (
-                    ""
+              annotations.map(
+                (annotation, index) =>
+                  annotationToView.annotationId === annotation.annotationId && (
+                    <AnnotationCard
+                      token={token}
+                      user={user}
+                      originalAnnotation={annotation}
+                      key={index}
+                      indexInParentArray={index}
+                      extraClassName="w-100"
+                      updateAnnotationInParent={updateAnAnnotation}
+                    />
                   )
-                }
-                creationDate={
-                  annotationToView ? annotationToView.creationDate : ""
-                }
-                content={annotationToView ? annotationToView.content : ""}
-                totalVotes={annotationToView ? annotationToView.totalVotes : ""}
-                extraClassName="w-100"
-              />
+              )
             ) : (
-              // coordinates:
-              // {annotationToView
-              //   ? JSON.stringify(annotationToView.rectangleCoordinates)
-              //   : ""}{" "}
-              // <br />
-              ""
+              <div>Loading annotation...</div>
             )}
           </>
         ) : (
@@ -371,8 +599,8 @@ function ViewImage({ routeData, setRoute, setRouteData }) {
               Cancel
             </Button>
 
-            <Form>
-              <Form.Group controlId="formAddAnnotation">
+            <Form onSubmit={(e) => completeAddingAnnotationProcess(e)}>
+              <Form.Group controlId="formAnnotationContent">
                 <CreateAnnotationForm
                   content={
                     <Form.Control
@@ -384,12 +612,7 @@ function ViewImage({ routeData, setRoute, setRouteData }) {
                   }
                   extraClassName="w-100"
                 />
-                <Button
-                  type="submit"
-                  onSubmit={() => completeAddingAnnotationProcess()}
-                >
-                  Create
-                </Button>
+                <Button type="submit">Create</Button>
               </Form.Group>
             </Form>
           </>

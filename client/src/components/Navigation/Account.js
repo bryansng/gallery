@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
+import routes from "../../config/routes";
 
 const Button = styled.button.attrs({
   className: `b--gray ma0 br2 ba hover-bg-light-gray ml1 mr1`,
@@ -179,7 +180,7 @@ function RegisterModal({
   );
 }
 
-function Account({ signIn, register, logOut, isAuthenticated }) {
+function Account({ signIn, register, logOut, isAuthenticated, setRoute }) {
   const [showSignIn, setShowSignIn] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
   return (
@@ -213,7 +214,10 @@ function Account({ signIn, register, logOut, isAuthenticated }) {
         </>
       ) : (
         <>
-          <Button type="button" onClick={() => setShowSignIn(true)}>
+          <Button
+            type="button"
+            onClick={() => setRoute(routes.view_user_profile)}
+          >
             Profile
           </Button>
           <Button type="button" onClick={() => logOut()}>

@@ -4,7 +4,6 @@ import styled from "styled-components";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Card from "react-bootstrap/Card";
-import { ImageOverlay } from "react-image-overlay-effect";
 import {
   useGetImagesByUserId,
   useGetAnnotationsByUserId,
@@ -52,13 +51,13 @@ const UserDetails = styled.p.attrs(() => ({
 //   className: `text-white my-auto`,
 // }))``;
 
-const Container = styled.div.attrs({
-  className: `center mt5 mb5  w-60-l w-70 flex flex-wrap justify-center`,
-})``;
-
 // const Title = styled.h2.attrs({
 //   className: `mt2 mb5 avenir fw6 f2 dark-gray`,
 // })``;
+
+const Container = styled.div.attrs({
+  className: `center mt5 mb5  w-60-l w-70 flex flex-wrap justify-center`,
+})``;
 
 function Profile({ user, setRoute, setRouteData }) {
   const images = useGetImagesByUserId(user.id);
@@ -99,8 +98,9 @@ function Profile({ user, setRoute, setRouteData }) {
           </Card.Body>
         </Card>
       </div>
-      {images.map((image) => (
+      {images.map((image, index) => (
         <ImageHoverSquare
+          key={index}
           image={image}
           setRoute={setRoute}
           setRouteData={setRouteData}
