@@ -30,10 +30,17 @@ export default function App() {
   const components = {};
   components[routes.view_user_profile] = <Profile user={user} />;
   components[routes.homepage] = (
-    <Home setRoute={updateRoute} setRouteData={updateRouteData} />
+    <Home
+      token={token}
+      user={user}
+      setRoute={updateRoute}
+      setRouteData={updateRouteData}
+    />
   );
   components[routes.view_image] = (
     <ViewImage
+      token={token}
+      user={user}
       routeData={routeData}
       setRoute={updateRoute}
       setRouteData={updateRouteData}
@@ -62,9 +69,6 @@ export default function App() {
       />
       {authComponent}
       {components[route]}
-      {/* <Home />
-      <ViewImage /> */}
-      {/* <Profile /> */}
     </div>
   );
 }

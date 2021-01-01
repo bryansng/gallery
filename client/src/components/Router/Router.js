@@ -24,6 +24,7 @@ function useRouter() {
   function updateRoute(newRoute) {
     window.localStorage.setItem("route", newRoute);
     setRoute(newRoute);
+    window.scrollTo(0, 0);
   }
 
   function updateRouteData(newRouteData) {

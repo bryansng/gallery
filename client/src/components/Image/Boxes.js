@@ -20,16 +20,27 @@ const BoundingBox = styled.div.attrs({
   justify-content: center;
 
   ${(props) =>
-    !props.isAddingAnnotation &&
-    `
+    !props.isAddingAnnotation
+      ? `
     cursor: pointer;
 
     :hover {
     opacity: 1;
-  }`}
+  }`
+      : `pointer-events: none;`}
 `;
 
-const Boxes = ({ annotations, setAnnotationToView, isAddingAnnotation }) => {
+const Boxes = ({
+  annotations,
+  setAnnotationToView,
+  isAddingAnnotation,
+  imgWidth,
+  imgHeight,
+  calculateTopStyle,
+  calculateLeftStyle,
+  calculateWidthStyle,
+  calculateHeightStyle,
+}) => {
   function preventDragHandler(e) {
     e.preventDefault();
   }
@@ -42,10 +53,10 @@ const Boxes = ({ annotations, setAnnotationToView, isAddingAnnotation }) => {
           <BoundingBox
             key={annotation.annotationId}
             style={{
-              top: y2 - y1 >= 0 ? y1 : y2,
-              left: x2 - x1 >= 0 ? x1 : x2,
-              width: x2 - x1 === 0 ? 1 : Math.abs(x2 - x1),
-              height: y2 - y1 === 0 ? 1 : Math.abs(y2 - y1),
+              top: calculateTopStyle(y1, y2, imgWidth, imgHeight),
+              left: calculateLeftStyle(x1, x2, imgWidth, imgHeight),
+              width: calculateWidthStyle(x1, x2, imgWidth),
+              height: calculateHeightStyle(y1, y2, imgHeight),
               zIndex: index,
               // zIndex: 99999 - index,
             }}

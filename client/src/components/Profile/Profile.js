@@ -59,7 +59,7 @@ function Profile({ user }) {
             <Card.Body>
               <Row className="justify-content-md-center mb3">
                 <Col>
-                  <Username>{user ? "" : user.username}</Username>
+                  <Username>{user ? user.username : ""}</Username>
                 </Col>
               </Row>
               <Row className="mb3">
@@ -70,7 +70,7 @@ function Profile({ user }) {
                 <Col lg={4} className=" grow">
                   <UserDetailsHeading>Date Joined</UserDetailsHeading>
                   <UserDetails>
-                    {user ? "" : user.creationDate.split("T")[0]}
+                    {user ? user.creationDate.split("T")[0] : ""}
                   </UserDetails>
                 </Col>
 

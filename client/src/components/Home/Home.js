@@ -8,11 +8,16 @@ const Container = styled.div.attrs({
   className: `center w-60-l w-70 mt3`,
 })``;
 
-function Home(props) {
+function Home({ token, user, setRoute, setRouteData }) {
   return (
     <Container>
-      <ImageCarousel {...props} />
-      <RecentAnnotations {...props} />
+      <ImageCarousel setRoute={setRoute} setRouteData={setRouteData} />
+      <RecentAnnotations
+        token={token}
+        user={user}
+        setRoute={setRoute}
+        setRouteData={setRouteData}
+      />
     </Container>
   );
 }

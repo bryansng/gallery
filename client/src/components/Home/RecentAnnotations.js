@@ -18,8 +18,7 @@ const CustomCardDeck = styled.div.attrs({
   className: ``,
 })``;
 
-function RecentAnnotations(props) {
-  const { setRoute, setRouteData } = props;
+function RecentAnnotations({ token, user, setRoute, setRouteData }) {
   const [isFetching, setIsFetching] = useState(false);
   const [annotations, setAnnotations] = useState([]);
 
@@ -31,7 +30,6 @@ function RecentAnnotations(props) {
         .then((res) => {
           setAnnotations(res.annotations);
           setIsFetching(false);
-          console.log(res);
         });
     }
   }, [isFetching, annotations]);
@@ -41,14 +39,24 @@ function RecentAnnotations(props) {
       <Title>Recent Annotations</Title>
       {annotations.map((annotation, index) => (
         <AnnotationCard
+          token={token}
+          user={user}
           username={<GetUsername userId={annotation.userId} />}
+          annotationId={annotation.annotationId}
           creationDate={annotation.creationDate}
           content={annotation.content}
-          totalVotes={annotation.totalVotes}
+          originalTotalVotes={annotation.totalVotes}
+          originalUserVoteType={
+            user && user.id && annotation.allUserVotes[user.id]
+              ? annotation.allUserVotes[user.id]
+              : 0
+          }
           onClick={() => {
-            setRouteData(annotation.imageId);
+            setRouteData({
+              imageId: annotation.imageId,
+              annotationToView: annotation,
+            });
             setRoute(routes.view_image);
-            console.log("CLICKED ANNOTATION GOING TO IMAGE NOW");
           }}
           key={index}
           extraClassName="w-40-l pointer"

@@ -22,7 +22,6 @@ function Logo(props) {
       onClick={(e) => {
         e.preventDefault();
         setRoute(routes.homepage);
-        console.log("CLICKED LOGO");
       }}
     >
       <GalleryLogo>Gallery.</GalleryLogo>
