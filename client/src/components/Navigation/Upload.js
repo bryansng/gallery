@@ -38,8 +38,8 @@ const Button = styled.button.attrs({
 `;
 
 function UploadModal({ show, onHide, token, user, setRoute, setRouteData }) {
-  const defaultFileName = "Drop or select image here";
-  const [fileName, setFileName] = useState(defaultFileName);
+  const defaultFormFileLabel = "Drop or select image here";
+  const [formFileLabel, setFormFileLabel] = useState(defaultFormFileLabel);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -74,6 +74,7 @@ function UploadModal({ show, onHide, token, user, setRoute, setRouteData }) {
         });
         setRoute(routes.view_image);
         onHide();
+        setFormFileLabel(defaultFormFileLabel);
         console.log("Image created successfully.");
       })
       .catch((error) => {
@@ -91,10 +92,12 @@ function UploadModal({ show, onHide, token, user, setRoute, setRouteData }) {
           <Form.Group controlId="formImageFile">
             <Form.File
               type="file"
-              label={fileName ? fileName : ""}
+              label={formFileLabel ? formFileLabel : ""}
               onChange={(e) =>
-                setFileName(
-                  e.target.files[0] ? e.target.files[0].name : defaultFileName
+                setFormFileLabel(
+                  e.target.files[0]
+                    ? e.target.files[0].name
+                    : defaultFormFileLabel
                 )
               }
               accept="image/*"

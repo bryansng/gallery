@@ -70,13 +70,6 @@ const Image = styled.img.attrs({
   user-select: none;
 `;
 
-// const Image = styled.img.attrs({
-//   className: `center ba b--yellow`,
-// })`
-//   max-height: 60vh;
-//   user-select: none;
-// `;
-
 const ImageDescriptionContainer = styled.div.attrs({
   className: `pb4 aspect-ratio--4x3 mh5 mv4 center w-80`,
 })``;
@@ -107,6 +100,15 @@ function ViewImage({ token, user, routeData, setRoute, setRouteData }) {
     initialRectStyleState
   );
   const imgReference = useRef(null);
+
+  useEffect(() => {
+    setIsFetching(false);
+    setIsImageFetched(false);
+  }, [viewImageId]);
+
+  // useEffect(() => {
+
+  // }, [routedAnnotationToView])
 
   useEffect(() => {
     if (!isFetching) {
