@@ -46,12 +46,22 @@ export default function ProfileCard({
   setRouteData,
 }) {
   const { user, setUserIdToGet } = useGetUserById();
-  const images = useGetImagesByUserId(userId);
-  const annotations = useGetAnnotationsByUserId(userId);
+  const { images, setUserIdToGetForImages } = useGetImagesByUserId();
+  const {
+    annotations,
+    setUserIdToGetForAnnotations,
+  } = useGetAnnotationsByUserId();
 
   useEffect(() => {
     setUserIdToGet(userId);
-  }, [userId, setUserIdToGet]);
+    setUserIdToGetForImages(userId);
+    setUserIdToGetForAnnotations(userId);
+  }, [
+    userId,
+    setUserIdToGet,
+    setUserIdToGetForImages,
+    setUserIdToGetForAnnotations,
+  ]);
 
   return (
     <CustomCard
