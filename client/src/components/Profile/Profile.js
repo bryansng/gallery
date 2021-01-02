@@ -13,6 +13,7 @@ import { GetAnnotationNum } from "../Common/GetAnnotationNum";
 import ImageHoverSquare from "./ImageHoverSquare";
 import placeholderImage from "../../assets/images/placeholder.png";
 import { service_endpoints } from "../../config/content.json";
+import AnnotationCard from "../Home/AnnotationCard";
 
 /**
  * Custom img using styled components and tachyons
@@ -35,9 +36,11 @@ const UserDetails = styled.p.attrs(() => ({
   className: `avenir f5 fw3 tc`,
 }))``;
 
-// const UserObjectHeading = styled.a.attrs(() => ({
-//   className: `avenir gray pointer link dim f2 fw3 `,
-// }))``;
+// const UserObjectHeading = styled.h3.attrs(() => ({
+//   className: `avenir near-black f2 tc w-100`,
+// }))`
+//   /* this used to be a link with class gray pointer and dim */
+// `;
 
 // const Img = styled.img.attrs(() => ({
 //   className: `pa3 ba b--light-silver grow pointer img-fluid`,
@@ -51,22 +54,36 @@ const UserDetails = styled.p.attrs(() => ({
 //   className: `text-white my-auto`,
 // }))``;
 
-// const Title = styled.h2.attrs({
-//   className: `mt2 mb5 avenir fw6 f2 dark-gray`,
-// })``;
+const Title = styled.a.attrs({
+  className: `mv2 avenir fw6 f2 dark-gray pointer dim no-underline`,
+})`
+  :hover {
+    text-decoration: none;
+    color: #111;
+  }
+`;
+
+const ProfileLink = styled.a.attrs({
+  className: `avenir dark-gray pointer dim no-underline`,
+})`
+  :hover {
+    text-decoration: none;
+    color: #111;
+  }
+`;
 
 const Container = styled.div.attrs({
-  className: `center mt5 mb5  w-60-l w-70 flex flex-wrap justify-center`,
+  className: `center mv5 flex flex-wrap justify-center items-stretch`,
 })``;
 
-function Profile({ user, setRoute, setRouteData }) {
+function Profile({ token, user, setRoute, setRouteData }) {
   const images = useGetImagesByUserId(user.id);
   const annotations = useGetAnnotationsByUserId(user.id);
 
   return (
     <Container>
       <div className="w-100 mv4">
-        <Card className="shadow-5 tc w-50-ns flex-auto center">
+        <Card className="shadow-5 tc w-50-ns w-80 center">
           <Card.Body>
             <Row className="justify-content-md-center mb3">
               <Col>
@@ -74,9 +91,11 @@ function Profile({ user, setRoute, setRouteData }) {
               </Col>
             </Row>
             <Row className="mb3">
-              <Col lg={4} className="grow">
-                <UserDetailsHeading>Photos</UserDetailsHeading>
-                <UserDetails>{images.length}</UserDetails>
+              <Col lg={4} className="grow" href="photos">
+                <ProfileLink href="#photos">
+                  <UserDetailsHeading>Photos</UserDetailsHeading>
+                  <UserDetails>{images.length}</UserDetails>
+                </ProfileLink>
               </Col>
               <Col lg={4} className=" grow">
                 <UserDetailsHeading>Date Joined</UserDetailsHeading>
@@ -89,32 +108,41 @@ function Profile({ user, setRoute, setRouteData }) {
                   }
                 </UserDetails>
               </Col>
-
               <Col lg={4} className="grow">
-                <UserDetailsHeading>Annotations</UserDetailsHeading>
-                <UserDetails>{annotations.length}</UserDetails>
+                <ProfileLink href="#annotations">
+                  <UserDetailsHeading>Annotations</UserDetailsHeading>
+                  <UserDetails>{annotations.length}</UserDetails>
+                </ProfileLink>
               </Col>
             </Row>
           </Card.Body>
         </Card>
       </div>
-      {images.map((image, index) => (
-        <ImageHoverSquare
-          key={index}
-          image={image}
-          setRoute={setRoute}
-          setRouteData={setRouteData}
-          // imageUrl={
-          //   { image }
-          //     ? `${service_endpoints.image.get_image}/${image.id}`
-          //     : { placeholderImage }
-          // }
-          // title={image.title}
-          // description={image.description}
-          // totalViews={image.totalViews}
-          // annotationNum={<GetAnnotationNum imageId={image.id} />}
-        />
-      ))}
+      <Title id="photos">Photos</Title>
+      <div className="center mv3 flex flex-wrap justify-center items-stretch">
+        {images.map((image, index) => (
+          <ImageHoverSquare
+            key={index}
+            image={image}
+            setRoute={setRoute}
+            setRouteData={setRouteData}
+          />
+        ))}
+      </div>
+      <Title id="annotations">Annotations</Title>
+      <div className="center mv3 flex flex-wrap justify-center items-stretch">
+        {annotations.map((annotation, index) => (
+          <AnnotationCard
+            token={token}
+            user={user}
+            originalAnnotation={annotation}
+            setRoute={setRoute}
+            setRouteData={setRouteData}
+            key={index}
+            extraClassName="w-40-l pointer"
+          />
+        ))}
+      </div>
     </Container>
     // <Container fluid>
     //   <Row className="justify-content-md-center mb3">
