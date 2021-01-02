@@ -7,7 +7,7 @@ import { CreateAnnotationForm } from "../Home/AnnotationCard";
 import { service_endpoints } from "../../config/content.json";
 import placeholderImage from "../../assets/images/placeholder.png";
 import Form from "react-bootstrap/Form";
-import routes from "../../config/routes";
+import DisabledHoverTooltipper from "../Common/HoverTooltipper";
 import { GetUsername } from "../Common/GetUsername.js";
 const imageEndpoints = service_endpoints.image;
 const annotationEndpoints = service_endpoints.annotation;
@@ -23,6 +23,7 @@ const Button = styled.button.attrs({
     border-color: #505050;
     transition: 0.15s ease-in;
   }
+  ${(props) => props.disabled && `pointer-events: none;`}
 `;
 
 const DrawingRectangle = styled.div.attrs({
@@ -585,13 +586,18 @@ function ViewImage({
       <AnnotationContainer>
         {!isAddingAnnotation ? (
           <>
-            <Button
-              type="button"
-              onClick={() => startAddingAnnotationProcess()}
-              disabled={!isAuthenticated}
+            <DisabledHoverTooltipper
+              actionMsg="annotate"
+              enableTooltip={!isAuthenticated}
             >
-              Add annotation
-            </Button>
+              <Button
+                type="button"
+                onClick={() => startAddingAnnotationProcess()}
+                disabled={!isAuthenticated}
+              >
+                Add annotation
+              </Button>
+            </DisabledHoverTooltipper>
             {annotationToView &&
               annotations.map(
                 (annotation, index) =>

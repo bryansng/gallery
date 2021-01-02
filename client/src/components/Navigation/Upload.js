@@ -3,6 +3,7 @@ import styled from "styled-components";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 import ErrorMessage from "../Common/ErrorMessage";
+import DisabledHoverTooltipper from "../Common/HoverTooltipper";
 import { ReactComponent as Icon } from "../../assets/svgs/add.svg";
 import { service_endpoints } from "../../config/content.json";
 import routes from "../../config/routes";
@@ -36,6 +37,8 @@ const Button = styled.button.attrs({
     border-color: #505050;
     transition: 0.15s ease-in;
   }
+
+  ${(props) => props.disabled && `pointer-events: none;`}
 `;
 
 function UploadModal({
@@ -154,9 +157,14 @@ function UploadModal({
             </ErrorMessage>
           )}
           <Modal.Footer>
-            <Button type="submit" disabled={!isAuthenticated}>
-              Upload
-            </Button>
+            <DisabledHoverTooltipper
+              actionMsg="upload the image"
+              enableTooltip={!isAuthenticated}
+            >
+              <Button type="submit" disabled={!isAuthenticated}>
+                Upload
+              </Button>
+            </DisabledHoverTooltipper>
           </Modal.Footer>
         </Form>
       </Modal.Body>
