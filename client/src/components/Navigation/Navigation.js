@@ -31,11 +31,13 @@ function Navigation({
         token={token}
       />
       <Account
+        user={user}
         signIn={signIn}
         register={register}
         logOut={logOut}
         isAuthenticated={isAuthenticated}
         setRoute={setRoute}
+        setRouteData={setRouteData}
       />
     </Container>
   );

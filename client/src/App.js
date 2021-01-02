@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import Profile from "./components/Profile/Profile.js";
 import Navigation from "./components/Navigation/Navigation";
 import useAuthentication from "./components/Authentication/Authentication";
@@ -21,16 +21,12 @@ export default function App() {
 
   const { route, routeData, updateRoute, updateRouteData } = useRouter();
 
-  useEffect(() => {
-    // if (isAuthenticated) {
-    //   logOut();
-    // }
-  });
-
   const components = {};
   components[routes.view_user_profile] = (
     <Profile
-      user={user}
+      token={token}
+      currentSignedInUser={user}
+      routeData={routeData}
       setRoute={updateRoute}
       setRouteData={updateRouteData}
     />

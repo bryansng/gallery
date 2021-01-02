@@ -53,7 +53,7 @@ function SignInModal({ show, onHide, toggleBetweenSignInRegister, signIn }) {
             <Form.Control
               type="email"
               placeholder="johndoe@gmail.com"
-              defaultValue="test1@h1h111111o1.com"
+              // defaultValue="test1@h1h111111o1.com"
               required
             />
           </Form.Group>
@@ -62,7 +62,7 @@ function SignInModal({ show, onHide, toggleBetweenSignInRegister, signIn }) {
             <Form.Control
               type="password"
               placeholder=""
-              defaultValue="test"
+              // defaultValue="test"
               required
             />
           </Form.Group>
@@ -174,7 +174,15 @@ function RegisterModal({
   );
 }
 
-function Account({ signIn, register, logOut, isAuthenticated, setRoute }) {
+function Account({
+  user,
+  signIn,
+  register,
+  logOut,
+  isAuthenticated,
+  setRoute,
+  setRouteData,
+}) {
   const [showSignIn, setShowSignIn] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
   return (
@@ -210,7 +218,10 @@ function Account({ signIn, register, logOut, isAuthenticated, setRoute }) {
         <>
           <Button
             type="button"
-            onClick={() => setRoute(routes.view_user_profile)}
+            onClick={() => {
+              setRouteData(user.id);
+              setRoute(routes.view_user_profile);
+            }}
           >
             Profile
           </Button>
