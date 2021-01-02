@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
+import ErrorMessage from "../Common/ErrorMessage";
 import routes from "../../config/routes";
 
 const Button = styled.button.attrs({
@@ -15,13 +16,6 @@ const Button = styled.button.attrs({
     border-color: #505050;
     transition: 0.15s ease-in;
   }
-`;
-
-const ErrorMessage = styled.div.attrs({
-  className: `p-3 my-3 w-100 font-weight-bolder`,
-})`
-  background-color: ${(props) => props.error && "#dc3546b6"};
-  background-color: ${(props) => props.success && "#28a745b6"};
 `;
 
 const Container = styled.div.attrs({ className: `ma0 pa0` })``;

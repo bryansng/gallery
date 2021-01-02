@@ -5,9 +5,9 @@ import AnnotationCard from "../Home/AnnotationCard";
 import ResizeObserver from "rc-resize-observer";
 import { CreateAnnotationForm } from "../Home/AnnotationCard";
 import { service_endpoints } from "../../config/content.json";
-import placeholderImage from "../../assets/images/placeholder.png";
+// import placeholderImage from "../../assets/images/placeholder.png";
 import Form from "react-bootstrap/Form";
-import routes from "../../config/routes";
+import DisabledHoverTooltipper from "../Common/HoverTooltipper";
 import { GetUsername } from "../Common/GetUsername.js";
 const imageEndpoints = service_endpoints.image;
 const annotationEndpoints = service_endpoints.annotation;
@@ -23,6 +23,7 @@ const Button = styled.button.attrs({
     border-color: #505050;
     transition: 0.15s ease-in;
   }
+  ${(props) => props.disabled && `pointer-events: none;`}
 `;
 
 const DrawingRectangle = styled.div.attrs({
@@ -70,6 +71,15 @@ const Image = styled.img.attrs({
   user-select: none;
 `;
 
+const PlaceholderImageDiv = styled.div.attrs({
+  className: `bg-gray`,
+})`
+  width: 40vw;
+  height: 50vh;
+  user-select: none;
+  opacity: 0.5;
+`;
+
 const ImageDescriptionContainer = styled.div.attrs({
   className: `pb4 aspect-ratio--4x3 mh5 mv4 center w-80`,
 })``;
@@ -82,7 +92,14 @@ const AnnotationContainer = styled.div.attrs({
   className: `flex flex-column w-30 pr4 w-100-m ph3-m ma0-m`,
 })``;
 
-function ViewImage({ token, user, routeData, setRoute, setRouteData }) {
+function ViewImage({
+  isAuthenticated,
+  token,
+  user,
+  routeData,
+  setRoute,
+  setRouteData,
+}) {
   var viewImageId = routeData.imageId;
   var routedAnnotationToView = routeData.annotationToView;
   // viewImageId = "5fe931051897c026c1591825";
@@ -100,6 +117,15 @@ function ViewImage({ token, user, routeData, setRoute, setRouteData }) {
     initialRectStyleState
   );
   const imgReference = useRef(null);
+
+  useEffect(() => {
+    setIsFetching(false);
+    setIsImageFetched(false);
+  }, [viewImageId]);
+
+  // useEffect(() => {
+
+  // }, [routedAnnotationToView])
 
   useEffect(() => {
     if (!isFetching) {
@@ -535,11 +561,12 @@ function ViewImage({ token, user, routeData, setRoute, setRouteData }) {
                 onMouseLeave={stopDrawingRectangle}
               />
             ) : (
-              <Image
-                src={placeholderImage}
-                alt="Placeholder image"
-                onDragStart={preventDragHandler}
-              />
+              // <Image
+              //   src={placeholderImage}
+              //   alt="Placeholder image"
+              //   onDragStart={preventDragHandler}
+              // />
+              <PlaceholderImageDiv />
             )}
           </ResizeObserver>
         </ImageCenterer>
@@ -569,17 +596,24 @@ function ViewImage({ token, user, routeData, setRoute, setRouteData }) {
       <AnnotationContainer>
         {!isAddingAnnotation ? (
           <>
-            <Button
-              type="button"
-              onClick={() => startAddingAnnotationProcess()}
+            <DisabledHoverTooltipper
+              actionMsg="annotate"
+              enableTooltip={!isAuthenticated}
             >
-              Add annotation
-            </Button>
+              <Button
+                type="button"
+                onClick={() => startAddingAnnotationProcess()}
+                disabled={!isAuthenticated}
+              >
+                Add annotation
+              </Button>
+            </DisabledHoverTooltipper>
             {annotationToView &&
               annotations.map(
                 (annotation, index) =>
                   annotationToView.annotationId === annotation.annotationId && (
                     <AnnotationCard
+                      isAuthenticated={isAuthenticated}
                       token={token}
                       user={user}
                       originalAnnotation={annotation}

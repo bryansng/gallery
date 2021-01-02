@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Profile from "./components/Profile/Profile.js";
 import Navigation from "./components/Navigation/Navigation";
 import useAuthentication from "./components/Authentication/Authentication";
@@ -21,12 +21,6 @@ export default function App() {
 
   const { route, routeData, updateRoute, updateRouteData } = useRouter();
 
-  useEffect(() => {
-    // if (isAuthenticated) {
-    //   logOut();
-    // }
-  });
-
   const components = {};
   components[routes.view_user_profile] = (
     <Profile
@@ -39,6 +33,7 @@ export default function App() {
   );
   components[routes.homepage] = (
     <Home
+      isAuthenticated={isAuthenticated}
       token={token}
       user={user}
       setRoute={updateRoute}
@@ -47,6 +42,7 @@ export default function App() {
   );
   components[routes.view_image] = (
     <ViewImage
+      isAuthenticated={isAuthenticated}
       token={token}
       user={user}
       routeData={routeData}
@@ -64,7 +60,6 @@ export default function App() {
 
   return (
     <div>
-      {/* Hello, this is the root level */}
       <Navigation
         token={token}
         user={user}

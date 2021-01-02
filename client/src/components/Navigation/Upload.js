@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
+import ErrorMessage from "../Common/ErrorMessage";
+import DisabledHoverTooltipper from "../Common/HoverTooltipper";
 import { ReactComponent as Icon } from "../../assets/svgs/add.svg";
 import { service_endpoints } from "../../config/content.json";
 import routes from "../../config/routes";
@@ -35,16 +37,31 @@ const Button = styled.button.attrs({
     border-color: #505050;
     transition: 0.15s ease-in;
   }
+
+  ${(props) => props.disabled && `pointer-events: none;`}
 `;
 
-function UploadModal({ show, onHide, token, user, setRoute, setRouteData }) {
-  const defaultFileName = "Drop or select image here";
-  const [fileName, setFileName] = useState(defaultFileName);
+function UploadModal({
+  show,
+  onHide,
+  isAuthenticated,
+  token,
+  user,
+  setRoute,
+  setRouteData,
+}) {
+  const defaultFormFileLabel = "Drop or select image here";
+  const [formFileLabel, setFormFileLabel] = useState(defaultFormFileLabel);
+  const [hasFormError, setHasFormError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const onSubmitError = (msg) => {
+    setErrorMessage(msg);
+    setHasFormError(true);
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // console.log(e.target.formImageFile.files[0]);
-
     // get form inputs
     // upload multipart/form-data with image and data.
     // https://stackoverflow.com/questions/35192841/fetch-post-with-multipart-form-data
@@ -64,19 +81,24 @@ function UploadModal({ show, onHide, token, user, setRoute, setRouteData }) {
 
     fetch(imageEndpoints.create, requestOptions)
       .then((resp) => {
+        console.log(resp);
         if (resp.ok) {
           return resp.json();
         }
         throw new Error(`${resp.status} Unable to create new image.`);
       })
       .then((res) => {
-        setRouteData(res.image.id);
+        setRouteData({
+          imageId: res.image.id,
+        });
         setRoute(routes.view_image);
         onHide();
+        setFormFileLabel(defaultFormFileLabel);
         console.log("Image created successfully.");
       })
       .catch((error) => {
         console.error(error);
+        onSubmitError(error);
       });
   };
 
@@ -90,15 +112,18 @@ function UploadModal({ show, onHide, token, user, setRoute, setRouteData }) {
           <Form.Group controlId="formImageFile">
             <Form.File
               type="file"
-              label={fileName ? fileName : ""}
+              label={formFileLabel ? formFileLabel : ""}
               onChange={(e) =>
-                setFileName(
-                  e.target.files[0] ? e.target.files[0].name : defaultFileName
+                setFormFileLabel(
+                  e.target.files[0]
+                    ? e.target.files[0].name
+                    : defaultFormFileLabel
                 )
               }
               accept="image/*"
               required
               custom
+              disabled={!isAuthenticated}
             />
           </Form.Group>
 
@@ -109,6 +134,7 @@ function UploadModal({ show, onHide, token, user, setRoute, setRouteData }) {
               placeholder="Enter title..."
               defaultValue=""
               required
+              disabled={!isAuthenticated}
             />
             <Form.Text className="text-muted"></Form.Text>
           </Form.Group>
@@ -120,11 +146,25 @@ function UploadModal({ show, onHide, token, user, setRoute, setRouteData }) {
               placeholder="Enter description..."
               defaultValue=""
               required
+              disabled={!isAuthenticated}
             />
             <Form.Text className="text-muted"></Form.Text>
           </Form.Group>
+          {hasFormError && <ErrorMessage error>{errorMessage}</ErrorMessage>}
+          {!isAuthenticated && (
+            <ErrorMessage error>
+              You must be signed in to upload an image.
+            </ErrorMessage>
+          )}
           <Modal.Footer>
-            <Button type="submit">Upload</Button>
+            <DisabledHoverTooltipper
+              actionMsg="upload the image"
+              enableTooltip={!isAuthenticated}
+            >
+              <Button type="submit" disabled={!isAuthenticated}>
+                Upload
+              </Button>
+            </DisabledHoverTooltipper>
           </Modal.Footer>
         </Form>
       </Modal.Body>
@@ -132,7 +172,7 @@ function UploadModal({ show, onHide, token, user, setRoute, setRouteData }) {
   );
 }
 
-function Upload({ token, user, setRoute, setRouteData }) {
+function Upload({ isAuthenticated, token, user, setRoute, setRouteData }) {
   const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
@@ -147,6 +187,7 @@ function Upload({ token, user, setRoute, setRouteData }) {
       <UploadModal
         show={show}
         onHide={handleClose}
+        isAuthenticated={isAuthenticated}
         token={token}
         user={user}
         setRoute={setRoute}

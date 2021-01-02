@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import Card from "react-bootstrap/Card";
+import DisabledHoverTooltipper from "../Common/HoverTooltipper";
 import { ShowDate } from "../Common/ShowDate";
 import { GetUsername } from "../Common/GetUsername.js";
 import { ReactComponent as Arrow } from "../../assets/svgs/arrow.svg";
@@ -37,6 +38,7 @@ const StyledButton = styled.button.attrs({
   className: `pointer bn b--transparent bg pa0 ma0 bg-transparent dim z-999`,
 })`
   margin: 0 0.125rem;
+  ${(props) => props.disabled && `pointer-events: none;`}
 `;
 
 const UpvoteButton = styled(StyledButton).attrs({})`
@@ -54,6 +56,7 @@ const DownvoteButton = styled(StyledButton).attrs({})`
 `;
 
 function AnnotationCard({
+  isAuthenticated,
   token,
   user,
   originalAnnotation,
@@ -69,7 +72,9 @@ function AnnotationCard({
     annotation.totalVotes
   );
   const [currentUserVoteType, setCurrentUserVoteType] = useState(
-    annotation.allUserVotes[user.id] ? annotation.allUserVotes[user.id] : 0
+    user && annotation.allUserVotes[user.id]
+      ? annotation.allUserVotes[user.id]
+      : 0
   );
 
   // useEffect(() => {
@@ -165,18 +170,30 @@ function AnnotationCard({
           <Card.Link className="pointer near-black dim pr1">
             {currentTotalVotes}
           </Card.Link>
-          <UpvoteButton
-            onClick={(e) => handlePOSTVote(e, 1)}
-            currentUserVoteType={currentUserVoteType}
+          <DisabledHoverTooltipper
+            actionMsg="upvote"
+            enableTooltip={!isAuthenticated}
           >
-            <Upvote />
-          </UpvoteButton>
-          <DownvoteButton
-            onClick={(e) => handlePOSTVote(e, -1)}
-            currentUserVoteType={currentUserVoteType}
+            <UpvoteButton
+              onClick={(e) => handlePOSTVote(e, 1)}
+              currentUserVoteType={currentUserVoteType}
+              disabled={!isAuthenticated}
+            >
+              <Upvote />
+            </UpvoteButton>
+          </DisabledHoverTooltipper>
+          <DisabledHoverTooltipper
+            actionMsg="downvote"
+            enableTooltip={!isAuthenticated}
           >
-            <Downvote />
-          </DownvoteButton>
+            <DownvoteButton
+              onClick={(e) => handlePOSTVote(e, -1)}
+              currentUserVoteType={currentUserVoteType}
+              disabled={!isAuthenticated}
+            >
+              <Downvote />
+            </DownvoteButton>
+          </DisabledHoverTooltipper>
         </div>
       </Card.Body>
     </CustomCard>

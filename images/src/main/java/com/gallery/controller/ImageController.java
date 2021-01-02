@@ -33,6 +33,7 @@ public class ImageController {
   // creates gridfs image and fill image document.
   @RequestMapping(value = "/upload", method = RequestMethod.POST)
   public ResponseEntity<UploadImageResponse> uploadImage(@ModelAttribute CreateImageRequest createRequest) {
+    System.out.println("uploading image.");
     return imageService.createImage(createRequest);
   }
 
