@@ -30,12 +30,13 @@ export function GetUsername({ userId }) {
   return username;
 }
 
-export function GetUserByUserId({ userId }) {
+export function useGetUserByUserId(userId) {
   const [isFetching, setIsFetching] = useState(false);
   const [isUserFetched, setIsUserFetched] = useState(false);
-  const [user, setUser] = useState("");
+  const [user, setUser] = useState([]);
   useEffect(() => {
     if (!isFetching) {
+      console.log(userId);
       if (userId && !isUserFetched) {
         setIsFetching(true);
         fetch(`${service_endpoints.user.get_by_id}/${userId}`)
@@ -56,5 +57,35 @@ export function GetUserByUserId({ userId }) {
       }
     }
   }, [userId, isFetching, isUserFetched]);
-  return user;
+  return { user };
+}
+
+export function useGetUserById() {
+  const [userIdToGet, setUserIdToGet] = useState(null);
+  const [isFetching, setIsFetching] = useState(false);
+  const [isUserFetched, setIsUserFetched] = useState(false);
+  const [user, setUser] = useState([]);
+  useEffect(() => {
+    if (!isFetching) {
+      if (userIdToGet && !isUserFetched) {
+        setIsFetching(true);
+        fetch(`${service_endpoints.user.get_by_id}/${userIdToGet}`)
+          .then((resp) => {
+            if (resp.ok) {
+              return resp.json();
+            }
+            throw new Error(`${resp.status} User id does not exist.`);
+          })
+          .then((res) => {
+            setUser(res.user);
+            setIsFetching(false);
+            setIsUserFetched(true);
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      }
+    }
+  }, [userIdToGet, isFetching, isUserFetched]);
+  return { user, setUserIdToGet };
 }

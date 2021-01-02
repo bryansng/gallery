@@ -30,7 +30,9 @@ export default function App() {
   const components = {};
   components[routes.view_user_profile] = (
     <Profile
-      user={user}
+      token={token}
+      currentSignedInUser={user}
+      routeData={routeData}
       setRoute={updateRoute}
       setRouteData={updateRouteData}
     />
@@ -73,7 +75,7 @@ export default function App() {
         setRoute={updateRoute}
         setRouteData={updateRouteData}
       />
-      {authComponent}
+      {/* {authComponent} */}
       {components[route]}
     </div>
   );

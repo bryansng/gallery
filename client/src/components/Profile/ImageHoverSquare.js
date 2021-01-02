@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import styled from "styled-components";
 import { ShowDate } from "../Common/ShowDate";
 import { GetAnnotationNum } from "../Common/GetAnnotationNum";
@@ -14,7 +14,7 @@ export default function ImageHoverSquare({
   setRouteData,
 }) {
   if (!image.userId || !image.totalViews) image = GetImageById(image.id);
-  return (
+  return image && image.id ? (
     <Image
       style={{
         backgroundImage: `url("${service_endpoints.image.get_image}/${image.id}")`,
@@ -48,6 +48,8 @@ export default function ImageHoverSquare({
         <ImageHoverNumberOfAnnotations></ImageHoverNumberOfAnnotations>
       </ImageHoverCover>
     </Image>
+  ) : (
+    <div></div>
   );
 }
 

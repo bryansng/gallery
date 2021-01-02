@@ -180,7 +180,15 @@ function RegisterModal({
   );
 }
 
-function Account({ signIn, register, logOut, isAuthenticated, setRoute }) {
+function Account({
+  user,
+  signIn,
+  register,
+  logOut,
+  isAuthenticated,
+  setRoute,
+  setRouteData,
+}) {
   const [showSignIn, setShowSignIn] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
   return (
@@ -216,7 +224,10 @@ function Account({ signIn, register, logOut, isAuthenticated, setRoute }) {
         <>
           <Button
             type="button"
-            onClick={() => setRoute(routes.view_user_profile)}
+            onClick={() => {
+              setRouteData(user.id);
+              setRoute(routes.view_user_profile);
+            }}
           >
             Profile
           </Button>
