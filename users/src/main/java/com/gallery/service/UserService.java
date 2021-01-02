@@ -56,9 +56,15 @@ public class UserService {
     User user = new User(username, email, LocalDateTime.now());
     user = mongoTemplate.insert(user, Constants.USER_COLLECTION);
 
-    RestTemplate restTemplate = new RestTemplate();
-    HttpEntity<User> request = new HttpEntity<>(user);
-    restTemplate.postForObject(dotenv.get("SEARCH_SERVICE_USER_POST"), request, Object.class);
+    try {
+      RestTemplate restTemplate = new RestTemplate();
+      HttpEntity<User> request = new HttpEntity<>(user);
+      restTemplate.postForObject(dotenv.get("SEARCH_SERVICE_USER_POST"), request, Object.class);
+    } catch (Exception e) {
+      mongoTemplate.remove(Query.query(Criteria.where("_id").is(user.getId())), User.class);
+      System.out.println("Failsafe: Removed user from mongodb user database.");
+      return new ResponseEntity<>(new RegisterResponse("Error creating user in search service from user service.", null, null), HttpStatus.SERVICE_UNAVAILABLE);
+    }
 
     return new ResponseEntity<>(new RegisterResponse("User registered successfully.", user, token), HttpStatus.CREATED);
   }

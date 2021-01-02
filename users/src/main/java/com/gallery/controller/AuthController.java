@@ -114,16 +114,23 @@ public class AuthController {
     Response response = userResource.create(user);
     System.out.println("Response: " + response.getStatusInfo());
     System.out.println(response.getLocation());
-    String userId = response.getLocation().getPath().replaceAll(".*/([^/]+)$", "$1");
+    String keycloakUserId = response.getLocation().getPath().replaceAll(".*/([^/]+)$", "$1");
 
-    System.out.printf("User created with userId: %s%n", userId);
+    System.out.printf("User created with userId: %s%n", keycloakUserId);
 
     // get token.
     Keycloak instance = Keycloak.getInstance(AUTHORIZATION_SERVER_URL, REALM, user.getEmail(),
         user.getCredentials().get(0).getValue(), CLIENT_ID, CLIENT_SECRET);
     AccessTokenResponse tokenResponse = instance.tokenManager().getAccessToken();
 
-    return userService.registerUser(user.getEmail(), registerRequest.getUsername(), tokenResponse.getToken());
+    ResponseEntity<RegisterResponse> registerResponse = userService.registerUser(user.getEmail(), registerRequest.getUsername(), tokenResponse.getToken());
+
+    if (registerResponse.getStatusCode() != HttpStatus.CREATED) {
+      userResource.delete(keycloakUserId);
+      System.out.printf("Failsafe: Deleted user with userId: %s%n", keycloakUserId);
+    }
+
+    return registerResponse;
   }
 
   @RequestMapping(value = "/user", method = RequestMethod.POST)
