@@ -25,11 +25,13 @@ function Navigation({
       <Search setRoute={setRoute} setRouteData={setRouteData} />
       <Upload setRoute={setRoute} setRouteData={setRouteData} user={user} />
       <Account
+        user={user}
         signIn={signIn}
         register={register}
         logOut={logOut}
         isAuthenticated={isAuthenticated}
         setRoute={setRoute}
+        setRouteData={setRouteData}
       />
     </Container>
   );

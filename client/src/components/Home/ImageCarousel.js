@@ -185,7 +185,9 @@ function ImageCarousel(props) {
                 className="hide-child relative contain bg-center"
                 style={{ width: "45vw", height: "45vh" }}
                 onClick={() => {
-                  setRouteData(image.id);
+                  setRouteData({
+                    imageId: image.id,
+                  });
                   setRoute(routes.view_image);
                   console.log("CLICKED IMAGE");
                 }}

@@ -59,8 +59,12 @@ const ImageContainer = styled.div.attrs({
   className: `ma0 flex flex-column w-60 pl6 pr-4 w-100-m pl4-m`,
 })``;
 
+const ImageCenterer = styled.div.attrs({
+  className: `center`,
+})``;
+
 const Image = styled.img.attrs({
-  className: `center ba b--yellow`,
+  className: ``,
 })`
   max-height: 60vh;
   user-select: none;
@@ -485,7 +489,7 @@ function ViewImage({ token, user, routeData, setRoute, setRouteData }) {
   return (
     <Container>
       <ImageContainer>
-        <div className="">
+        <ImageCenterer>
           {isViewAnnotations &&
             imgReference.current &&
             imgReference.current.width &&
@@ -538,7 +542,7 @@ function ViewImage({ token, user, routeData, setRoute, setRouteData }) {
               />
             )}
           </ResizeObserver>
-        </div>
+        </ImageCenterer>
         <ImageDescriptionContainer>
           <div className="flex justify-between items-center">
             <Title>{image.title}</Title>
@@ -571,7 +575,7 @@ function ViewImage({ token, user, routeData, setRoute, setRouteData }) {
             >
               Add annotation
             </Button>
-            {annotationToView ? (
+            {annotationToView &&
               annotations.map(
                 (annotation, index) =>
                   annotationToView.annotationId === annotation.annotationId && (
@@ -585,10 +589,7 @@ function ViewImage({ token, user, routeData, setRoute, setRouteData }) {
                       updateAnnotationInParent={updateAnAnnotation}
                     />
                   )
-              )
-            ) : (
-              <div>Loading annotation...</div>
-            )}
+              )}
           </>
         ) : (
           <>
