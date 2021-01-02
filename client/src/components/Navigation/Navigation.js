@@ -23,7 +23,12 @@ function Navigation({
     <Container>
       <Logo setRoute={setRoute} />
       <Search setRoute={setRoute} setRouteData={setRouteData} />
-      <Upload setRoute={setRoute} setRouteData={setRouteData} user={user} />
+      <Upload
+        setRoute={setRoute}
+        setRouteData={setRouteData}
+        user={user}
+        token={token}
+      />
       <Account
         signIn={signIn}
         register={register}

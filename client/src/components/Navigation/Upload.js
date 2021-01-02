@@ -43,8 +43,6 @@ function UploadModal({ show, onHide, token, user, setRoute, setRouteData }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // console.log(e.target.formImageFile.files[0]);
-
     // get form inputs
     // upload multipart/form-data with image and data.
     // https://stackoverflow.com/questions/35192841/fetch-post-with-multipart-form-data
@@ -64,13 +62,16 @@ function UploadModal({ show, onHide, token, user, setRoute, setRouteData }) {
 
     fetch(imageEndpoints.create, requestOptions)
       .then((resp) => {
+        console.log(resp);
         if (resp.ok) {
           return resp.json();
         }
         throw new Error(`${resp.status} Unable to create new image.`);
       })
       .then((res) => {
-        setRouteData(res.image.id);
+        setRouteData({
+          imageId: res.image.id,
+        });
         setRoute(routes.view_image);
         onHide();
         console.log("Image created successfully.");
