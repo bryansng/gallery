@@ -41,10 +41,11 @@ public class AuthController {
   @Autowired
   UserService userService;
 
-  private static String AUTHORIZATION_SERVER_URL = "http://localhost:8090/auth";
-  private static String REALM = "gallery";
-  private static String CLIENT_ID = "login-app";
-  private static String CLIENT_SECRET = "67fcf589-36da-4284-8e69-80c02c68d5d3";
+  private static final String AUTHORIZATION_SERVER_URL = "http://localhost:8090/auth";
+  private static final String REALM = "gallery";
+  private static final String CLIENT_ID = "login-app";
+  private static final String CLIENT_SECRET = "67fcf589-36da-4284-8e69-80c02c68d5d3";
+
   private Keycloak keycloakServiceAccount;
 
   private Dotenv dotenv;
@@ -54,15 +55,16 @@ public class AuthController {
 
   @PostConstruct
   private void init() throws Exception {
-    dotenv = Dotenv.configure().directory("../.env").ignoreIfMalformed().ignoreIfMissing().load();
+    // dotenv = Dotenv.configure().directory("../.env").ignoreIfMalformed().ignoreIfMissing().load();
 
-    AUTHORIZATION_SERVER_URL = dotenv.get("AUTHORIZATION_SERVER_URL");
-    REALM = dotenv.get("REALM");
-    CLIENT_ID = dotenv.get("CLIENT_ID");
-    CLIENT_SECRET = dotenv.get("CLIENT_SECRET");
+    // AUTHORIZATION_SERVER_URL = dotenv.get("AUTHORIZATION_SERVER_URL");
+    // REALM = dotenv.get("REALM");
+    // CLIENT_ID = dotenv.get("CLIENT_ID");
+    // CLIENT_SECRET = dotenv.get("CLIENT_SECRET");
 
-    keycloakServiceAccount = KeycloakBuilder.builder().serverUrl(AUTHORIZATION_SERVER_URL).realm(REALM)
-        .grantType(OAuth2Constants.CLIENT_CREDENTIALS).clientId(CLIENT_ID).clientSecret(CLIENT_SECRET).build();
+    keycloakServiceAccount = KeycloakBuilder.builder().serverUrl(AuthController.AUTHORIZATION_SERVER_URL)
+        .realm(AuthController.REALM).grantType(OAuth2Constants.CLIENT_CREDENTIALS).clientId(AuthController.CLIENT_ID)
+        .clientSecret(AuthController.CLIENT_SECRET).build();
   }
 
   // signin
