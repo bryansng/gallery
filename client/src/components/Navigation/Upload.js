@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
+import ErrorMessage from "../Common/ErrorMessage";
 import { ReactComponent as Icon } from "../../assets/svgs/add.svg";
 import { service_endpoints } from "../../config/content.json";
 import routes from "../../config/routes";
@@ -37,9 +38,24 @@ const Button = styled.button.attrs({
   }
 `;
 
-function UploadModal({ show, onHide, token, user, setRoute, setRouteData }) {
+function UploadModal({
+  show,
+  onHide,
+  isAuthenticated,
+  token,
+  user,
+  setRoute,
+  setRouteData,
+}) {
   const defaultFormFileLabel = "Drop or select image here";
   const [formFileLabel, setFormFileLabel] = useState(defaultFormFileLabel);
+  const [hasFormError, setHasFormError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const onSubmitError = (msg) => {
+    setErrorMessage(msg);
+    setHasFormError(true);
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -79,6 +95,7 @@ function UploadModal({ show, onHide, token, user, setRoute, setRouteData }) {
       })
       .catch((error) => {
         console.error(error);
+        onSubmitError(error);
       });
   };
 
@@ -103,6 +120,7 @@ function UploadModal({ show, onHide, token, user, setRoute, setRouteData }) {
               accept="image/*"
               required
               custom
+              disabled={!isAuthenticated}
             />
           </Form.Group>
 
@@ -113,6 +131,7 @@ function UploadModal({ show, onHide, token, user, setRoute, setRouteData }) {
               placeholder="Enter title..."
               defaultValue=""
               required
+              disabled={!isAuthenticated}
             />
             <Form.Text className="text-muted"></Form.Text>
           </Form.Group>
@@ -124,11 +143,20 @@ function UploadModal({ show, onHide, token, user, setRoute, setRouteData }) {
               placeholder="Enter description..."
               defaultValue=""
               required
+              disabled={!isAuthenticated}
             />
             <Form.Text className="text-muted"></Form.Text>
           </Form.Group>
+          {hasFormError && <ErrorMessage error>{errorMessage}</ErrorMessage>}
+          {!isAuthenticated && (
+            <ErrorMessage error>
+              You must be signed in to upload an image.
+            </ErrorMessage>
+          )}
           <Modal.Footer>
-            <Button type="submit">Upload</Button>
+            <Button type="submit" disabled={!isAuthenticated}>
+              Upload
+            </Button>
           </Modal.Footer>
         </Form>
       </Modal.Body>
@@ -136,7 +164,7 @@ function UploadModal({ show, onHide, token, user, setRoute, setRouteData }) {
   );
 }
 
-function Upload({ token, user, setRoute, setRouteData }) {
+function Upload({ isAuthenticated, token, user, setRoute, setRouteData }) {
   const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
@@ -151,6 +179,7 @@ function Upload({ token, user, setRoute, setRouteData }) {
       <UploadModal
         show={show}
         onHide={handleClose}
+        isAuthenticated={isAuthenticated}
         token={token}
         user={user}
         setRoute={setRoute}

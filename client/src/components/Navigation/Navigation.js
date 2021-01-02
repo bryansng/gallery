@@ -26,6 +26,7 @@ function Navigation({
       <Upload
         setRoute={setRoute}
         setRouteData={setRouteData}
+        isAuthenticated={isAuthenticated}
         user={user}
         token={token}
       />
