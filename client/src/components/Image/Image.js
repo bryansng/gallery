@@ -5,7 +5,7 @@ import AnnotationCard from "../Home/AnnotationCard";
 import ResizeObserver from "rc-resize-observer";
 import { CreateAnnotationForm } from "../Home/AnnotationCard";
 import { service_endpoints } from "../../config/content.json";
-import placeholderImage from "../../assets/images/placeholder.png";
+// import placeholderImage from "../../assets/images/placeholder.png";
 import Form from "react-bootstrap/Form";
 import DisabledHoverTooltipper from "../Common/HoverTooltipper";
 import { GetUsername } from "../Common/GetUsername.js";
@@ -69,6 +69,15 @@ const Image = styled.img.attrs({
 })`
   max-height: 60vh;
   user-select: none;
+`;
+
+const PlaceholderImageDiv = styled.div.attrs({
+  className: `bg-gray`,
+})`
+  width: 40vw;
+  height: 50vh;
+  user-select: none;
+  opacity: 0.5;
 `;
 
 const ImageDescriptionContainer = styled.div.attrs({
@@ -552,11 +561,12 @@ function ViewImage({
                 onMouseLeave={stopDrawingRectangle}
               />
             ) : (
-              <Image
-                src={placeholderImage}
-                alt="Placeholder image"
-                onDragStart={preventDragHandler}
-              />
+              // <Image
+              //   src={placeholderImage}
+              //   alt="Placeholder image"
+              //   onDragStart={preventDragHandler}
+              // />
+              <PlaceholderImageDiv />
             )}
           </ResizeObserver>
         </ImageCenterer>

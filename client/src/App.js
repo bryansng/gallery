@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import Profile from "./components/Profile/Profile.js";
 import Navigation from "./components/Navigation/Navigation";
 import useAuthentication from "./components/Authentication/Authentication";
@@ -64,7 +64,6 @@ export default function App() {
 
   return (
     <div>
-      {/* Hello, this is the root level */}
       <Navigation
         token={token}
         user={user}
@@ -75,7 +74,7 @@ export default function App() {
         setRoute={updateRoute}
         setRouteData={updateRouteData}
       />
-      {authComponent}
+      {/* {authComponent} */}
       {components[route]}
     </div>
   );
