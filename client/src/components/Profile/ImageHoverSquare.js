@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { ShowDate } from "../Common/ShowDate";
 import { GetAnnotationNum } from "../Common/GetAnnotationNum";
 import { GetUsername } from "../Common/GetUsername";
+import { GetImageById } from "../Common/GetImageById";
 import { service_endpoints } from "../../config/content.json";
 import routes from "../../config/routes";
 
@@ -12,6 +13,7 @@ export default function ImageHoverSquare({
   setRoute,
   setRouteData,
 }) {
+  if (!image.userId || !image.totalViews) image = GetImageById(image.id);
   return (
     <Image
       style={{
@@ -19,7 +21,9 @@ export default function ImageHoverSquare({
       }}
       onClick={() => {
         console.log(image.id);
-        setRouteData(image.id);
+        setRouteData({
+          imageId: image.id,
+        });
         setRoute(routes.view_image);
         console.log("CLICKED IMAGE");
       }}
@@ -38,8 +42,8 @@ export default function ImageHoverSquare({
           {<ShowDate creationDateTime={image.creationDate} />}
         </ImageHoverDate>
         <ImageHoverNumberOfViews>
-          {image.totalViews} views |{" "}
-          {<GetAnnotationNum imageId={image.annotationNum} />} annotations
+          {image.totalViews} views | {<GetAnnotationNum imageId={image.id} />}{" "}
+          annotations
         </ImageHoverNumberOfViews>
         <ImageHoverNumberOfAnnotations></ImageHoverNumberOfAnnotations>
       </ImageHoverCover>
