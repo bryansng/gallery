@@ -45,12 +45,6 @@ function Search({ routeData, setRoute, setRouteData }) {
     `${searchEndpoints.search}/${searchKeyword}`
   );
 
-  console.log(data);
-
-  // if (!isLoading) {
-  //   console.log(data);
-  // }
-
   return (
     <Container>
       <Title>Search results for: {searchKeyword}</Title>

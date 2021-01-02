@@ -45,8 +45,6 @@ export default function ProfileCard({
   setRoute,
   setRouteData,
 }) {
-  // console.log(userId);
-  // const user = useGetUserById(userId);
   const { user, setUserIdToGet } = useGetUserById();
   const images = useGetImagesByUserId(userId);
   const annotations = useGetAnnotationsByUserId(userId);
