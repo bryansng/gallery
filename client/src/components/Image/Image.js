@@ -82,7 +82,14 @@ const AnnotationContainer = styled.div.attrs({
   className: `flex flex-column w-30 pr4 w-100-m ph3-m ma0-m`,
 })``;
 
-function ViewImage({ token, user, routeData, setRoute, setRouteData }) {
+function ViewImage({
+  isAuthenticated,
+  token,
+  user,
+  routeData,
+  setRoute,
+  setRouteData,
+}) {
   var viewImageId = routeData.imageId;
   var routedAnnotationToView = routeData.annotationToView;
   // viewImageId = "5fe931051897c026c1591825";
@@ -581,6 +588,7 @@ function ViewImage({ token, user, routeData, setRoute, setRouteData }) {
             <Button
               type="button"
               onClick={() => startAddingAnnotationProcess()}
+              disabled={!isAuthenticated}
             >
               Add annotation
             </Button>
@@ -589,6 +597,7 @@ function ViewImage({ token, user, routeData, setRoute, setRouteData }) {
                 (annotation, index) =>
                   annotationToView.annotationId === annotation.annotationId && (
                     <AnnotationCard
+                      isAuthenticated={isAuthenticated}
                       token={token}
                       user={user}
                       originalAnnotation={annotation}

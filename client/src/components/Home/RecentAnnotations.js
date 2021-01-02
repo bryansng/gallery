@@ -16,7 +16,13 @@ const CustomCardDeck = styled.div.attrs({
   className: ``,
 })``;
 
-function RecentAnnotations({ token, user, setRoute, setRouteData }) {
+function RecentAnnotations({
+  isAuthenticated,
+  token,
+  user,
+  setRoute,
+  setRouteData,
+}) {
   const [isFetching, setIsFetching] = useState(false);
   const [annotations, setAnnotations] = useState([]);
 
@@ -35,19 +41,18 @@ function RecentAnnotations({ token, user, setRoute, setRouteData }) {
   return (
     <Container>
       <Title>Recent Annotations</Title>
-      {user &&
-        user.id &&
-        annotations.map((annotation, index) => (
-          <AnnotationCard
-            token={token}
-            user={user}
-            originalAnnotation={annotation}
-            setRoute={setRoute}
-            setRouteData={setRouteData}
-            key={index}
-            extraClassName="w-40-l pointer"
-          />
-        ))}
+      {annotations.map((annotation, index) => (
+        <AnnotationCard
+          isAuthenticated={isAuthenticated}
+          token={token}
+          user={user}
+          originalAnnotation={annotation}
+          setRoute={setRoute}
+          setRouteData={setRouteData}
+          key={index}
+          extraClassName="w-40-l pointer"
+        />
+      ))}
     </Container>
   );
 }

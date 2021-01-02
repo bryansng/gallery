@@ -8,11 +8,12 @@ const Container = styled.div.attrs({
   className: `center w-60-l w-70 mt3`,
 })``;
 
-function Home({ token, user, setRoute, setRouteData }) {
+function Home({ isAuthenticated, token, user, setRoute, setRouteData }) {
   return (
     <Container>
       <ImageCarousel setRoute={setRoute} setRouteData={setRouteData} />
       <RecentAnnotations
+        isAuthenticated={isAuthenticated}
         token={token}
         user={user}
         setRoute={setRoute}

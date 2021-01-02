@@ -54,6 +54,7 @@ const DownvoteButton = styled(StyledButton).attrs({})`
 `;
 
 function AnnotationCard({
+  isAuthenticated,
   token,
   user,
   originalAnnotation,
@@ -69,7 +70,9 @@ function AnnotationCard({
     annotation.totalVotes
   );
   const [currentUserVoteType, setCurrentUserVoteType] = useState(
-    annotation.allUserVotes[user.id] ? annotation.allUserVotes[user.id] : 0
+    user && annotation.allUserVotes[user.id]
+      ? annotation.allUserVotes[user.id]
+      : 0
   );
 
   // useEffect(() => {
@@ -168,12 +171,14 @@ function AnnotationCard({
           <UpvoteButton
             onClick={(e) => handlePOSTVote(e, 1)}
             currentUserVoteType={currentUserVoteType}
+            disabled={!isAuthenticated}
           >
             <Upvote />
           </UpvoteButton>
           <DownvoteButton
             onClick={(e) => handlePOSTVote(e, -1)}
             currentUserVoteType={currentUserVoteType}
+            disabled={!isAuthenticated}
           >
             <Downvote />
           </DownvoteButton>

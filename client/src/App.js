@@ -37,6 +37,7 @@ export default function App() {
   );
   components[routes.homepage] = (
     <Home
+      isAuthenticated={isAuthenticated}
       token={token}
       user={user}
       setRoute={updateRoute}
@@ -45,6 +46,7 @@ export default function App() {
   );
   components[routes.view_image] = (
     <ViewImage
+      isAuthenticated={isAuthenticated}
       token={token}
       user={user}
       routeData={routeData}
