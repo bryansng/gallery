@@ -94,6 +94,7 @@ export function useGetUserByUserId(userId) {
 export function useGetUserById() {
   const [userId, setUserId] = useState(null);
   const [user, setUser] = useState([]);
+
   useEffect(() => {
     if (userId) {
       fetch(`${service_endpoints.user.get_by_id}/${userId}`)
@@ -113,7 +114,6 @@ export function useGetUserById() {
   }, [userId]);
 
   function setUserIdToGet(userId) {
-    console.log("setting user id to get: " + userId);
     setUserId(userId);
   }
 
