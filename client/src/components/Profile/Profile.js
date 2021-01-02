@@ -31,12 +31,22 @@ function Profile({
 }) {
   const userIdToView = routeData;
   const { user, setUserIdToGet } = useGetUserById();
-  const images = useGetImagesByUserId(user.id);
-  const annotations = useGetAnnotationsByUserId(user.id);
+  const { images, setUserIdToGetForImages } = useGetImagesByUserId();
+  const {
+    annotations,
+    setUserIdToGetForAnnotations,
+  } = useGetAnnotationsByUserId();
 
   useEffect(() => {
     setUserIdToGet(userIdToView);
-  }, [userIdToView, setUserIdToGet]);
+    setUserIdToGetForImages(userIdToView);
+    setUserIdToGetForAnnotations(userIdToView);
+  }, [
+    userIdToView,
+    setUserIdToGet,
+    setUserIdToGetForImages,
+    setUserIdToGetForAnnotations,
+  ]);
 
   return (
     <Container>

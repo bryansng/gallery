@@ -54,12 +54,11 @@ public class UserService {
     }
 
     User user = new User(username, email, LocalDateTime.now());
+    user = mongoTemplate.insert(user, Constants.USER_COLLECTION);
 
     RestTemplate restTemplate = new RestTemplate();
     HttpEntity<User> request = new HttpEntity<>(user);
     restTemplate.postForObject(dotenv.get("SEARCH_SERVICE_USER_POST"), request, Object.class);
-
-    user = mongoTemplate.insert(user, Constants.USER_COLLECTION);
 
     return new ResponseEntity<>(new RegisterResponse("User registered successfully.", user, token), HttpStatus.CREATED);
   }
