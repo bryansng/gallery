@@ -131,7 +131,11 @@ function ViewImage({
     if (!isFetching) {
       if (viewImageId && !isImageFetched) {
         setIsFetching(true);
-        fetch(`${imageEndpoints.get_data}/${viewImageId}`)
+        const requestOptions = {
+          method: "PUT",
+        };
+
+        fetch(`${imageEndpoints.increment}/${viewImageId}`, requestOptions)
           .then((resp) => {
             if (resp.ok) {
               return resp.json();
