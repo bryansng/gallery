@@ -31,7 +31,7 @@ const Upvote = styled(Arrow).attrs({
 `;
 
 const CustomCard = styled(Card).attrs({
-  className: `mv2 mh2 relative`,
+  className: `ma2 relative`,
 })``;
 
 const StyledButton = styled.button.attrs({

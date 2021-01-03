@@ -5,12 +5,12 @@ import AnnotationCard from "../Home/AnnotationCard";
 import ResizeObserver from "rc-resize-observer";
 import { CreateAnnotationForm } from "../Home/AnnotationCard";
 import { service_endpoints } from "../../config/content.json";
-// import placeholderImage from "../../assets/images/placeholder.png";
 import Form from "react-bootstrap/Form";
 import DisabledHoverTooltipper from "../Common/HoverTooltipper";
 import { GetUsername } from "../Common/GetUsername.js";
 import { GetAnnotationNum } from "../Common/GetAnnotationNum.js";
 import { ShowDate } from "../Common/ShowDate.js";
+import routes from "../../config/routes";
 const imageEndpoints = service_endpoints.image;
 const annotationEndpoints = service_endpoints.annotation;
 
@@ -95,6 +95,10 @@ const AnnotationContainer = styled.div.attrs({
 })``;
 
 const Delimiter = styled.span.attrs({ className: `ph2` })``;
+
+const ProfileLink = styled.button.attrs({
+  className: `pointer bn b--transparent bg pa0 ma0 bg-transparent dim`,
+})``;
 
 function ViewImage({
   isAuthenticated,
@@ -596,7 +600,15 @@ function ViewImage({
 
           <p className="i lh-copy">
             Uploaded <ShowDate creationDateTime={image.creationDate} /> by{" "}
-            <GetUsername userId={image.userId} />
+            <ProfileLink
+              onClick={() => {
+                setRouteData(image.userId);
+                setRoute(routes.view_user_profile);
+                console.log("Clicked profile");
+              }}
+            >
+              <GetUsername userId={image.userId} />
+            </ProfileLink>
             <span>
               <Delimiter>•</Delimiter>
               {image.totalViews} views<Delimiter>•</Delimiter>
