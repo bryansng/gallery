@@ -9,6 +9,8 @@ import { service_endpoints } from "../../config/content.json";
 import Form from "react-bootstrap/Form";
 import DisabledHoverTooltipper from "../Common/HoverTooltipper";
 import { GetUsername } from "../Common/GetUsername.js";
+import { GetAnnotationNum } from "../Common/GetAnnotationNum.js";
+import { ShowDate } from "../Common/ShowDate.js";
 const imageEndpoints = service_endpoints.image;
 const annotationEndpoints = service_endpoints.annotation;
 
@@ -85,12 +87,14 @@ const ImageDescriptionContainer = styled.div.attrs({
 })``;
 
 const Title = styled.h2.attrs({
-  className: `avenir fw6 f2 dark-gray`,
+  className: `avenir fw6 f2 dark-gray lh-solid `,
 })``;
 
 const AnnotationContainer = styled.div.attrs({
   className: `flex flex-column w-30 pr4 w-100-m ph3-m ma0-m`,
 })``;
+
+const Delimiter = styled.span.attrs({ className: `ph2` })``;
 
 function ViewImage({
   isAuthenticated,
@@ -590,10 +594,16 @@ function ViewImage({
             </Form>
           </div>
 
-          <p className="i">
-            by <GetUsername userId={image.userId} />
+          <p className="i lh-copy">
+            Uploaded <ShowDate creationDateTime={image.creationDate} /> by{" "}
+            <GetUsername userId={image.userId} />
+            <span>
+              <Delimiter>•</Delimiter>
+              {image.totalViews} views<Delimiter>•</Delimiter>
+              <GetAnnotationNum imageId={image.id} /> annotations
+            </span>
           </p>
-          {image.description}
+          <p className="lh-copy">{image.description}</p>
         </ImageDescriptionContainer>
       </ImageContainer>
 
