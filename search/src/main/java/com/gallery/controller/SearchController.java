@@ -8,6 +8,7 @@ import com.gallery.model.User;
 import com.gallery.service.SearchService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@CrossOrigin
 public class SearchController {
 
     @Autowired
@@ -31,7 +33,6 @@ public class SearchController {
      * @param keyword
      * @return
      */
-    @CrossOrigin(origins = "*")
     @RequestMapping(value = "/{keyword}", method = RequestMethod.GET)
     public ResponseEntity<SearchResponse> findByKeyword(@PathVariable("keyword") String keyword) {
         System.out.println("Searching for: " + keyword);
@@ -44,7 +45,6 @@ public class SearchController {
      * @param user
      * @return
      */
-    @CrossOrigin(origins = "*")
     @RequestMapping(value = "/user", method = RequestMethod.POST)
     public ResponseEntity<ObjectResponse> createUser(@RequestBody User user) {
         return searchService.createUser(user);
@@ -57,7 +57,6 @@ public class SearchController {
      * @param user
      * @return
      */
-    @CrossOrigin(origins = "*")
     @RequestMapping(value = "/user/{userID}", method = RequestMethod.PUT)
     public ResponseEntity<ObjectResponse> updateUsername(@PathVariable("userID") String id, @RequestBody User user) {
         return searchService.updateUsername(user);
@@ -69,7 +68,6 @@ public class SearchController {
      * @param id
      * @return
      */
-    @CrossOrigin(origins = "*")
     @RequestMapping(value = "/user/{userID}", method = RequestMethod.DELETE)
     public ResponseEntity<ObjectResponse> deleteUser(@PathVariable("userID") String id) {
         return searchService.deleteUser(id);
@@ -81,7 +79,6 @@ public class SearchController {
      * @param imageRequest
      * @return
      */
-    @CrossOrigin(origins = "*")
     @RequestMapping(value = "/image", method = RequestMethod.POST)
     public ResponseEntity<ObjectResponse> createImage(@RequestBody Image image) {
         return searchService.createImage(image);
@@ -94,7 +91,6 @@ public class SearchController {
      * @param imageRequest
      * @return
      */
-    @CrossOrigin(origins = "*")
     @RequestMapping(value = "/image/{imageID}", method = RequestMethod.PUT)
     public ResponseEntity<ObjectResponse> updateImageTitle(@PathVariable("imageID") String id,
             @RequestBody ImageRequest imageRequest) {
@@ -107,9 +103,14 @@ public class SearchController {
      * @param id
      * @return
      */
-    @CrossOrigin(origins = "*")
     @RequestMapping(value = "/image/{imageID}", method = RequestMethod.DELETE)
     public ResponseEntity<ObjectResponse> deleteImage(@PathVariable("imageID") String id) {
         return searchService.deleteImage(id);
     }
+
+    @RequestMapping(value = "/healthcheck", method = RequestMethod.GET)
+    public ResponseEntity<String> healthCheck() {
+        return new ResponseEntity<>("Search healthcheck", HttpStatus.OK);
+    }
+
 }

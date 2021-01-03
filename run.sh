@@ -31,7 +31,7 @@
 # 2/3. zuul.
 # 2/3. all microservices.
 
-# mvn install
+mvn install
 docker-compose build
 docker-compose up
 
