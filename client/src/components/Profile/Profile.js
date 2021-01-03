@@ -10,7 +10,7 @@ import ImageHoverSquare from "./ImageHoverSquare";
 import AnnotationCard from "../Home/AnnotationCard";
 
 const Title = styled.a.attrs({
-  className: `mv2 avenir fw6 f2 dark-gray pointer dim no-underline`,
+  className: `mv2 avenir fw6 f2 dark-gray pointer dim no-underline w-100`,
 })`
   :hover {
     text-decoration: none;
