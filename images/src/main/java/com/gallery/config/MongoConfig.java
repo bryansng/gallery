@@ -30,7 +30,7 @@ public class MongoConfig extends AbstractMongoClientConfiguration {
 
     @Bean
     public MongoClient mongoClient() {
-        ConnectionString connectionString = new ConnectionString("mongodb://localhost:27017/" + dbName);
+        ConnectionString connectionString = new ConnectionString("mongodb://images-mongodb:27017/" + dbName);
         MongoClientSettings mongoClientSettings = MongoClientSettings.builder().applyConnectionString(connectionString)
                 .build();
 

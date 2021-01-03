@@ -1,0 +1,65 @@
+version: "3"
+services:
+  servicediscovery:
+    build: service.discovery
+    ports:
+      - 8761:8761
+
+  apigateway:
+    env_file:
+      - .env
+    build: api.gateway
+    depends_on:
+      - servicediscovery
+    ports:
+      - 8080:8080
+
+  authserver:
+    build: authorization-server
+    depends_on:
+      - servicediscovery
+      - apigateway
+    ports:
+      - 8090:8090
+
+  images:
+    env_file:
+      - .env
+    build: images
+    depends_on:
+      - servicediscovery
+      - apigateway
+    ports:
+      - 8084:8084
+
+  images-mongodb:
+    image: "mongo:latest"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+    ports:
+      - 27024:27017
+    depends_on:
+      - servicediscovery
+      - apigateway
+
+  # annotations:
+  #   env_file:
+  #     - .env
+  #   build: annotations
+  #   depends_on:
+  #     - servicediscovery
+  #     - apigateway
+  #   ports:
+  #     - 8082:8082
+
+  # annotations-mongodb:
+  #   image: "mongo:latest"
+  #   environment:
+  #     MONGO_INITDB_ROOT_USERNAME: root
+  #     MONGO_INITDB_ROOT_PASSWORD: root
+  #   ports:
+  #     - 27022:27017
+  #   depends_on:
+  #     - servicediscovery
+  #     - apigateway

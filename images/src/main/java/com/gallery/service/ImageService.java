@@ -64,7 +64,7 @@ public class ImageService {
 
   @PostConstruct
   private void init() throws Exception {
-    dotenv = Dotenv.configure().directory("../.env").ignoreIfMalformed().ignoreIfMissing().load();
+    dotenv = Dotenv.configure().directory(".env").ignoreIfMalformed().ignoreIfMissing().load();
   }
 
   // creates gridfs image and fill image document.
