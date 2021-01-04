@@ -50,7 +50,7 @@ function RecentAnnotations({
           setRoute={setRoute}
           setRouteData={setRouteData}
           key={index}
-          extraClassName="w-40-l pointer"
+          extraClassName="w-third-l w-90 pointer"
         />
       ))}
     </Container>

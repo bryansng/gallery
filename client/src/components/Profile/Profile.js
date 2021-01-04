@@ -78,7 +78,7 @@ function Profile({
             setRoute={setRoute}
             setRouteData={setRouteData}
             key={index}
-            extraClassName="w-50-l pointer"
+            extraClassName="w-third-l w-90 pointer"
           />
         ))}
       </div>

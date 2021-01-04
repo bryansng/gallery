@@ -59,7 +59,7 @@ const Container = styled.div.attrs({
 })``;
 
 const ImageContainer = styled.div.attrs({
-  className: `ma0 flex flex-column w-60 pl6 pr-4 w-100-m pl4-m`,
+  className: `ma0 flex flex-column w-60 pl6 pr4 w-100-m pl4-m`,
 })``;
 
 const ImageCenterer = styled.div.attrs({
@@ -647,6 +647,7 @@ function ViewImage({
                       indexInParentArray={index}
                       extraClassName="w-100"
                       updateAnnotationInParent={updateAnAnnotation}
+                      isLong
                     />
                   )
               )}
