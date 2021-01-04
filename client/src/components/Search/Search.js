@@ -4,7 +4,6 @@ import useFetch from "react-fetch-hook";
 import content from "../../config/content.json";
 import ProfileCard from "../Common/ProfileCard";
 import ImageHoverSquare from "../Profile/ImageHoverSquare";
-import placeholderImage from "../../assets/images/placeholder.png";
 const searchEndpoints = content.service_endpoints.search;
 
 // const Headers = styled.p.attrs(() => ({

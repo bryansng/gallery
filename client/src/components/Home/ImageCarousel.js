@@ -14,7 +14,6 @@ import {
   Image,
 } from "pure-react-carousel";
 import routes from "../../config/routes";
-import common from "../../config/common";
 
 const Container = styled.div.attrs({
   className: `center mt5 mb5`,

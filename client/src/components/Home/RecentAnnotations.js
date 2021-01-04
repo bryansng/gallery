@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import AnnotationCard from "./AnnotationCard";
-import CardDeck from "react-bootstrap/CardDeck";
+// import CardDeck from "react-bootstrap/CardDeck";
 import content from "../../config/content.json";
 
 const Container = styled.div.attrs({
@@ -12,9 +12,9 @@ const Title = styled.h2.attrs({
   className: `mt2 mb5 avenir fw6 f2 dark-gray w-100`,
 })``;
 
-const CustomCardDeck = styled.div.attrs({
-  className: ``,
-})``;
+// const CustomCardDeck = styled.div.attrs({
+//   className: ``,
+// })``;
 
 function RecentAnnotations({
   isAuthenticated,
