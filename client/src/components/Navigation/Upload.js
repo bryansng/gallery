@@ -81,7 +81,6 @@ function UploadModal({
 
     fetch(imageEndpoints.create, requestOptions)
       .then((resp) => {
-        console.log(resp);
         if (resp.ok) {
           return resp.json();
         }
