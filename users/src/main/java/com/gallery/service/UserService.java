@@ -44,7 +44,8 @@ public class UserService {
     mongoTemplate = mongoConfig.mongoTemplate();
   }
 
-  public ResponseEntity<RegisterResponse> registerUser(String email, String username, String token) {
+  public ResponseEntity<RegisterResponse> registerUser(String specificUserId, String email, String username,
+      String token) {
     boolean userExists = mongoTemplate.exists(Query.query(Criteria.where("username").is(username)), User.class,
         Constants.USER_COLLECTION);
 
@@ -52,7 +53,12 @@ public class UserService {
       return new ResponseEntity<>(new RegisterResponse("Username exists", null, null), HttpStatus.BAD_REQUEST);
     }
 
-    User user = new User(username, email, LocalDateTime.now());
+    User user;
+    if (specificUserId == null) {
+      user = new User(username, email, LocalDateTime.now());
+    } else {
+      user = new User(specificUserId, username, email, LocalDateTime.now());
+    }
     user = mongoTemplate.insert(user, Constants.USER_COLLECTION);
 
     try {
