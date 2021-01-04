@@ -8,7 +8,7 @@
        http://www.springframework.org/schema/context/spring-context.xsd">
     <context:annotation-config />
 
-    <mongo:mongo-client id="mongoClient" host="localhost" port="27017" />
+    <mongo:mongo-client id="mongoClient" host="users-mongodb" port="27017" />
 
     <!-- Defining the factory bean responsible for creating Mongo instances -->
     <mongo:db-factory id="mongoDbFactory" dbname="users" mongo-client-ref="mongoClient" />
