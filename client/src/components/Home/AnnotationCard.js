@@ -31,8 +31,23 @@ const Upvote = styled(Arrow).attrs({
 `;
 
 const CustomCard = styled(Card).attrs({
-  className: `mv2 mh2 relative`,
+  className: `ma2 relative overflow-hidden`,
+})`
+  min-width: 300px;
+`;
+
+const ProfileLink = styled.button.attrs({
+  className: `pointer bn b--transparent bg pa0 ma0 bg-transparent dim fw5`,
 })``;
+
+const CustomDesc = styled(Card.Text).attrs({ className: `pa0 lh-copy mv2` })`
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  /* max-height: 4rem; */
+`;
 
 const StyledButton = styled.button.attrs({
   className: `pointer bn b--transparent bg pa0 ma0 bg-transparent dim z-999`,
@@ -60,10 +75,11 @@ function AnnotationCard({
   token,
   user,
   originalAnnotation,
-  onClick = () => {},
+  allowRedirectToViewImage = true,
   setRoute,
   setRouteData,
   extraClassName,
+  isLong,
   indexInParentArray,
   updateAnnotationInParent = () => {},
 }) {
@@ -150,7 +166,7 @@ function AnnotationCard({
   return (
     <CustomCard
       onClick={() => {
-        if (setRouteData && setRoute) {
+        if (allowRedirectToViewImage) {
           setRouteData({
             imageId: annotation.imageId,
             annotationToView: annotation,
@@ -160,12 +176,26 @@ function AnnotationCard({
       }}
       className={extraClassName}
     >
-      <Card.Body>
+      <Card.Body className="flex flex-column justify-between">
         <Card.Subtitle className="pv1">
-          {<GetUsername userId={annotation.userId} />} @{" "}
-          <ShowDate creationDateTime={annotation.creationDate} /> said:
+          <ProfileLink
+            onClick={() => {
+              setRouteData(annotation.userId);
+              setRoute(routes.view_user_profile);
+              console.log("Clicked profile");
+            }}
+          >
+            {<GetUsername userId={annotation.userId} />}
+          </ProfileLink>{" "}
+          @ <ShowDate creationDateTime={annotation.creationDate} /> said:
         </Card.Subtitle>
-        <Card.Text className="pv2">{annotation.content}</Card.Text>
+        {isLong ? (
+          <Card.Text className="pa0 lh-copy mv2">
+            {annotation.content}
+          </Card.Text>
+        ) : (
+          <CustomDesc>{annotation.content}</CustomDesc>
+        )}
         <div className="flex flex-wrap flex-row items-center">
           <Card.Link className="pointer near-black dim pr1">
             {currentTotalVotes}

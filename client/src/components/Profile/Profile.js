@@ -10,7 +10,7 @@ import ImageHoverSquare from "./ImageHoverSquare";
 import AnnotationCard from "../Home/AnnotationCard";
 
 const Title = styled.a.attrs({
-  className: `mv2 avenir fw6 f2 dark-gray pointer dim no-underline`,
+  className: `mv2 avenir fw6 f2 dark-gray pointer dim no-underline w-100 tc`,
 })`
   :hover {
     text-decoration: none;
@@ -78,7 +78,7 @@ function Profile({
             setRoute={setRoute}
             setRouteData={setRouteData}
             key={index}
-            extraClassName="w-40-l pointer"
+            extraClassName="w-third-l w-90 pointer"
           />
         ))}
       </div>
