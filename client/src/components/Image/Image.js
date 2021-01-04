@@ -91,7 +91,7 @@ const Title = styled.h2.attrs({
 })``;
 
 const AnnotationContainer = styled.div.attrs({
-  className: `flex flex-column w-30 pr4 w-100-m ph3-m ma0-m`,
+  className: `ma0 flex flex-column w-30 pl0 w-90-m ph4-m center-m`,
 })``;
 
 const Delimiter = styled.span.attrs({ className: `ph2` })``;
