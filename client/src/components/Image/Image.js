@@ -648,6 +648,9 @@ function ViewImage({
                       extraClassName="w-100"
                       updateAnnotationInParent={updateAnAnnotation}
                       isLong
+                      setRoute={setRoute}
+                      setRouteData={setRouteData}
+                      allowRedirectToViewImage={false}
                     />
                   )
               )}

@@ -36,6 +36,10 @@ const CustomCard = styled(Card).attrs({
   min-width: 300px;
 `;
 
+const ProfileLink = styled.button.attrs({
+  className: `pointer bn b--transparent bg pa0 ma0 bg-transparent dim fw5`,
+})``;
+
 const CustomDesc = styled(Card.Text).attrs({ className: `pa0 lh-copy mv2` })`
   overflow: hidden;
   text-overflow: ellipsis;
@@ -71,7 +75,7 @@ function AnnotationCard({
   token,
   user,
   originalAnnotation,
-  onClick = () => {},
+  allowRedirectToViewImage = true,
   setRoute,
   setRouteData,
   extraClassName,
@@ -162,7 +166,7 @@ function AnnotationCard({
   return (
     <CustomCard
       onClick={() => {
-        if (setRouteData && setRoute) {
+        if (allowRedirectToViewImage) {
           setRouteData({
             imageId: annotation.imageId,
             annotationToView: annotation,
@@ -174,8 +178,16 @@ function AnnotationCard({
     >
       <Card.Body className="flex flex-column justify-between">
         <Card.Subtitle className="pv1">
-          {<GetUsername userId={annotation.userId} />} @{" "}
-          <ShowDate creationDateTime={annotation.creationDate} /> said:
+          <ProfileLink
+            onClick={() => {
+              setRouteData(annotation.userId);
+              setRoute(routes.view_user_profile);
+              console.log("Clicked profile");
+            }}
+          >
+            {<GetUsername userId={annotation.userId} />}
+          </ProfileLink>{" "}
+          @ <ShowDate creationDateTime={annotation.creationDate} /> said:
         </Card.Subtitle>
         {isLong ? (
           <Card.Text className="pa0 lh-copy mv2">
