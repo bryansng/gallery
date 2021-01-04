@@ -28,6 +28,13 @@ public class User {
   public User() {
   }
 
+  public User(String id, String username, String email, LocalDateTime createDateTime) {
+    this.id = id;
+    this.username = username;
+    this.email = email;
+    this.creationDate = createDateTime;
+  }
+
   public User(String username, String email, LocalDateTime createDateTime) {
     this.username = username;
     this.email = email;

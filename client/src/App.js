@@ -16,7 +16,7 @@ export default function App() {
     signIn,
     logOut,
     register,
-    authComponent,
+    // authComponent,
   } = useAuthentication();
 
   const { route, routeData, updateRoute, updateRouteData } = useRouter();

@@ -5,6 +5,12 @@ public class AnnotationVoteRequest {
   private String userId;
   private Integer vote;
 
+  public AnnotationVoteRequest(String annotationId, String userId, Integer vote) {
+    this.annotationId = annotationId;
+    this.userId = userId;
+    this.vote = vote;
+  }
+
   public String getAnnotationId() {
     return this.annotationId;
   }

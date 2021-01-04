@@ -1,5 +1,17 @@
 #!/bin/bash
 
+if [ "$1" == "fromscratch" ]; then
+  docker-compose down -v
+  mvn clean
+  mvn install
+  docker-compose up --build --remove-orphans
+elif [ "$1" == "tearbuild" ]; then
+  docker-compose down -v
+  docker-compose up --build --remove-orphans
+else
+  docker-compose up --remove-orphans
+fi
+
 # if [ "$1" == "fromscratch" ]; then
 #   docker-compose down -v
 #   mvn clean
@@ -32,13 +44,13 @@
 # 2/3. all microservices.
 
 
-if [ "$1" == "zuul" ]; then
-  mvn spring-boot:run -pl api.gateway
-elif [ "$1" == "eureka" ]; then
-  mvn spring-boot:run -pl service.discovery
-elif [ "$1" == "user" ]; then
-  mvn spring-boot:run -pl users
-  mvn spring-boot:run -pl service.discovery
-elif [ "$1" == "annotation" ]; then
-  mvn spring-boot:run -pl annotations
-fi
+# if [ "$1" == "zuul" ]; then
+#   mvn spring-boot:run -pl api.gateway
+# elif [ "$1" == "eureka" ]; then
+#   mvn spring-boot:run -pl service.discovery
+# elif [ "$1" == "user" ]; then
+#   mvn spring-boot:run -pl users
+#   mvn spring-boot:run -pl service.discovery
+# elif [ "$1" == "annotation" ]; then
+#   mvn spring-boot:run -pl annotations
+# fi

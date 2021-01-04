@@ -12,6 +12,13 @@ public class AnnotationRequest {
 
   }
 
+  public AnnotationRequest(String userId, String imageId, String content, RectangleCoordinates coordinates) {
+    this.userId = userId;
+    this.imageId = imageId;
+    this.content = content;
+    this.coordinates = coordinates;
+  }
+
   public String getUserId() {
     return this.userId;
   }

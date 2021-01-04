@@ -8,8 +8,8 @@
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.gallery</groupId>
-	<artifactId>api.gateway</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<artifactId>apigateway</artifactId>
+	<version>0.0.1</version>
 	<name>api.gateway</name>
 	<description>Gallery API Gateway</description>
 
@@ -84,6 +84,27 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+
+			<!-- Plugin to deploy as a Docker image -->
+			<!-- <plugin>
+					<groupId>com.spotify</groupId>
+					<artifactId>dockerfile-maven-plugin</artifactId>
+					<version>1.4.10</version>
+					<executions>
+							<execution>
+									<id>tag-latest</id>
+									<goals>
+											<goal>build</goal>
+											<goal>tag</goal>
+											<goal>push</goal>
+									</goals>
+									<configuration>
+											<repository>${project.artifactId}</repository>
+											<tag>latest</tag>
+									</configuration>
+							</execution>
+					</executions>
+			</plugin> -->
 		</plugins>
 	</build>
 

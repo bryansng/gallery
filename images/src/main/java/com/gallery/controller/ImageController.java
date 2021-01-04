@@ -27,14 +27,14 @@ public class ImageController {
   // public ResponseEntity<UploadImageResponse> uploadImage(@RequestParam("file") MultipartFile file) {
   //     System.out.println(
   //             "Image uploaded: " + file.getOriginalFilename() + " " + file.getContentType() + " " + file.getSize());
-  //     return imageService.createImage(file);
+  //     return imageService.createImage(null, file);
   // }
 
   // creates gridfs image and fill image document.
   @RequestMapping(value = "/upload", method = RequestMethod.POST)
   public ResponseEntity<UploadImageResponse> uploadImage(@ModelAttribute CreateImageRequest createRequest) {
     System.out.println("uploading image.");
-    return imageService.createImage(createRequest);
+    return imageService.createImage(null, createRequest);
   }
 
   @RequestMapping(value = "/{imageId}", method = RequestMethod.PUT)

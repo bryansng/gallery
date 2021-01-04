@@ -1,0 +1,144 @@
+version: "3"
+services:
+  # search-mongodb:
+  #   image: "mongo:latest"
+  #   # environment:
+  #   # MONGO_INITDB_ROOT_USERNAME: root
+  #   # MONGO_INITDB_ROOT_PASSWORD: root
+  #   ports:
+  #     - 27023:27017
+  #   depends_on:
+  #     - servicediscovery
+  #     - apigateway
+
+  # reactclient:
+  #   build: client
+  #   ports:
+  #     - 80:80
+
+  servicediscovery:
+    build: service.discovery
+    ports:
+      - 8761:8761
+
+  apigateway:
+    env_file:
+      - .env
+    build: api.gateway
+    depends_on:
+      - servicediscovery
+    ports:
+      - 8080:8080
+
+  authserver:
+    build: authorization-server
+    depends_on:
+      - servicediscovery
+      - apigateway
+    ports:
+      - 8090:8090
+
+  users:
+    env_file:
+      - .env
+    environment:
+      STARTUP_DELAY: 80
+    build: users
+    depends_on:
+      - servicediscovery
+      - apigateway
+      - users-mongodb
+      - search
+      - authserver
+    ports:
+      - 8081:8081
+
+  users-mongodb:
+    image: "mongo:latest"
+    # environment:
+    # MONGO_INITDB_ROOT_USERNAME: root
+    # MONGO_INITDB_ROOT_PASSWORD: root
+    ports:
+      - 27021:27017
+    depends_on:
+      - servicediscovery
+      - apigateway
+
+  search:
+    env_file:
+      - .env
+    environment:
+      STARTUP_DELAY: 10
+    build: search
+    depends_on:
+      - servicediscovery
+      - apigateway
+      - es01
+      # - search-mongodb
+    ports:
+      - 8083:8083
+
+  es01:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.10.1
+    environment:
+      - node.name=es01
+      - cluster.name=es-docker-cluster
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - "http.port=9200"
+      - "http.publish_host=_local_"
+      - network.host=0.0.0.0
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    ports:
+      - 9200:9200
+      - 9300:9300
+
+  images:
+    env_file:
+      - .env
+    environment:
+      STARTUP_DELAY: 60
+    build: images
+    depends_on:
+      - servicediscovery
+      - apigateway
+      - images-mongodb
+      - search
+      - authserver
+    ports:
+      - 8084:8084
+
+  images-mongodb:
+    image: "mongo:latest"
+    ports:
+      - 27024:27017
+    depends_on:
+      - servicediscovery
+      - apigateway
+
+  annotations:
+    env_file:
+      - .env
+    environment:
+      STARTUP_DELAY: 10
+    build: annotations
+    depends_on:
+      - servicediscovery
+      - apigateway
+      - annotations-mongodb
+      - authserver
+    ports:
+      - 8082:8082
+
+  annotations-mongodb:
+    image: "mongo:latest"
+    # environment:
+    ports:
+      - 27022:27017
+    depends_on:
+      - servicediscovery
+      - apigateway

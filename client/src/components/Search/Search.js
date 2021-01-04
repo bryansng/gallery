@@ -4,7 +4,6 @@ import useFetch from "react-fetch-hook";
 import content from "../../config/content.json";
 import ProfileCard from "../Common/ProfileCard";
 import ImageHoverSquare from "../Profile/ImageHoverSquare";
-import placeholderImage from "../../assets/images/placeholder.png";
 const searchEndpoints = content.service_endpoints.search;
 
 // const Headers = styled.p.attrs(() => ({
@@ -53,14 +52,24 @@ function Search({ routeData, setRoute, setRouteData }) {
       ) : (
         <>
           {!isLoading &&
-          data.imageResponse.imagesByTitle.totalHits === 0 &&
-          data.imageResponse.imagesByDescription.totalHits === 0 &&
-          data.userResponse.users.totalHits === 0
+          data &&
+          (!data.imageResponse ||
+            !data.imageResponse.imagesByTitle ||
+            data.imageResponse.imagesByTitle.totalHits === 0) &&
+          (!data.imageResponse ||
+            !data.imageResponse.imagesByTitle ||
+            data.imageResponse.imagesByDescription.totalHits === 0) &&
+          (!data.userResponse ||
+            !data.userResponse.users ||
+            data.userResponse.users.totalHits === 0)
             ? "No results found, please try other keywords."
             : ""}
         </>
       )}
-      {!isLoading && data.imageResponse.imagesByTitle.totalHits > 0 ? (
+      {!isLoading &&
+      data.imageResponse &&
+      data.imageResponse.imagesByTitle &&
+      data.imageResponse.imagesByTitle.totalHits > 0 ? (
         <>
           <SectionTitle>Images by title</SectionTitle>
           {data.imageResponse.imagesByTitle.searchHits.map((image, index) => (
@@ -77,7 +86,10 @@ function Search({ routeData, setRoute, setRouteData }) {
         ""
       )}
 
-      {!isLoading && data.imageResponse.imagesByDescription.totalHits > 0 ? (
+      {!isLoading &&
+      data.imageResponse &&
+      data.imageResponse.imagesByDescription &&
+      data.imageResponse.imagesByDescription.totalHits > 0 ? (
         <>
           <SectionTitle>Images by description</SectionTitle>
           {data.imageResponse.imagesByDescription.searchHits.map(
@@ -96,7 +108,10 @@ function Search({ routeData, setRoute, setRouteData }) {
         ""
       )}
 
-      {!isLoading && data.userResponse.users.totalHits > 0 ? (
+      {!isLoading &&
+      data.userResponse &&
+      data.userResponse.users &&
+      data.userResponse.users.totalHits > 0 ? (
         <>
           <SectionTitle>Users</SectionTitle>
           {data.userResponse.users.searchHits.map((userSearched, index) => (
