@@ -21,6 +21,17 @@ public class Image {
   public Image() {
   }
 
+  public Image(String id, String gridFsImageId, String userId, String title, String description, Integer totalViews,
+      LocalDateTime creationDateTime) {
+    this.id = id;
+    this.gridFsImageId = gridFsImageId;
+    this.userId = userId;
+    this.title = title;
+    this.description = description;
+    this.totalViews = totalViews;
+    this.creationDate = creationDateTime;
+  }
+
   public Image(String gridFsImageId, String userId, String title, String description, Integer totalViews,
       LocalDateTime creationDateTime) {
     this.gridFsImageId = gridFsImageId;

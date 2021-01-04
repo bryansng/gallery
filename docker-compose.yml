@@ -1,5 +1,16 @@
 version: "3"
 services:
+  # search-mongodb:
+  #   image: "mongo:latest"
+  #   # environment:
+  #   # MONGO_INITDB_ROOT_USERNAME: root
+  #   # MONGO_INITDB_ROOT_PASSWORD: root
+  #   ports:
+  #     - 27023:27017
+  #   depends_on:
+  #     - servicediscovery
+  #     - apigateway
+
   # reactclient:
   #   build: client
   #   ports:
@@ -31,12 +42,14 @@ services:
     env_file:
       - .env
     environment:
-      STARTUP_DELAY: 60
+      STARTUP_DELAY: 80
     build: users
     depends_on:
       - servicediscovery
       - apigateway
       - users-mongodb
+      - search
+      - authserver
     ports:
       - 8081:8081
 
@@ -55,12 +68,13 @@ services:
     env_file:
       - .env
     environment:
-      STARTUP_DELAY: 15
+      STARTUP_DELAY: 10
     build: search
     depends_on:
       - servicediscovery
       - apigateway
       - es01
+      # - search-mongodb
     ports:
       - 8083:8083
 
@@ -83,45 +97,48 @@ services:
       - 9200:9200
       - 9300:9300
 
-  # images:
-  #   env_file:
-  #     - .env
-  #   environment:
-  #     STARTUP_DELAY: 15
-  #   build: images
-  #   depends_on:
-  #     - servicediscovery
-  #     - apigateway
-  #     - images-mongodb
-  #   ports:
-  #     - 8084:8084
+  images:
+    env_file:
+      - .env
+    environment:
+      STARTUP_DELAY: 60
+    build: images
+    depends_on:
+      - servicediscovery
+      - apigateway
+      - images-mongodb
+      - search
+      - authserver
+    ports:
+      - 8084:8084
 
-  # images-mongodb:
-  #   image: "mongo:latest"
-  #   ports:
-  #     - 27024:27017
-  #   depends_on:
-  #     - servicediscovery
-  #     - apigateway
+  images-mongodb:
+    image: "mongo:latest"
+    ports:
+      - 27024:27017
+    depends_on:
+      - servicediscovery
+      - apigateway
 
-  # annotations:
-  #   env_file:
-  #     - .env
-  #   environment:
-  #     STARTUP_DELAY: 10
-  #   build: annotations
-  #   depends_on:
-  #     - servicediscovery
-  #     - apigateway
-  #     - annotations-mongodb
-  #   ports:
-  #     - 8082:8082
+  annotations:
+    env_file:
+      - .env
+    environment:
+      STARTUP_DELAY: 10
+    build: annotations
+    depends_on:
+      - servicediscovery
+      - apigateway
+      - annotations-mongodb
+      - authserver
+    ports:
+      - 8082:8082
 
-  # annotations-mongodb:
-  #   image: "mongo:latest"
-  #   # environment:
-  #   ports:
-  #     - 27022:27017
-  #   depends_on:
-  #     - servicediscovery
-  #     - apigateway
+  annotations-mongodb:
+    image: "mongo:latest"
+    # environment:
+    ports:
+      - 27022:27017
+    depends_on:
+      - servicediscovery
+      - apigateway

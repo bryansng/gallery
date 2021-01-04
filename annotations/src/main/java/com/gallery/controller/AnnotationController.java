@@ -28,7 +28,7 @@ public class AnnotationController {
 
   @RequestMapping(method = RequestMethod.POST)
   public ResponseEntity<AnnotationResponse> createAnnotation(@RequestBody AnnotationRequest annotationRequest) {
-    return annotationService.createAnnotation(annotationRequest);
+    return annotationService.createAnnotation(null, annotationRequest);
   }
 
   @RequestMapping(value = "/{annotationId}", method = RequestMethod.PUT)

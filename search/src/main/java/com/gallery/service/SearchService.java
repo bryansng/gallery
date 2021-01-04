@@ -41,9 +41,6 @@ public class SearchService {
   @Autowired
   Config config;
 
-  // @Autowired
-  // SearchService searchService;
-
   private ElasticsearchOperations elasticSearchTemplate;
 
   public SearchService() {
@@ -52,7 +49,6 @@ public class SearchService {
   @PostConstruct
   private void init() throws Exception {
     elasticSearchTemplate = config.elasticsearchTemplate();
-    // searchService.createUser(new User("1", "bryan"));
   }
 
   /**

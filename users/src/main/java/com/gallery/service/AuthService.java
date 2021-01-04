@@ -82,7 +82,10 @@ public class AuthService {
     keycloakServiceAccount = KeycloakBuilder.builder().serverUrl(AUTHORIZATION_SERVER_URL).realm(REALM)
         .grantType(OAuth2Constants.CLIENT_CREDENTIALS).clientId(CLIENT_ID).clientSecret(CLIENT_SECRET).build();
 
-    authService.register("5ff33a44322c9d1b7f7220d5", new RegisterRequest("test@test.com", "test", "test"));
+    authService.register("5ff33a44322c9d1b7f7220d5", new RegisterRequest("bryansng@bryansng.com", "test", "bryansng"));
+    authService.register("5ff33a44322c9d1b7f7220d6", new RegisterRequest("lxemily@lxemily.com", "test", "lxemily"));
+    authService.register("5ff33a44322c9d1b7f7220d7",
+        new RegisterRequest("yeohbraddy@yeohbraddy.com", "test", "yeohbraddy"));
   }
 
   // signin

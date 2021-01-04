@@ -13,7 +13,7 @@ public class RectangleCoordinates {
   private Double x2;
   private Double y2;
 
-  RectangleCoordinates(Double x1, Double y1, Double x2, Double y2) {
+  public RectangleCoordinates(Double x1, Double y1, Double x2, Double y2) {
     this.x1 = x1;
     this.x2 = x2;
     this.y1 = y1;

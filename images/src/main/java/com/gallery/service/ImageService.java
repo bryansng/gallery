@@ -79,24 +79,85 @@ public class ImageService {
     InputStream stream;
     MultipartFile multipartFile;
 
+    // System.out.println(
+    //     "Does resource exist?: " + resource.exists() + "; " + resource.getURL() + "; " + resource.getFilename());
     try {
-      resource = resourceLoader.getResource("classpath:/initial-images/test.png");
-      System.out.println(
-          "Does resource exist?: " + resource.exists() + "; " + resource.getURL() + "; " + resource.getFilename());
+      resource = resourceLoader.getResource("classpath:/initial-images/dexter.png");
       stream = resource.getInputStream();
-
       multipartFile = new MockMultipartFile(resource.getFilename(), resource.getFilename(), MediaType.IMAGE_PNG_VALUE,
           stream);
+      imageService.createImage("5fe931051897c026c1591827",
+          new CreateImageRequest(multipartFile, "5ff33a44322c9d1b7f7220d7", "dexter", "placeholder"));
 
-      imageService.createImage(new CreateImageRequest(multipartFile, "1", "test title", "test desc"));
+      resource = resourceLoader.getResource("classpath:/initial-images/honey_honey_i_loaded_your_gun_with_blanks.jpg");
+      stream = resource.getInputStream();
+      multipartFile = new MockMultipartFile(resource.getFilename(), resource.getFilename(), MediaType.IMAGE_JPEG_VALUE,
+          stream);
+      imageService.createImage("5fe931051897c026c1591831", new CreateImageRequest(multipartFile,
+          "5ff33a44322c9d1b7f7220d5", "honey, honey. i loaded your gun with blanks",
+          "https://twitter.com/carrotsprout_/status/1345529439837278209/photo/1 https://clips.twitch.tv/PowerfulAntsyBibimbapRiPepperonis"));
+
+      resource = resourceLoader.getResource("classpath:/initial-images/trust_exercise.jpg");
+      stream = resource.getInputStream();
+      multipartFile = new MockMultipartFile(resource.getFilename(), resource.getFilename(), MediaType.IMAGE_JPEG_VALUE,
+          stream);
+      imageService.createImage("5fe931051897c026c1591832", new CreateImageRequest(multipartFile,
+          "5ff33a44322c9d1b7f7220d5", "trust exercise",
+          "https://twitter.com/carrotsprout_/status/1345529439837278209/photo/1 https://clips.twitch.tv/PowerfulAntsyBibimbapRiPepperonis"));
+
+      resource = resourceLoader.getResource("classpath:/initial-images/asphodel_crossing.jpg");
+      stream = resource.getInputStream();
+      multipartFile = new MockMultipartFile(resource.getFilename(), resource.getFilename(), MediaType.IMAGE_JPEG_VALUE,
+          stream);
+      imageService.createImage("5fe931051897c026c1591829",
+          new CreateImageRequest(multipartFile, "5ff33a44322c9d1b7f7220d6", "asphodel crossing",
+              "reposted from @Hvnart https://twitter.com/Hvnnart/status/1343141983045316608"));
+
+      resource = resourceLoader.getResource("classpath:/initial-images/202ne1.jpg");
+      stream = resource.getInputStream();
+      multipartFile = new MockMultipartFile(resource.getFilename(), resource.getFilename(), MediaType.IMAGE_JPEG_VALUE,
+          stream);
+      imageService.createImage("5fe931051897c026c1591828", new CreateImageRequest(multipartFile,
+          "5ff33a44322c9d1b7f7220d6", "202ne1", "happy new year! or march 3000th"));
+
+      resource = resourceLoader.getResource("classpath:/initial-images/culture.webp");
+      stream = resource.getInputStream();
+      multipartFile = new MockMultipartFile(resource.getFilename(), resource.getFilename(), MediaType.IMAGE_JPEG_VALUE,
+          stream);
+      imageService.createImage("5fe931051897c026c1591826", new CreateImageRequest(multipartFile,
+          "5ff33a44322c9d1b7f7220d7", "culture", "Reject Humanity     Return to Monke"));
+
+      resource = resourceLoader.getResource("classpath:/initial-images/cat.jpg");
+      stream = resource.getInputStream();
+      multipartFile = new MockMultipartFile(resource.getFilename(), resource.getFilename(), MediaType.IMAGE_JPEG_VALUE,
+          stream);
+      imageService.createImage("5fe931051897c026c1591830",
+          new CreateImageRequest(multipartFile, "5ff33a44322c9d1b7f7220d6",
+              "Cat politely declines being removed from blanket pile",
+              "cat https://www.youtube.com/watch?v=Oyx3xkdi4uw"));
+
+      resource = resourceLoader.getResource("classpath:/initial-images/stick_bug.gif");
+      stream = resource.getInputStream();
+      multipartFile = new MockMultipartFile(resource.getFilename(), resource.getFilename(), MediaType.IMAGE_GIF_VALUE,
+          stream);
+      imageService.createImage("5fe931051897c026c1591825",
+          new CreateImageRequest(multipartFile, "5ff33a44322c9d1b7f7220d5", "get stick bugged lol",
+              "hehe https://knowyourmeme.com/memes/get-stick-bugged-lol"));
+
+      resource = resourceLoader.getResource("classpath:/initial-images/owo.gif");
+      stream = resource.getInputStream();
+      multipartFile = new MockMultipartFile(resource.getFilename(), resource.getFilename(), MediaType.IMAGE_GIF_VALUE,
+          stream);
+      imageService.createImage("5fe931051897c026c1591835",
+          new CreateImageRequest(multipartFile, "5ff33a44322c9d1b7f7220d6", "owo", "what's this"));
     } catch (Exception e) {
       e.printStackTrace();
-      System.out.println("Unable to get image.");
+      System.out.println("Unable to manually create image.");
     }
   }
 
   // creates gridfs image and fill image document.
-  public ResponseEntity<UploadImageResponse> createImage(CreateImageRequest createReq) {
+  public ResponseEntity<UploadImageResponse> createImage(String specificImageId, CreateImageRequest createReq) {
     // store image in gridfs.
     MultipartFile imageFile = createReq.getImageFile();
     ObjectId gridFsImageId = null;
@@ -109,8 +170,14 @@ public class ImageService {
 
     // create new object in image repo.
     // store the gridfs id.
-    Image image = new Image(gridFsImageId.toString(), createReq.getUserId(), createReq.getTitle(),
-        createReq.getDescription(), 0, LocalDateTime.now());
+    Image image;
+    if (specificImageId == null) {
+      image = new Image(gridFsImageId.toString(), createReq.getUserId(), createReq.getTitle(),
+          createReq.getDescription(), 0, LocalDateTime.now());
+    } else {
+      image = new Image(specificImageId, gridFsImageId.toString(), createReq.getUserId(), createReq.getTitle(),
+          createReq.getDescription(), 0, LocalDateTime.now());
+    }
     image = mongoTemplate.insert(image, Constants.IMAGE_COLLECTION);
 
     RestTemplate restTemplate = new RestTemplate();
