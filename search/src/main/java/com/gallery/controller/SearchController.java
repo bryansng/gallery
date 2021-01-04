@@ -35,7 +35,6 @@ public class SearchController {
      */
     @RequestMapping(value = "/{keyword}", method = RequestMethod.GET)
     public ResponseEntity<SearchResponse> findByKeyword(@PathVariable("keyword") String keyword) {
-        System.out.println("Searching for: " + keyword);
         return searchService.findByKeyword(keyword);
     }
 

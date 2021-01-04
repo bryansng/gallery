@@ -1,13 +1,11 @@
 package com.gallery.model;
 
-import java.time.LocalDateTime;
-
 import com.gallery.constants.Constants;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 
-@Document(indexName = Constants.USER_INDEX_NAME, type = Constants.USER_INDEX_NAME)
+@Document(indexName = Constants.USER_INDEX_NAME)
 public class User {
   @Id
   private String id;

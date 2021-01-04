@@ -1,7 +1,5 @@
 package com.gallery.auth;
 
-import com.gallery.auth.AuthorizationServerApp;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;

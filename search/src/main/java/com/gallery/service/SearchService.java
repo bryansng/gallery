@@ -3,8 +3,6 @@ package com.gallery.service;
 import static org.elasticsearch.index.query.QueryBuilders.matchQuery;
 import static org.elasticsearch.index.query.QueryBuilders.regexpQuery;
 
-import java.time.LocalDateTime;
-
 import javax.annotation.PostConstruct;
 
 import com.gallery.config.Config;
@@ -49,9 +47,7 @@ public class SearchService {
 
   @PostConstruct
   private void init() throws Exception {
-    System.out.println("1");
     elasticSearchTemplate = config.elasticsearchTemplate();
-    System.out.println("4");
   }
 
   /**
