@@ -41,15 +41,18 @@ public class SearchService {
   @Autowired
   Config config;
 
+  // @Autowired
+  // SearchService searchService;
+
   private ElasticsearchOperations elasticSearchTemplate;
 
   public SearchService() {
-
   }
 
   @PostConstruct
   private void init() throws Exception {
     elasticSearchTemplate = config.elasticsearchTemplate();
+    // searchService.createUser(new User("1", "bryan"));
   }
 
   /**
@@ -59,19 +62,36 @@ public class SearchService {
    * @return
    */
   public ResponseEntity<SearchResponse> findByKeyword(String keyword) {
-
     Query searchQuery = new NativeSearchQueryBuilder().withFilter(regexpQuery("username", ".*" + keyword + ".*"))
         .build();
-    SearchHits<User> usersByUsername = elasticSearchTemplate.search(searchQuery, User.class,
-        IndexCoordinates.of(Constants.USER_INDEX_NAME));
+    SearchHits<User> usersByUsername;
+    try {
+      usersByUsername = elasticSearchTemplate.search(searchQuery, User.class,
+          IndexCoordinates.of(Constants.USER_INDEX_NAME));
+    } catch (Exception e) {
+      usersByUsername = null;
+      System.out.println("No indexes found for usersByUsername.");
+    }
 
     searchQuery = new NativeSearchQueryBuilder().withFilter(regexpQuery("title", ".*" + keyword + ".*")).build();
-    SearchHits<Image> imagesByTitle = elasticSearchTemplate.search(searchQuery, Image.class,
-        IndexCoordinates.of(Constants.IMAGE_INDEX_NAME));
+    SearchHits<Image> imagesByTitle;
+    try {
+      imagesByTitle = elasticSearchTemplate.search(searchQuery, Image.class,
+          IndexCoordinates.of(Constants.IMAGE_INDEX_NAME));
+    } catch (Exception e) {
+      imagesByTitle = null;
+      System.out.println("No indexes found for imagesByTitle.");
+    }
 
     searchQuery = new NativeSearchQueryBuilder().withFilter(regexpQuery("description", ".*" + keyword + ".*")).build();
-    SearchHits<Image> imagesByDescription = elasticSearchTemplate.search(searchQuery, Image.class,
-        IndexCoordinates.of(Constants.IMAGE_INDEX_NAME));
+    SearchHits<Image> imagesByDescription;
+    try {
+      imagesByDescription = elasticSearchTemplate.search(searchQuery, Image.class,
+          IndexCoordinates.of(Constants.IMAGE_INDEX_NAME));
+    } catch (Exception e) {
+      imagesByDescription = null;
+      System.out.println("No indexes found for imagesByDescription.");
+    }
 
     return new ResponseEntity<>(new SearchResponse("Search completed", new UserSearchResponse(usersByUsername),
         new ImageSearchResponse(imagesByTitle, imagesByDescription)), HttpStatus.OK);

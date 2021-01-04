@@ -2,7 +2,6 @@ package com.gallery.controller;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.ws.rs.core.Response;
@@ -12,7 +11,6 @@ import com.gallery.core.request.UserByTokenRequest;
 import com.gallery.core.request.RegisterRequest;
 import com.gallery.core.response.RegisterResponse;
 import com.gallery.core.response.SignInResponse;
-import com.gallery.core.response.UserResponse;
 import com.gallery.service.UserService;
 import com.nimbusds.jose.shaded.json.JSONObject;
 
@@ -22,12 +20,9 @@ import org.keycloak.admin.client.KeycloakBuilder;
 import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.admin.client.resource.UsersResource;
 import org.keycloak.representations.AccessTokenResponse;
-import org.keycloak.representations.idm.ClientRepresentation;
 import org.keycloak.representations.idm.CredentialRepresentation;
-import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -35,7 +30,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -43,18 +37,16 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
-import io.github.cdimascio.dotenv.Dotenv;
-
 @RestController
 @RequestMapping(value = "/auth")
 @CrossOrigin
 public class AuthController {
 
   @Autowired
-  UserService userService;
+  private UserService userService;
 
   @Autowired
-  Environment env;
+  private Environment env;
 
   // @Value("${AUTHORIZATION_SERVER_URL}")
   private String AUTHORIZATION_SERVER_URL;

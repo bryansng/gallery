@@ -8,10 +8,10 @@
         <modules>
                 <module>api.gateway</module>
                 <module>service.discovery</module>
-                <!-- <module>users</module> -->
+                <module>users</module>
                 <module>images</module>
-                <!-- <module>authorization-server</module>
+                <module>authorization-server</module>
                 <module>annotations</module>
-                <module>search</module> -->
+                <module>search</module>
         </modules>
 </project>

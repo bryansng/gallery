@@ -5,19 +5,19 @@ services:
   #   ports:
   #     - 80:80
 
-  # servicediscovery:
-  #   build: service.discovery
-  #   ports:
-  #     - 8761:8761
+  servicediscovery:
+    build: service.discovery
+    ports:
+      - 8761:8761
 
-  # apigateway:
-  #   env_file:
-  #     - .env
-  #   build: api.gateway
-  #   depends_on:
-  #     - servicediscovery
-  #   ports:
-  #     - 8080:8080
+  apigateway:
+    env_file:
+      - .env
+    build: api.gateway
+    depends_on:
+      - servicediscovery
+    ports:
+      - 8080:8080
 
   # authserver:
   #   build: authorization-server
@@ -88,32 +88,32 @@ services:
   #     - servicediscovery
   #     - apigateway
 
-  # search:
-  #   env_file:
-  #     - .env
-  #   build: search
-  #   depends_on:
-  #     - servicediscovery
-  #     - apigateway
-  #     - es01
-  #   ports:
-  #     - 8083:8083
+  search:
+    env_file:
+      - .env
+    build: search
+    depends_on:
+      - servicediscovery
+      - apigateway
+      - es01
+    ports:
+      - 8083:8083
 
-  # es01:
-  #   image: docker.elastic.co/elasticsearch/elasticsearch:7.10.1
-  #   environment:
-  #     - node.name=es01
-  #     - cluster.name=es-docker-cluster
-  #     - discovery.type=single-node
-  #     - bootstrap.memory_lock=true
-  #     - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-  #     - "http.port=9200"
-  #     - "http.publish_host=_local_"
-  #     - network.host=0.0.0.0
-  #   ulimits:
-  #     memlock:
-  #       soft: -1
-  #       hard: -1
-  #   ports:
-  #     - 9200:9200
-  #     - 9300:9300
+  es01:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.10.1
+    environment:
+      - node.name=es01
+      - cluster.name=es-docker-cluster
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - "http.port=9200"
+      - "http.publish_host=_local_"
+      - network.host=0.0.0.0
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    ports:
+      - 9200:9200
+      - 9300:9300

@@ -4,12 +4,10 @@ if [ "$1" == "fromscratch" ]; then
   docker-compose down -v
   mvn clean
   mvn install
-  docker-compose up --build
+  docker-compose up --build --remove-orphans
 elif [ "$1" == "tearbuild" ]; then
   docker-compose down -v
   docker-compose up --build --remove-orphans
-elif [ "$1" == "spring" ]; then
-  mvn spring-boot:run
 else
   docker-compose up --remove-orphans
 fi

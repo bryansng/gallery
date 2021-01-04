@@ -24,12 +24,13 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class AnnotationService {
-  private MongoTemplate mongoTemplate;
+
   @Autowired
   private MongoConfig mongoConfig;
 
-  public AnnotationService() {
+  private MongoTemplate mongoTemplate;
 
+  public AnnotationService() {
   }
 
   @PostConstruct
