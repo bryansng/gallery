@@ -39,7 +39,7 @@ const CustomSlide = styled(Slide).attrs({ className: `` })`
 `;
 
 const ImageHoverCover = styled.div.attrs({
-  className: `child center bg-black-40 white v-mid flex flex-column items-center justify-center pointer`,
+  className: `child center tc bg-black-40 white v-mid flex flex-column items-center justify-center pointer`,
 })`
   position: absolute;
   top: 0;
@@ -48,7 +48,12 @@ const ImageHoverCover = styled.div.attrs({
   right: 0;
 `;
 
-const ImageHoverTitle = styled.h4.attrs({ className: `` })``;
+const ImageHoverTitle = styled.h4.attrs({ className: `overflow-hidden` })`
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+`;
 const ImageHoverDesc = styled.p.attrs({
   className: `ph4 ph2-m overflow-hidden`,
 })`
