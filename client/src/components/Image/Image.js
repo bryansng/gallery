@@ -5,10 +5,12 @@ import AnnotationCard from "../Home/AnnotationCard";
 import ResizeObserver from "rc-resize-observer";
 import { CreateAnnotationForm } from "../Home/AnnotationCard";
 import { service_endpoints } from "../../config/content.json";
-// import placeholderImage from "../../assets/images/placeholder.png";
 import Form from "react-bootstrap/Form";
 import DisabledHoverTooltipper from "../Common/HoverTooltipper";
 import { GetUsername } from "../Common/GetUsername.js";
+import { GetAnnotationNum } from "../Common/GetAnnotationNum.js";
+import { ShowDate } from "../Common/ShowDate.js";
+import routes from "../../config/routes";
 const imageEndpoints = service_endpoints.image;
 const annotationEndpoints = service_endpoints.annotation;
 
@@ -57,7 +59,7 @@ const Container = styled.div.attrs({
 })``;
 
 const ImageContainer = styled.div.attrs({
-  className: `ma0 flex flex-column w-60 pl6 pr-4 w-100-m pl4-m`,
+  className: `ma0 flex flex-column w-60 pl6 pr4 w-100-m pl4-m`,
 })``;
 
 const ImageCenterer = styled.div.attrs({
@@ -85,11 +87,17 @@ const ImageDescriptionContainer = styled.div.attrs({
 })``;
 
 const Title = styled.h2.attrs({
-  className: `avenir fw6 f2 dark-gray`,
+  className: `avenir fw6 f2 dark-gray lh-solid `,
 })``;
 
 const AnnotationContainer = styled.div.attrs({
-  className: `flex flex-column w-30 pr4 w-100-m ph3-m ma0-m`,
+  className: `ma0 flex flex-column w-30 pl0 w-90-m ph4-m center-m`,
+})``;
+
+const Delimiter = styled.span.attrs({ className: `ph2` })``;
+
+const ProfileLink = styled.button.attrs({
+  className: `pointer bn b--transparent bg pa0 ma0 bg-transparent dim`,
 })``;
 
 function ViewImage({
@@ -590,10 +598,24 @@ function ViewImage({
             </Form>
           </div>
 
-          <p className="i">
-            by <GetUsername userId={image.userId} />
+          <p className="i lh-copy">
+            Uploaded <ShowDate creationDateTime={image.creationDate} /> by{" "}
+            <ProfileLink
+              onClick={() => {
+                setRouteData(image.userId);
+                setRoute(routes.view_user_profile);
+                console.log("Clicked profile");
+              }}
+            >
+              <GetUsername userId={image.userId} />
+            </ProfileLink>
+            <span>
+              <Delimiter>•</Delimiter>
+              {image.totalViews} views<Delimiter>•</Delimiter>
+              <GetAnnotationNum imageId={image.id} /> annotations
+            </span>
           </p>
-          {image.description}
+          <p className="lh-copy">{image.description}</p>
         </ImageDescriptionContainer>
       </ImageContainer>
 
@@ -625,6 +647,10 @@ function ViewImage({
                       indexInParentArray={index}
                       extraClassName="w-100"
                       updateAnnotationInParent={updateAnAnnotation}
+                      isLong
+                      setRoute={setRoute}
+                      setRouteData={setRouteData}
+                      allowRedirectToViewImage={false}
                     />
                   )
               )}
