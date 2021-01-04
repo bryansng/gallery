@@ -7,86 +7,98 @@ services:
     #   depends_on:
     #     - annotations
     #     - images
-    #     # - search
+    #     - search
     #     - users
 
     # Annotation
-    # annotations:
-    #   env_file:
-    #     - .env
-    #   build:
-    #     context: "annotations"
-    #     args:
-    #       - SPRING_SEC1_VAL=${SPRING_SEC1_VAL}
-    #       - SPRING_SEC2_VAL=${SPRING_SEC2_VAL}
-    #   image: "annotations:latest"
-    #   ports:
-    #     - 8082:8082
-    #   depends_on:
-    #       - annotations-mongodb
-    #   restart: on-failure
-    #   healthcheck:
-    #     test: ["CMD", "curl", "-f", "http://annotations:8082"]
-    #     interval: 30s
-    #     timeout: 10s
-    #     retries: 5
-    # annotations-mongodb:
-    #   image: "mongo:latest"
-    #   container_name: "annotations-mongodb-container"
-    #   environment:
-    #     MONGO_INITDB_ROOT_USERNAME: root
-    #     MONGO_INITDB_ROOT_PASSWORD: root
-    #   depends_on:
-    #     - api-gateway
-    #   restart: on-failure
-    #   healthcheck:
-    #     test: ["CMD", "curl", "-f", "http://annotations-mongodb:27017"]
-    #     interval: 30s
-    #     timeout: 10s
-    #     retries: 5
-    #   ports: 
-    #     - 27017:27017
-    #   volumes:
-    #     - annotations-mongodb-data-container:/data/db
+    annotations:
+      env_file:
+        - .env
+      build:
+        context: "annotations"
+      image: "annotations:latest"
+      ports:
+        - 8082:8082
+      depends_on:
+          - annotations-mongodb
+      restart: on-failure
+      healthcheck:
+        test: ["CMD", "curl", "-f", "http://annotations:8082/actuator/health"]
+        interval: 30s
+        timeout: 10s
+        retries: 5
+      networks:
+        - elastic
+    annotations-mongodb:
+      image: "mongo:latest"
+      depends_on:
+        - api-gateway
+      restart: on-failure
+      healthcheck:
+        test: echo 'db.runCommand("ping").ok' | mongo mongodb://annotations-mongodb:27017/test --quiet
+        interval: 30s
+        timeout: 10s
+        retries: 5
+      ports: 
+        - 27017:27017
+      networks:
+        - elastic
+      volumes:
+        - annotations-mongodb-data-container:/data/db
+
+    # Authorization-server
+    authorization-server:
+      build:
+        context: "authorization-server"
+      image: "authorization-server:latest"
+      ports:
+        - 8090:8090
+      depends_on:
+          - api-gateway
+      restart: on-failure
+      healthcheck:
+        test: ["CMD", "curl", "-f", "http://authorization-server:8090/actuator/health"]
+        interval: 30s
+        timeout: 10s
+        retries: 5
+      networks:
+        - elastic
 
     # # Images
-    # images:
-    #   env_file:
-    #     - .env
-    #   build:
-    #     context: "images"
-    #     args:
-    #       - SPRING_SEC1_VAL=${SPRING_SEC1_VAL}
-    #       - SPRING_SEC2_VAL=${SPRING_SEC2_VAL}
-    #   image: "images:latest"
-    #   ports: 
-    #     - 8084:8084
-    #   depends_on:
-    #         - images_mongodb
-    #   restart: on-failure
-    #   healthcheck:
-    #     test: ["CMD", "curl", "-f", "http://images:8084"]
-    #     interval: 30s
-    #     timeout: 10s
-    #     retries: 5
-    # images_mongodb:
-    #   image: "mongo:latest"
-    #   container_name: "images_mongodb_container"
-    #   environment:
-    #     MONGO_INITDB_ROOT_USERNAME: root
-    #     MONGO_INITDB_ROOT_PASSWORD: root
-    #   ports: 
-    #     - 27018:27017
-    #   depends_on:
-    #     - api-gateway
-    #   restart: on-failure
-    #   healthcheck:
-    #     test: ["CMD", "curl", "-f", "http://images-mongodb:27018"]
-    #     interval: 30s
-    #     timeout: 10s
-    #     retries: 5
-    #   volumes:
-    #     - images_mongodb_data_container:/data/db  
+    images:
+      env_file:
+        - .env
+      build:
+        context: "images"
+      image: "images:latest"
+      ports:
+        - 8084:8084
+      depends_on:
+        - images-mongodb
+      restart: on-failure
+      healthcheck:
+        test: ["CMD", "curl", "-f", "http://images:8084/actuator/health"]
+        interval: 30s
+        timeout: 10s
+        retries: 5
+      networks:
+        - elastic
+    images-mongodb:
+      image: "mongo:latest"
+      depends_on:
+        - api-gateway
+      restart: on-failure
+      healthcheck:
+        test: echo 'db.runCommand("ping").ok' | mongo mongodb://images-mongodb:27017/test --quiet
+        interval: 30s
+        timeout: 10s
+        retries: 5
+      ports:
+        - 27018:27017
+      networks:
+        - elastic
+      volumes:
+        - images-mongodb-data-container:/data/db
 
     # Search
     search:
@@ -99,15 +111,13 @@ services:
         - 8083:8083
         - 27020:27020
       healthcheck:
-        test: ["CMD", "curl", "-f", "http://search:8083/healthcheck"]
+        test: ["CMD", "curl", "-f", "http://search:8083/actuator/health"]
         interval: 30s
         timeout: 10s
         retries: 5
       depends_on:
         - es01
       restart:  on-failure
-    #     - es02
-    #     - es03
       networks:
         - elastic
     es01:
@@ -120,9 +130,10 @@ services:
         - discovery.type=single-node
         - bootstrap.memory_lock=true
         - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-        - "http.port=9200"
-        - "http.publish_host=_local_"
-        - network.host=0.0.0.0
+        - "http.cors.allow-origin=*"
+        - "http.cors.enabled=true"
+        - "http.cors.allow-headers=X-Requested-With,X-Auth-Token,Content-Type,Content-Length,Authorization"
+        - "http.cors.allow-credentials=true"
       ulimits:
         memlock:
           soft: -1
@@ -140,67 +151,44 @@ services:
       networks:
         - elastic
       depends_on:
-        -  search-mongodb
+        -  api-gateway
       restart: on-failure
-   
-    search-mongodb:
-      image: "mongo:latest"
-      environment:
-        MONGO_INITDB_ROOT_USERNAME: root
-        MONGO_INITDB_ROOT_PASSWORD: root
+  
+    # Users
+    users:
+      env_file:
+          - .env
+      build:
+        context: "users"
+      image: "users:latest"
       ports:
-        - 27021:27021
+        - 8081:8081
+      depends_on:
+          - users-mongodb
+      restart: on-failure
+      healthcheck:
+        test: ["CMD", "curl", "-f", "http://users:8081/actuator/health"]
+        interval: 30s
+        timeout: 10s
+        retries: 5
+      networks:
+        - elastic
+    users-mongodb:
+      image: "mongo:latest"
       depends_on:
         - api-gateway
       restart: on-failure
-      # healthcheck:
-      #   test: echo 'db.runCommand("ping").ok' | mongo mongodb://search-mongodb:27021/test --quiet
-      #   interval: 30s
-      #   timeout: 10s
-      #   retries: 5
+      healthcheck:
+        test: echo 'db.runCommand("ping").ok' | mongo mongodb://users-mongodb:27017/test --quiet
+        interval: 30s
+        timeout: 10s
+        retries: 5
+      ports: 
+        - 27019:27017
       networks:
         - elastic
       volumes:
-        - search-mongodb-data-container:/data/db
-
-    # Users
-    # users:
-    #   env_file:
-    #       - .env
-    #   build:
-    #     context: "users"
-    #     args:
-    #       - SPRING_SEC1_VAL=${SPRING_SEC1_VAL}
-    #       -   SPRING_SEC2_VAL=${SPRING_SEC2_VAL}
-    #   image: "users:latest"
-    #   ports:
-    #     - 8081:8081
-    #   depends_on:
-    #       - users-mongodb
-    #   restart: on-failure
-    #   healthcheck:
-    #     test: ["CMD", "curl", "-f", "http://users:8081"]
-    #     interval: 30s
-    #     timeout: 10s
-    #     retries: 5
-    # users-mongodb:
-    #   image: "mongo:latest"
-    #   container_name: "users-mongodb-container"
-    #   environment:
-    #     MONGO_INITDB_ROOT_USERNAME: root
-    #     MONGO_INITDB_ROOT_PASSWORD: root
-    #   depends_on:
-    #         - api-gateway
-    #   restart: on-failure
-    #   healthcheck:
-    #     test: ["CMD", "curl", "-f", "http://users-mongodb:27019"]
-    #     interval: 30s
-    #     timeout: 10s
-    #     retries: 5
-    #   ports: 
-    #     - 27019:27017
-    #   volumes:
-    #     - users-mongodb-data-container:/data/db
+        - users-mongodb-data-container:/data/db
     
     # Service discovery
     service-discovery:
@@ -238,15 +226,12 @@ services:
         
 volumes:  
   annotations-mongodb-data-container:
-  images_mongodb_data_container:
+  images-mongodb-data-container:
   users-mongodb-data-container:
   search-mongodb-data-container:
+  # Elasticsearch
   data01:
     driver: local
-  # data02:
-  #   driver: local
-  # data03:
-  #   driver: local
 
 networks:
   elastic:
