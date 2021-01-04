@@ -45,6 +45,7 @@ function Search({ routeData, setRoute, setRouteData }) {
     `${searchEndpoints.search}/${searchKeyword}`
   );
 
+  console.log(data);
   return (
     <Container>
       <Title>Search results for: {searchKeyword}</Title>
@@ -53,16 +54,16 @@ function Search({ routeData, setRoute, setRouteData }) {
       ) : (
         <>
           {!isLoading &&
-          data && data.imageResponse.imagesByTitle.totalHits === 0 && data.imageResponse.imagesByDescription.totalHits === 0 && data.userResponse.users.totalHits === 0
-          // (!data.imageResponse ||
-          //   !data.imageResponse.imagesByTitle ||
-          //   data.imageResponse.imagesByTitle.totalHits === 0) &&
-          // (data.imageResponse ||
-          //   data.imageResponse.imagesByDescription ||
-          //   data.imageResponse.imagesByDescription.totalHits === 0) &&
-          // (data.userResponse ||
-          //   data.userResponse.users ||
-          //   data.userResponse.users.totalHits === 0)
+          data &&
+          (!data.imageResponse ||
+            !data.imageResponse.imagesByTitle ||
+            data.imageResponse.imagesByTitle.totalHits === 0) &&
+          (!data.imageResponse ||
+            !data.imageResponse.imagesByTitle ||
+            data.imageResponse.imagesByDescription.totalHits === 0) &&
+          (!data.userResponse ||
+            !data.userResponse.users ||
+            data.userResponse.users.totalHits === 0)
             ? "No results found, please try other keywords."
             : ""}
         </>
