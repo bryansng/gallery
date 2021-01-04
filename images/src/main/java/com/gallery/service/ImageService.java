@@ -1,6 +1,8 @@
 package com.gallery.service;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -23,6 +25,8 @@ import com.netflix.discovery.converters.Auto;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -35,6 +39,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
@@ -62,11 +67,32 @@ public class ImageService {
   @Autowired
   private Environment env;
 
+  @Autowired
+  private ResourceLoader resourceLoader;
+
   public ImageService() {
   }
 
   @PostConstruct
   private void init() throws Exception {
+    Resource resource;
+    InputStream stream;
+    MultipartFile multipartFile;
+
+    try {
+      resource = resourceLoader.getResource("classpath:/initial-images/test.png");
+      System.out.println(
+          "Does resource exist?: " + resource.exists() + "; " + resource.getURL() + "; " + resource.getFilename());
+      stream = resource.getInputStream();
+
+      multipartFile = new MockMultipartFile(resource.getFilename(), resource.getFilename(), MediaType.IMAGE_PNG_VALUE,
+          stream);
+
+      imageService.createImage(new CreateImageRequest(multipartFile, "1", "test title", "test desc"));
+    } catch (Exception e) {
+      e.printStackTrace();
+      System.out.println("Unable to get image.");
+    }
   }
 
   // creates gridfs image and fill image document.
