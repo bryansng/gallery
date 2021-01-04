@@ -17,7 +17,7 @@ public class Config {
 
     @Bean
     public RestHighLevelClient client() {
-        ClientConfiguration clientConfiguration = ClientConfiguration.builder().connectedTo("localhost:9200").build();
+        ClientConfiguration clientConfiguration = ClientConfiguration.builder().connectedTo("es01:9200").build();
 
         return RestClients.create(clientConfiguration).rest();
     }
