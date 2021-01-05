@@ -125,9 +125,9 @@ We used docker-compose to dockerize all services similarly to the tech stack out
 - Enabling editing and deleting features for the client. These are available via the API but not via the client.
 - Refactoring the code further as there are some duplications, particularly in client.
 - We ran into issues getting the authserver to register with service discovery automatically. This would have meant we did not need to tell the api gateway specifically where authserver is, and we could then have multiple instances of the authserver. <!-- - Look into using NGINX to cache images to improve client performance. -->
-- Including tests for our API and enabling CI (continuous integration) to automate testing for an overall faster development process (e.g. trigger the tests each commit).
+- Including an extensive test suite for both the application and the API enabling CI (continuous integration) to automate testing for an overall faster development process (e.g. trigger the tests each commit).
 - Kubernetes, itself highly available and self-healing, would allow us to change the scale of our services with zero downtime so we can progress towards a more scalable fault tolerant application.
-
+- Deploying to a web server, and implementing CD (continuous deployment).
 ### Individual reflections
 
 #### Bryan
@@ -146,6 +146,8 @@ What I learnt:
 - React Hooks are hard.
 
 #### Braddy
+
+I implemented the search feature and learned that Elasticsearch is a very powerful tool, and is especially useful in terms of logging. On the topic of logging, I learned logs are very useful and help in debugging issues. In addition, I learned about containerising microservices, provisioning resources, and configuring the services. Automation is very important and useful, in particular, the healthchecks allowed be to determine the services are running okay. Furthermore, I learned a little bit about Kubernetes. In general, I learned how to design a distributed, fault-tolerant system, and how to architect neat and scalable code. Other responsibilities include writing Swagger API, profile and search React frontend and functionality, a little API testing, API design, implementing users service, and creating a single source-of-truth dotenv file location.
 
 ### Summary of reflections
 
