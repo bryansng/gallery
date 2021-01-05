@@ -11,15 +11,16 @@ services:
   #     - servicediscovery
   #     - apigateway
 
-  # reactclient:
-  #   build: client
-  #   ports:
-  #     - 80:80
+  reactclient:
+    build: client
+    ports:
+      - 80:80
 
   servicediscovery:
     build: service.discovery
     ports:
       - 8761:8761
+    restart: on-failure
 
   apigateway:
     env_file:
@@ -29,14 +30,18 @@ services:
       - servicediscovery
     ports:
       - 8080:8080
+    restart: on-failure
 
   authserver:
+    environment:
+      STARTUP_DELAY: 5
     build: authorization-server
     depends_on:
       - servicediscovery
       - apigateway
     ports:
       - 8090:8090
+    restart: on-failure
 
   users:
     env_file:
@@ -52,6 +57,7 @@ services:
       - authserver
     ports:
       - 8081:8081
+    restart: on-failure
 
   users-mongodb:
     image: "mongo:latest"
@@ -77,6 +83,7 @@ services:
       # - search-mongodb
     ports:
       - 8083:8083
+    restart: on-failure
 
   es01:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.10.1
@@ -96,12 +103,13 @@ services:
     ports:
       - 9200:9200
       - 9300:9300
+    restart: on-failure
 
   images:
     env_file:
       - .env
     environment:
-      STARTUP_DELAY: 60
+      STARTUP_DELAY: 80
     build: images
     depends_on:
       - servicediscovery
@@ -111,6 +119,7 @@ services:
       - authserver
     ports:
       - 8084:8084
+    restart: on-failure
 
   images-mongodb:
     image: "mongo:latest"
@@ -119,6 +128,7 @@ services:
     depends_on:
       - servicediscovery
       - apigateway
+    restart: on-failure
 
   annotations:
     env_file:
@@ -133,10 +143,10 @@ services:
       - authserver
     ports:
       - 8082:8082
+    restart: on-failure
 
   annotations-mongodb:
     image: "mongo:latest"
-    # environment:
     ports:
       - 27022:27017
     depends_on:
