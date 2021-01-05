@@ -23,7 +23,7 @@
 
 ## Intro
 
-Social Gallery Image Annotation, think genius.com for images and reddit up/down voting for the annotations.
+Social Gallery Image Annotation, think genius.com for images and Reddit up/down voting for the annotations.
 
 ### Main features
 
@@ -44,7 +44,7 @@ Social Gallery Image Annotation, think genius.com for images and reddit up/down 
       docker-compose up --build --remove-orphans
     ```
 
-    NOTE: This will take awhile because it mvn installs all services, npm installs the React node modules and runs the services in their containers (some containers wait a specific time due to dependance on other containers).
+    NOTE: This will take a while because it mvn installs all services, npm installs the React node modules and runs the services in their containers (some containers wait a specific time due to dependence on other containers).
 
 2. Open the browser and visit [http://localhost/](http://localhost:80/). <!-- 2b. Head to the client directory and run `./run.sh firsttime` or `cd client && npm install && npm run`. -->
 
@@ -83,16 +83,16 @@ Social Gallery Image Annotation, think genius.com for images and reddit up/down 
 
 **Users, images, and annotations** are created and stored via their respective REST APIs and *MongoRepositories* (MongoDB).
 
-The **authorization server** authenticates users via *Keycloak* (embedded in Spring Boot), an open source identity and access management solution. In this project, Keycloak manages users and their access tokens, and Spring Boot handles the Keycloak Authorization Server.
+The **authorization server** authenticates users via *Keycloak* (embedded in Spring Boot), an open-source identity and access management solution. In this project, Keycloak manages users and their access tokens, and Spring Boot handles the Keycloak Authorization Server.
 
 **Search** is provided via *Elasticsearch* which indexes images (ids, titles, and descriptions) and users (ids and usernames) internally with Lucene. Our search service provides the APIs to talk to ES and determines how images and users are indexed in ES.
 
-The **client** is a single-page application built with *React*, react-bootstrap, styled-components, Tachyons the css utility, and more (which can be found in `client/src/package.json`).
+The **client** is a single-page application built with *React*, react-bootstrap, styled-components, Tachyons the CSS utility framework, and more (which can be found in `client/src/package.json`).
 ### Example retrieval
 
-User creation: user registers via client -> client POSTs user data to API gateway -> API gateway routes that request to user service -> user service tells Keycloak to create new user and token -> Keycloak provides the token and success response to user service -> user service informs search service to index the new user -> search service sends success response to user service -> user service tells client via api gateway the user token and that user creation is successful and logged in -> the user token is stored in window.localStorage.
+User creation: user registers via client -> client POSTs user data to API gateway -> API gateway routes that request to user service -> user service tells Keycloak to create a new user and token -> Keycloak provides the token and success response to user service -> user service informs search service to index the new user -> search service sends success response to user service -> user service tells client via API gateway the user token and that user creation is successful and logged in -> the user token is stored in window.localStorage.
 
-User is signed in but refreshed web page: user token is retrieved from window.localStorage -> client POSTs user token to API gateway -> API gateway routes request to user service -> user service verifies token with Keycloak -> Keycloak confirms with user service -> user service returns the user data back the route it came from.
+User is signed in but refreshed web page: user token is retrieved from window.localStorage -> client POSTs user token to API gateway -> API gateway routes request to user service -> user service verifies token with Keycloak -> Keycloak confirms with user service -> user service returns the user data the route it came from.
 
 ### Dockerizing
 
@@ -104,39 +104,39 @@ We used docker-compose to dockerize all 7 services (except client) similarly to 
 
 ### Comparisons of our stack vs other tools
 
-1. At the inception, NGINX was considered as our service discovery and API gateway, however we found that load balancing, key-value store and service discovery [features](https://www.nginx.com/products/nginx/compare-models) are only provided in NGINX Plus (their paid version). Furthermore, we found that NGINX do not provide complex routing logic, whereas Zuul provides this feature with the power of the Java ecosystem/programming language.
-2. MongoDB is an open source NoSQL database which makes it easy for us to change how user, image, or annotation data may be structured during development. The data is saved in JSON format, the most common for REST body/responses.
-3. Embedding Keycloak in a Spring Boot application means that we don't need to download and setup Keycloak as a standalone server, simplifying the configuration. An adapter is provided for Spring Boot so we only need to add `keycloak-spring-boot-starter` as a pom.xml dependency.
-4. Elasticsearch is built with Java on top of Apache Lucene, based on JSON, and suitable for NoSQL data. It is also open source, distributed, highly scalable, has overall good performance, and Braddy has some experience with it.
-5. React vs Thymeleaf: Both can implement our client, but React (client side rendering) would be quicker at updating the UI than Thymeleaf (server side rendering). React can update parts the webpage as users interact with it (e.g. up/down voting, adding annotations) while Thymeleaf regenerates the whole page each time.
+1. At the inception, NGINX was considered as our service discovery and API gateway, however, we found that load balancing, key-value store and service discovery [features](https://www.nginx.com/products/nginx/compare-models) are only provided in NGINX Plus (their paid version). Furthermore, we found that NGINX does not provide complex routing logic, whereas Zuul provides this feature with the power of the Java ecosystem/programming language.
+2. MongoDB is an open-source NoSQL database which makes it easy for us to change how user, image, or annotation data may be structured during development. The data is saved in JSON format, the most common for REST body/responses.
+3. Embedding Keycloak in a Spring Boot application means that we don't need to download and set up Keycloak as a standalone server, simplifying the configuration. An adapter is provided for Spring Boot so we only need to add `keycloak-spring-boot-starter` as a pom.xml dependency.
+4. Elasticsearch is built with Java on top of Apache Lucene, based on JSON, and suitable for NoSQL data. It is also open-source, distributed, highly scalable, has overall good performance, and Braddy has some experience with it.
+5. React vs Thymeleaf: Both can implement our client, but React (client-side rendering) would be quicker at updating the UI than Thymeleaf (server-side rendering). React can update parts the webpage as users interact with it (e.g. up/down voting, adding annotations) while Thymeleaf regenerates the whole page each time.
 
 ### Pros & cons of our stack
 | Pros | Cons |
 | ---- | ---- |
 | Loosely bound system where modifications or improvements of a part of the system have limited impact on other parts of the system. | There are additional points of failure in user or image creation due to the need of informing the service itself, the search service, and the authserver. |
 | Easier to isolate, discern and troubleshoot causes of failure to a part of the system (e.g. to a single service). |  |
-| Easier management due to microservices mimicing most organization's management style (i.e. teams that manage different aspects of the system), therefore it was easier for us to divide the development task between each other. |  |
+| Easier management due to microservices mimicking most organization's management style (i.e. teams that manage different aspects of the system), therefore it was easier for us to divide the development task between each other. |  |
 
 ### Stretch goals <sub><sup>(not achieved due to time constraints and configuration issues)</sup></sub>
 
-- We ran into issues configuring Redis to cache user data or aggregated responses at the API gateway. This would have shorten the hops between client and Keycloak to verify the user token and prevent us from re-requesting data from user-service repeatedly. However, we would need to manually keep track if the cached data is outdated due to any recent edits and evict any old cached data following a LRU policy.
+- We ran into issues configuring Redis to cache user data or aggregated responses at the API gateway. This would have shortened the hops between the client and Keycloak to verify the user token and prevent us from re-requesting data from user-service repeatedly. However, we would need to manually keep track if the cached data is outdated due to any recent edits and evict any old cached data following an LRU policy.
 - Enabling editing and deleting features for the client. These are available via the API but not via the client.
-- Refactoring the code further as there are some duplications, particularly in client.
-- We ran into issues getting the authserver to register with service discovery automatically. This would have meant we did not need to tell the api gateway specifically where authserver is, and we could then have multiple instances of the authserver.
+- Refactoring the code further as there are some duplications, particularly in the client.
+- We ran into issues getting the authserver to register with service discovery automatically. This would have meant we did not need to tell the API gateway specifically where authserver is, and we could then have multiple instances of the authserver.
 - Look into using NGINX to cache images to improve client performance.
 - Including tests for our API and enabling CI (continuous integration) to automate testing for an overall faster development process (e.g. trigger the tests each commit).
-- Kubernetes, itself highly available and self healing, would allow us to change the scale of our services with ZDT so we can progress towards a more scalable fault tolerant application.
+- Kubernetes, itself highly available and self healing, would allow us to change the scale of our services with ZDT so we can progress towards a more scalable fault-tolerant application.
 ### Individual reflections
 #### Bryan
 
-I learnt that daily stand-ups allowed us to keep track of each others progress and allocate manpower to help accordingly. Furthermore, I learnt how to implement the api-gateway and service discovery and understand how these technologies are integral to the overall application's architecture. I also learnt how to implement authentication in a distributed context, this requires setting up token-based authentication following [Spring's new OAuth stack](https://github.com/spring-projects/spring-security/wiki/OAuth-2.0-Migration-Guide) which includes a third-party authorization server (via Keycloak embedded into a Spring Boot instance for easier deployment) and configuring the resource servers (e.g. image-service, user-service, etc) to check if requests received for a particular endpoint has strict authentication rules (i.e. a POST to /api/users/auth/signin **does not require** user to be signed in, but a POST to /api/images **requires** users to be signed in). Other responsibilities include containerizing our architecture, implementing image-service with MongoDB's GridFS to store images into distributed capable BSON binary chunks and implementing the authentication, single-page routing, upload image and add annotation functionality of the React frontend client.
+I learnt that daily stand-ups allowed us to keep track of each others progress and allocate manpower to help accordingly. Furthermore, I learnt how to implement api-gateway and service discovery and understand how these technologies are integral to the overall application's architecture. I also learnt how to implement authentication in a distributed context, this requires setting up token-based authentication following [Spring's new OAuth stack](https://github.com/spring-projects/spring-security/wiki/OAuth-2.0-Migration-Guide) which includes a third-party authorization server (via Keycloak embedded into a Spring Boot instance for easier deployment) and configuring the resource servers (e.g. image-service, user-service, etc) to check if requests received for a particular endpoint has strict authentication rules (i.e. a POST to /api/users/auth/signin **does not require** user to be signed in, but a POST to /api/images **requires** users to be signed in). Other responsibilities include containerizing our architecture, implementing image-service with MongoDB's GridFS to store images into distributed capable BSON binary chunks and implementing the authentication, single-page routing, upload image and add annotation functionality of the React frontend client.
 
 #### Emily
 
-Responsibilities: Initial idea and wireframes, annotations service, , working with Bryan for the client UI, testing the services with Braddy, report and video.
+Responsibilities: Initial idea and wireframes, annotations service, working with Bryan for the client UI, testing the services with Braddy, report and video.
 
 What I learnt:
-- Daily stand ups helps track progress.
+- Daily stand-ups helps track progress.
 - Merge requests make tracking features implemented easy.
 - More understanding of and experience with REST and React, including getting and fetching from endpoints via Postman and Reach Hooks.
 - React Hooks are hard.
@@ -146,7 +146,7 @@ What I learnt:
 
 ### Summary of reflections
 
-We used Spring Boot for the REST API in addition to Eureka (service discovery), Zuul (API gateway), MongoDB (database for each service), Keycloak (user authentication), Elasticsearch (search as a service great for NoSQL), React (client side rendering), which are not covered in the module.
+We used Spring Boot for the REST API in addition to Eureka (service discovery), Zuul (API gateway), MongoDB (database for each service), Keycloak (user authentication), Elasticsearch (search as a service great for NoSQL), React (client-side rendering), which are not covered in the module.
 
 We structured the services such that we can change the scale of our application (e.g. having multiple instances of one service and having Zuul balance the load between them), and that one service going down does not mean other services go down like dominos, we just need to restart that service. Our stretch goals would have further improved fault tolerance for the application.
 
