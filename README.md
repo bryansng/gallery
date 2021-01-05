@@ -10,7 +10,7 @@
   - [Reflection](#reflection)
     - [Comparisons of our stack vs other tools](#comparisons-of-our-stack-vs-other-tools)
     - [Pros & cons of our stack](#pros--cons-of-our-stack)
-    - [Stretch goals <sub><sup>(not achieved due to time constraints and configuration issues)</sup></sub>](#stretch-goals-subsupnot-achieved-due-to-time-constraints-and-configuration-issuessupsub)
+    - [Stretch goals <sub><sup>(not achieved due to time constraints, hardware constraints and configuration issues)</sup></sub>](#stretch-goals-subsupnot-achieved-due-to-time-constraints-hardware-constraints-and-configuration-issuessupsub)
     - [Individual reflections](#individual-reflections)
       - [Bryan](#bryan)
       - [Emily](#emily)
@@ -119,7 +119,7 @@ We used docker-compose to dockerize all services similarly to the tech stack out
 | Easier to isolate, discern and troubleshoot causes of failure to a part of the system (e.g. to a single service). |  |
 | Easier management due to microservices mimicing most organization's management style (i.e. teams that manage different aspects of the system), therefore it was easier for us to divide the development task between each other. |  |
 
-### Stretch goals <sub><sup>(not achieved due to time constraints and configuration issues)</sup></sub>
+### Stretch goals <sub><sup>(not achieved due to time constraints, hardware constraints and configuration issues)</sup></sub>
 
 - We ran into issues configuring Redis to cache user data or aggregated responses at the API gateway. This would have shorten the hops between client and Keycloak to verify the user token and prevent us from re-requesting data from user-service repeatedly. However, we would need to manually keep track if the cached data is outdated due to any recent edits and evict any old cached data following a LRU policy.
 - Enabling editing and deleting features for the client. These are available via the API but not via the client.
@@ -128,6 +128,7 @@ We used docker-compose to dockerize all services similarly to the tech stack out
 - Including an extensive test suite for both the application and the API enabling CI (continuous integration) to automate testing for an overall faster development process (e.g. trigger the tests each commit).
 - Kubernetes, itself highly available and self-healing, would allow us to change the scale of our services with zero downtime so we can progress towards a more scalable fault tolerant application.
 - Deploying to a web server, and implementing CD (continuous deployment).
+
 ### Individual reflections
 
 #### Bryan
