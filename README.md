@@ -13,7 +13,7 @@
     - [Pros & cons of our stack](#pros--cons-of-our-stack)
     - [Stretch goals <sub><sup>(not achieved due to time constraints and configuration issues)</sup></sub>](#stretch-goals-subsupnot-achieved-due-to-time-constraints-and-configuration-issuessupsub)
     - [What we could do better](#what-we-could-do-better)
-  - [Developing (locally, without Docker)](#developing-locally-without-docker)
+  - [Instructions for developing locally without Docker](#instructions-for-developing-locally-without-docker)
     - [Prerequisites](#prerequisites)
     - [To run](#to-run-1)
 
@@ -103,7 +103,8 @@ I learnt that daily stand-ups allowed us to keep track of each others progress a
 ### Comparisons of our stack vs other tools
 
 1. At the inception, NGINX was considered as our service discovery and API gateway, however we found that load balancing, key-value store and service discovery [features](https://www.nginx.com/products/nginx/compare-models) are only provided in NGINX Plus (their paid version). Furthermore, we found that NGINX do not provide complex routing logic, whereas Zuul provides this feature with the power of the Java ecosystem/programming language.
-2. React vs Thymeleaf
+2. React vs Thymeleaf: Both can implement our client, but React (client side rendering) would be quicker at updating the UI than Thymeleaf (server side rendering). React can update parts the webpage as users interact with it (e.g. up/down voting, adding annotations) while Thymeleaf regenerates the whole page each time.
+3. Elasticsearch is itself distributed, highly scalable, and has overall good performance.
 
 ### Pros & cons of our stack
 | Pros | Cons |
@@ -117,17 +118,18 @@ I learnt that daily stand-ups allowed us to keep track of each others progress a
 - We ran into issues configuring Redis to cache user data or aggregated responses at the API gateway. This would have shorten the hops between client and Keycloak to verify the user token and prevent us from re-requesting data from user-service repeatedly. However, we would need to manually keep track if the cached data is outdated due to any recent edits and evict any old cached data following a LRU policy.
 - Enabling editing and deleting features for the client. These are available via the API but not via the client.
 - Refactoring the code further as there are some duplications, particularly in client.
-- Kubernetes and CI/CD
+- We ran into issues getting the authserver to register with service discovery automatically. This would have meant we did not need to tell the api gateway specifically where authserver is, and we could then have multiple instances of the authserver.
+- Look into using NGINX to cache images to improve client performance.
+- Including tests for our API and enabling CI (continuous integration) to automate testing for an overall faster development process (e.g. trigger the tests each commit).
+- Kubernetes, itself highly available and self healing, would allow us to change the scale of our services with ZDT so we can progress towards a more scalable fault tolerant application.
 
-### What we could do better
-~~- Look into combining the authserver and user service, since Keycloak can handle more than just user credentials and tokens. This could decrease the hops needed just to verify user tokens and the number of points of failure when creating users.~~
-- Look into using NGINX to cache images.
+<details>
+<summary>Instructions for developing locally without Docker</summary>
 
-## Developing (locally, without Docker)
-
+## Instructions for developing locally without Docker
 ### Prerequisites
 
-Maven, Spring Boot, elastic search, npm, Docker. Note that this can be RAM intensive.
+Maven, Spring Boot, Elasticsearch, npm, Docker.
 
 Elasticsearch
 
@@ -140,6 +142,7 @@ Elasticsearch
 ### To run
 
 1. `mvn install` at root.
-2. Ensure MongoDB and Elastic Search services are on.
+2. Ensure MongoDB and Elasticsearch services are on.
 3. Run individual modules with `run.sh` in their respective directories or `mvn spring-boot:run -pl module_name`, in the order of `service.discovery`, `api.gateway`, `authorization-server`, `search`, `users`, `images`, `annotations`. See http://localhost:8761 to see what services are online.
 4. `cd client && npm install && npm start` and navigate to http://localhost:3000 to see the client.
+</details>
