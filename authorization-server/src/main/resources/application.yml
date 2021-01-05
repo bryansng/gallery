@@ -15,3 +15,11 @@ keycloak:
       username: gallery-admin
       password: pass
     realmImportFile: gallery-realm.json
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://servicediscovery:8761/eureka
+  instance:
+    hostname: servicediscovery
+    prefer-ip-address: true
