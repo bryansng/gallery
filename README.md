@@ -34,14 +34,46 @@ Social Gallery Image Annotation, think genius.com for images and reddit up/down 
 - Search is enabled for users by username and images by their titles and descriptions.
 
 ## To run
+
 1. At root, run `./run.sh fromscratch`, or in your terminal:
-```
-  docker-compose down -v
-  mvn clean
-  mvn install
-  docker-compose up --build --remove-orphans
-```
-2. Head to the client directory and run `./run.sh firsttime` or `cd client && npm install && npm run`.
+
+    ```bash
+      docker-compose down -v
+      mvn clean
+      mvn install
+      docker-compose up --build --remove-orphans
+    ```
+
+    NOTE: This will take awhile because it mvn installs all services, npm installs the React node modules and runs the services in their containers (some containers wait a specific time due to dependance on other containers).
+
+2. Open the browser and visit [http://localhost/](http://localhost:80/). <!-- 2b. Head to the client directory and run `./run.sh firsttime` or `cd client && npm install && npm run`. -->
+
+3. If you require running docker-compose a few more times:
+   - you could skip `mvn clean` and `mvn install` step by running `./run.sh tearbuild`, or in your terminal:
+
+      ```bash
+      docker-compose down -v
+      docker-compose up --build --remove-orphans
+      ```
+
+<!-- - comment out the `reactclient` container in `docker-compose.yml`:
+
+  ```yml
+  # reactclient:
+  #   build: client
+  #   ports:
+  #     - 80:80
+  ```
+
+- on a separate terminal, navigate to the client directory and run `./run.sh firsttime` or:
+
+  ```bash
+  cd client
+  npm install
+  npm start
+  ```
+
+- for subsequent runs, use the command `npm start` to start the React client. -->
 
 ## Tech stack
 
