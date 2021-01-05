@@ -11,15 +11,21 @@ services:
   #     - servicediscovery
   #     - apigateway
 
-  reactclient:
-    build: client
-    ports:
-      - 80:80
+  # reactclient:
+  #   build: client
+  #   ports:
+  #     - 80:80
 
   servicediscovery:
     build: service.discovery
     ports:
       - 8761:8761
+    healthcheck:
+      test:
+        ["CMD", "curl", "-f", "http://servicediscovery:8761/actuator/health"]
+      interval: 20s
+      timeout: 20s
+      retries: 10
 
   apigateway:
     env_file:
@@ -29,56 +35,90 @@ services:
       - servicediscovery
     ports:
       - 8080:8080
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://apigateway:8080/actuator/health"]
+      interval: 20s
+      timeout: 20s
+      retries: 10
 
   authserver:
     environment:
-      STARTUP_DELAY: 5
+      STARTUP_DELAY: 0
+      # STARTUP_DELAY: 5
     build: authorization-server
     depends_on:
       - servicediscovery
       - apigateway
     ports:
       - 8090:8090
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://authserver:8090/actuator/health"]
+      interval: 20s
+      timeout: 20s
+      retries: 10
 
-  users:
-    env_file:
-      - .env
-    environment:
-      STARTUP_DELAY: 80
-    build: users
-    depends_on:
-      - servicediscovery
-      - apigateway
-      - users-mongodb
-      - search
-      - authserver
-    ports:
-      - 8081:8081
+  # users:
+  #   env_file:
+  #     - .env
+  #   environment:
+  #     STARTUP_DELAY: 0
+  #     # STARTUP_DELAY: 80
+  #   build: users
+  #   depends_on:
+  #     users-mongodb:
+  #       condition: service_healthy
+  #     search:
+  #       condition: service_healthy
+  #     authserver:
+  #       condition: service_healthy
+  #   ports:
+  #     - 8081:8081
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-f", "http://users:8081/actuator/health"]
+  #     interval: 20s
+  #     timeout: 20s
+  #     retries: 20
 
-  users-mongodb:
-    image: "mongo:latest"
-    # environment:
-    # MONGO_INITDB_ROOT_USERNAME: root
-    # MONGO_INITDB_ROOT_PASSWORD: root
-    ports:
-      - 27021:27017
-    depends_on:
-      - servicediscovery
-      - apigateway
+  # users-mongodb:
+  #   image: "mongo:latest"
+  #   # environment:
+  #   # MONGO_INITDB_ROOT_USERNAME: root
+  #   # MONGO_INITDB_ROOT_PASSWORD: root
+  #   ports:
+  #     - 27021:27017
+  #   depends_on:
+  #     servicediscovery:
+  #       condition: service_started
+  #     apigateway:
+  #       condition: service_started
+  #   healthcheck:
+  #     test: echo 'db.runCommand("ping").ok' | mongo mongodb://users-mongodb:27017/test --quiet
+  #     interval: 20s
+  #     timeout: 20s
+  #     retries: 10
 
   search:
     env_file:
       - .env
     environment:
-      STARTUP_DELAY: 10
+      STARTUP_DELAY: 0
+      # STARTUP_DELAY: 10
     build: search
     depends_on:
-      - servicediscovery
-      - apigateway
-      - es01
+      servicediscovery:
+        condition: service_started
+      apigateway:
+        condition: service_started
+      es01:
+        condition: service_healthy
       # - search-mongodb
     ports:
       - 8083:8083
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://search:8083/actuator/health"]
+      interval: 20s
+      timeout: 20s
+      retries: 10
 
   es01:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.10.1
@@ -98,49 +138,67 @@ services:
     ports:
       - 9200:9200
       - 9300:9300
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://es01:9200"]
+      interval: 20s
+      timeout: 20s
+      retries: 10
 
-  images:
-    env_file:
-      - .env
-    environment:
-      STARTUP_DELAY: 70
-    build: images
-    depends_on:
-      - servicediscovery
-      - apigateway
-      - images-mongodb
-      - search
-      - authserver
-    ports:
-      - 8084:8084
+  # images:
+  #   env_file:
+  #     - .env
+  #   environment:
+  #     STARTUP_DELAY: 0
+  #     # STARTUP_DELAY: 70
+  #   build: images
+  #   depends_on:
+  #     servicediscovery:
+  #       condition: service_started
+  #     apigateway:
+  #       condition: service_started
+  #     images-mongodb:
+  #       condition: service_healthy
+  #     search:
+  #       condition: service_healthy
+  #     authserver:
+  #       condition: service_healthy
+  #   ports:
+  #     - 8084:8084
 
-  images-mongodb:
-    image: "mongo:latest"
-    ports:
-      - 27024:27017
-    depends_on:
-      - servicediscovery
-      - apigateway
+  # images-mongodb:
+  #   image: "mongo:latest"
+  #   ports:
+  #     - 27024:27017
+  #   depends_on:
+  #     servicediscovery:
+  #       condition: service_started
+  #     apigateway:
+  #       condition: service_started
+  #   healthcheck:
+  #     test: echo 'db.runCommand("ping").ok' | mongo mongodb://images-mongodb:27017/test --quiet
+  #     interval: 20s
+  #     timeout: 20s
+  #     retries: 10
 
-  annotations:
-    env_file:
-      - .env
-    environment:
-      STARTUP_DELAY: 10
-    build: annotations
-    depends_on:
-      - servicediscovery
-      - apigateway
-      - annotations-mongodb
-      - authserver
-    ports:
-      - 8082:8082
+  # annotations:
+  #   env_file:
+  #     - .env
+  #   environment:
+  #     STARTUP_DELAY: 10
+  #   build: annotations
+  #   depends_on:
+  #     - servicediscovery
+  #     - apigateway
+  #     - annotations-mongodb
+  #     - authserver
+  #   ports:
+  #     - 8082:8082
 
-  annotations-mongodb:
-    image: "mongo:latest"
-    # environment:
-    ports:
-      - 27022:27017
-    depends_on:
-      - servicediscovery
-      - apigateway
+  # annotations-mongodb:
+  #   image: "mongo:latest"
+  #   # environment:
+  #   ports:
+  #     - 27022:27017
+  #   depends_on:
+  #     - servicediscovery
+  #     - apigateway
