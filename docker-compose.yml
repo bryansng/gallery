@@ -11,10 +11,10 @@ services:
   #     - servicediscovery
   #     - apigateway
 
-  # reactclient:
-  #   build: client
-  #   ports:
-  #     - 80:80
+  reactclient:
+    build: client
+    ports:
+      - 80:80
 
   servicediscovery:
     build: service.discovery
@@ -31,6 +31,8 @@ services:
       - 8080:8080
 
   authserver:
+    environment:
+      STARTUP_DELAY: 5
     build: authorization-server
     depends_on:
       - servicediscovery
@@ -101,7 +103,7 @@ services:
     env_file:
       - .env
     environment:
-      STARTUP_DELAY: 60
+      STARTUP_DELAY: 70
     build: images
     depends_on:
       - servicediscovery
