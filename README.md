@@ -44,7 +44,9 @@ Social Gallery Image Annotation, think genius.com for images and reddit up/down 
       docker-compose up --build --remove-orphans
     ```
 
-    NOTE: This will take awhile because it mvn installs all services, npm installs the React node modules and runs the services in their containers (some containers wait a specific time due to dependance on other containers).
+    NOTE: This will take awhile because it mvn installs all services, npm installs the React node modules and runs the services in their containers (some containers wait a specific time due to dependance on other containers). The backend is ready when you reach this point, where user-service and image-service completed initialization:
+
+    ![Image when docker-compose is ready](./readme_resources/images/ready_when.png "Image when docker-compose is ready")
 
 2. Open the browser and visit [http://localhost/](http://localhost:80/). <!-- 2b. Head to the client directory and run `./run.sh firsttime` or `cd client && npm install && npm run`. -->
 
@@ -77,7 +79,7 @@ Social Gallery Image Annotation, think genius.com for images and reddit up/down 
 
 ## Tech stack
 
-![Image of Project Architecture](tech_stack.png "Image of Project Architecture")
+![Image of Project Architecture](./readme_resources/images/tech_stack.png "Image of Project Architecture")
 
 *Eureka* and *Zuul* act as the **service discovery** and **API gateway** of the application respectively, aka the "front door". Eureka keeps track of where the services are while Zuul routes every request (e.g. POSTing and GETing users/images/annotations) to the appropriate service. Zuul (complemented by Eureka) also provides load balancing between instances of the same service round-robin style, e.g. between multiple annotation services.
 
