@@ -12,7 +12,7 @@
     - [Pros & cons of our stack](#pros--cons-of-our-stack)
     - [Wish list](#wish-list)
     - [What we could do better](#what-we-could-do-better)
-  - [Developing (locally, without Docker)](#developing-locally-without-docker)
+  - [Instructions for developing locally without Docker](#instructions-for-developing-locally-without-docker)
     - [Prerequisites](#prerequisites)
     - [To run](#to-run-1)
 
@@ -48,7 +48,7 @@ Social Gallery Image Annotation, think genius.com for images and reddit up/down 
 
 The **authorization server** authenticates users via *Keycloak* (embedded in Spring Boot), an open source identity and access management solution. In this project, Keycloak manages users and their access tokens, and Spring Boot handles the Keycloak Authorization Server.
 
-**Search** is provided via *Elastic Search* which indexes images (ids, titles, and descriptions) and users (ids and usernames) internally with Lucene. Our search service provides the APIs to talk to ES and determines how images and users are indexed in ES.
+**Search** is provided via *Elasticsearch* which indexes images (ids, titles, and descriptions) and users (ids and usernames) internally with Lucene. Our search service provides the APIs to talk to ES and determines how images and users are indexed in ES.
 
 The **client** is a single page application built with *React*, react-bootstrap, Tachyons the css utility, and more.
 ### Example retrieval
@@ -59,13 +59,14 @@ Signed in refreshing the page: client POSTs user token to API gateway -> API gat
 
 ### Dockerizing
 
-We used docker-compose to dockerize all 7 services (except client) similarly to the tech stack outlined. Each of the `images`, `users`, and `annotations` services are a container and have their respective MongoDB containers. They depend on the `authserver`. The `search` service has its own container but depends on the Elastic Search container. All services (and their related MongoDB) depend on `servicediscovery` and `apigateway` services.
+We used docker-compose to dockerize all 7 services (except client) similarly to the tech stack outlined. Each of the `images`, `users`, and `annotations` services are a container and have their respective MongoDB containers. They depend on the `authserver`. The `search` service has its own container but depends on the Elasticsearch container. All services (and their related MongoDB) depend on `servicediscovery` and `apigateway` services.
 
 ## Reflection
 
 ### Comparisons of our stack vs other tools
-1. Eureka and Zuul and Nginx both provide service discovery and API gateway, but Nginx's load balancing is a paid service.
-2. React vs Thymeleaf
+1. Eureka and Zuul vs Nginx: Eureka and Zuul and Nginx both provide service discovery, API gateway, and load balancing, but Nginx's load balancing is a paid service.
+2. React vs Thymeleaf: Both can implement our client, but React (client side rendering) would be quicker at updating the UI than Thymeleaf (server side rendering). React can update parts the webpage as users interact with it (e.g. up/down voting, adding annotations) while Thymeleaf regenerates the whole page each time.
+3. Elasticsearch is itself distributed, highly scalable, and has overall good performance.
 
 ### Pros & cons of our stack
 | Pros | Cons |
@@ -77,19 +78,22 @@ We used docker-compose to dockerize all 7 services (except client) similarly to 
 - We ran into issues configuring Redis to cache user data or aggregated responses at the API gateway. This would have shorten the hops between client and Keycloak to verify the user token and prevent us from re-requesting data repeatedly. However, we would need to manually keep track if the cache data is outdated with a LRU policy.
 - Enabling editing and deleting features for the client. These are available via the API but not via the client.
 - Refactoring the code further as there are some duplications, particularly in client.
-- Kubernetes and CI/CD
+- Kubernetes, itself highly available and self healing, would allow us to change the scale of our services with ZDT so we can progress towards a more scalable fault tolerant application.
 
 ### What we could do better
-- Look into combining the authserver and user service, since Keycloak can handle more than just user credentials and tokens. This could decrease the hops needed just to verify user tokens and the number of points of failure when creating users.
-- Look into using Nginx to cache images.
+- Look into combining the authserver and user service, since Keycloak can handle more than just user credentials and tokens. This could decrease the hops needed just to verify user tokens and the number of points of failure when creating users. We also ran into issues getting multiple instances of the authserver to register with service discovery.
+- Look into using Nginx to cache images to improve client performance.
+- Including tests for our API and enabling CI (continuous integration) to automate testing for an overall faster development process (e.g. trigger the tests each commit).
 
-## Developing (locally, without Docker)
+<details>
+<summary>Instructions for developing locally without Docker</summary>
 
+## Instructions for developing locally without Docker
 ### Prerequisites
 
-Maven, Spring Boot, elastic search, npm, Docker. Note that this can be RAM intensive.
+Maven, Spring Boot, Elasticsearch, npm, Docker.
 
-Elastic search
+Elasticsearch
 
 1. [Download the zip file](https://www.elastic.co/downloads/elasticsearch).
 2. Unzip somewhere.
@@ -100,6 +104,7 @@ Elastic search
 ### To run
 
 1. `mvn install` at root.
-2. Ensure MongoDB and Elastic Search services are on.
+2. Ensure MongoDB and Elasticsearch services are on.
 3. Run individual modules with `run.sh` in their respective directories or `mvn spring-boot:run -pl module_name`, in the order of `service.discovery`, `api.gateway`, `authorization-server`, `search`, `users`, `images`, `annotations`. See http://localhost:8761 to see what services are online.
 4. `cd client && npm install && npm start` and navigate to http://localhost:3000 to see the client.
+</details>
